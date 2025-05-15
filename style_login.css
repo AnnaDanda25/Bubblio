@@ -300,3 +300,9 @@ body {
     border-radius: 15px;
   }
 }
+
+/* Completed checkbox - strike through */
+.completed {
+  text-decoration: line-through;
+  color: #999;
+}

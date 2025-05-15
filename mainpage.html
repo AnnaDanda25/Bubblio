@@ -40,7 +40,7 @@
         <div class="tab-content" id="tankTabsContent">
           <div class="tab-pane fade show active tank-card p-3 border rounded" id="tank1" role="tabpanel" aria-labelledby="tank1-tab">
             <ul class="list-unstyled">
-              <li><input type="checkbox" checked /> Feed the fish</li>
+              <li><input type="checkbox" /> Feed the fish</li>
               <li><input type="checkbox" /> Check water temperature</li>
               <li><input type="checkbox" /> Inspect water clarity</li>
               <li><input type="checkbox" /> Verify equipment is working</li>
@@ -49,7 +49,7 @@
           </div>
           <div class="tab-pane fade tank-card p-3 border rounded" id="tank2" role="tabpanel" aria-labelledby="tank2-tab">
             <ul class="list-unstyled">
-              <li><input type="checkbox" checked /> Feed the fish</li>
+              <li><input type="checkbox" /> Feed the fish</li>
               <li><input type="checkbox" /> Check water temperature</li>
               <li><input type="checkbox" /> Inspect water clarity</li>
               <li><input type="checkbox" /> Verify equipment is working</li>
@@ -76,8 +76,8 @@
         <div class="upcoming-tasks p-3 border rounded position-relative">
           <h5>Upcoming tasks</h5>
           <ul id="task-list">
-            <li><input type="checkbox" checked /> 17.08.2025 - Clean tank 1</li>
-            <li><input type="checkbox" checked /> 17.08.2025 - Change water in tank 1</li>
+            <li><input type="checkbox" /> 17.08.2025 - Clean tank 1</li>
+            <li><input type="checkbox" /> 17.08.2025 - Change water in tank 1</li>
             <li><input type="checkbox" /> 19.08.2025 - Observe fish health</li>
           </ul>
           <button type="button" class="btn btn-primary position-absolute" style="bottom: 15px; right: 15px;" data-bs-toggle="modal" data-bs-target="#addTaskModal">+</button>
@@ -124,7 +124,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Kalendarz
+      // Calendar
       const calendarMonthYear = document.getElementById('calendarMonthYear');
       const calendarGrid = document.getElementById('calendarGrid');
       let today = new Date();
@@ -229,6 +229,30 @@
         }
         return new Date();
       }
+
+      // Strike-through for Upcoming Tasks
+      taskList.addEventListener('change', function(e) {
+        if (e.target.type === 'checkbox') {
+          const li = e.target.closest('li');
+          if (e.target.checked) {
+            li.classList.add('completed');
+          } else {
+            li.classList.remove('completed');
+          }
+        }
+      });
+
+      // Strike-through for Tanks
+      document.addEventListener('change', function(e) {
+        if (e.target.type === 'checkbox' && e.target.closest('.tank-card li')) {
+          const li = e.target.closest('li');
+          if (e.target.checked) {
+            li.classList.add('completed');
+          } else {
+            li.classList.remove('completed');
+          }
+        }
+      });
     });
   </script>
 </body>
