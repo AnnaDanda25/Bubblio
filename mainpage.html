@@ -80,7 +80,7 @@
             <li><input type="checkbox" /> 17.08.2025 - Change water in tank 1</li>
             <li><input type="checkbox" /> 19.08.2025 - Observe fish health</li>
           </ul>
-          <button type="button" class="btn btn-primary position-absolute" style="bottom: 15px; right: 15px;" data-bs-toggle="modal" data-bs-target="#addTaskModal">+</button>
+          <button type="button" class="btn-add-task" data-bs-toggle="modal" data-bs-target="#addTaskModal">+</button>
         </div>
 
         <!-- Modal -->
@@ -251,6 +251,13 @@
           } else {
             li.classList.remove('completed');
           }
+        }
+      });
+
+      // Highlight active bottom menu icon
+      document.querySelectorAll('.bottom-menu a').forEach(link => {
+        if (window.location.href.includes(link.getAttribute('href'))) {
+          link.classList.add('active');
         }
       });
     });
