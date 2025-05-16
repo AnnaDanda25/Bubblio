@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setTimeout(() => {
       const firstDay = new Date(year, month).getDay();
       const daysInMonth = 32 - new Date(year, month, 32).getDate();
+
       const rawLabel = new Date(year, month).toLocaleString('default', {
         month: 'long',
         year: 'numeric'
@@ -19,6 +20,8 @@ document.addEventListener('DOMContentLoaded', function () {
       calendarMonthYear.textContent = rawLabel.charAt(0).toUpperCase() + rawLabel.slice(1);
 
       calendarGrid.innerHTML = '';
+
+      // Weekdays
       const weekDays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
       weekDays.forEach(day => {
         const div = document.createElement('div');
@@ -27,16 +30,22 @@ document.addEventListener('DOMContentLoaded', function () {
         calendarGrid.appendChild(div);
       });
 
+      // Empty tiles before 1st
       for (let i = 0; i < firstDay; i++) {
         const emptyDiv = document.createElement('div');
         emptyDiv.classList.add('empty-tile');
         calendarGrid.appendChild(emptyDiv);
       }
 
+      // Days
       for (let i = 1; i <= daysInMonth; i++) {
         const div = document.createElement('div');
         div.textContent = i;
-        if (i === today.getDate() && year === today.getFullYear() && month === today.getMonth()) {
+        if (
+          i === today.getDate() &&
+          year === today.getFullYear() &&
+          month === today.getMonth()
+        ) {
           div.classList.add('selected');
         }
         calendarGrid.appendChild(div);
@@ -67,11 +76,16 @@ document.addEventListener('DOMContentLoaded', function () {
     updateCalendar(currentMonth, currentYear);
   });
 
+  // === TASKS ===
   const taskList = document.getElementById('task-list');
   const addTaskForm = document.getElementById('addTaskForm');
   const tasks = [];
 
-  document.querySelectorAll('#task-list li').forEach(li => tasks.push(li.textContent.trim()));
+  // Load initial tasks
+  document.querySelectorAll('#task-list li').forEach(li => {
+    const text = li.textContent.trim();
+    if (text) tasks.push(text);
+  });
 
   addTaskForm.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -107,23 +121,17 @@ document.addEventListener('DOMContentLoaded', function () {
     return `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}.${date.getFullYear()}`;
   }
 
-  function sortByDate(a, b) {
-    return parseDate(a) - parseDate(b);
-  }
-
   function parseDate(task) {
     const match = task.match(/^(\d{2})\.(\d{2})\.(\d{4})/);
     if (match) {
       return new Date(match[3], match[2] - 1, match[1]);
     }
-    return new Date(3000, 0, 1); // jeśli nie znajdzie daty, wrzuca na koniec
+    return new Date(3000, 0, 1); // fallback: place at end
   }
 
-  // Początkowe ustawienie przekreśleń dla istniejących checkboxów
-  document.querySelectorAll('#task-list input[type="checkbox"]').forEach(cb => {
-    cb.addEventListener('change', function () {
-      const li = cb.closest('li');
-      li.classList.toggle('text-decoration-line-through', cb.checked);
-    });
-  });
+  function sortByDate(a, b) {
+    return parseDate(a) - parseDate(b);
+  }
+
+  renderTasks(); // Initial render with sorted tasks
 });

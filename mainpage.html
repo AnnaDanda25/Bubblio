@@ -10,62 +10,41 @@
 <body>
   <div class="app-container d-flex">
     <!-- Sidebar -->
-    <nav class="sidebar">
+    <nav class="sidebar" aria-label="Main menu">
       <ul class="nav flex-column mt-4">
-        <li class="nav-item">
-          <a href="#" class="nav-link active">
-            <img src="img/mainpage_menu_icon.png" alt="Home" />
-            <span>Home</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <img src="img/tank_menu_icon.png" alt="Tanks" />
-            <span>Tanks</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <img src="img/diary_menu_icon.png" alt="Diary" />
-            <span>Diary</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <img src="img/profile_menu_icon.png" alt="Profile" />
-            <span>Profile</span>
-          </a>
-        </li>
+        <li class="nav-item"><a href="#" class="nav-link active"><img src="img/mainpage_menu_icon.png" alt="Go to home page" /><span>Home</span></a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><img src="img/tank_menu_icon.png" alt="Go to tanks page" /><span>Tanks</span></a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><img src="img/diary_menu_icon.png" alt="Go to diary page" /><span>Diary</span></a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><img src="img/profile_menu_icon.png" alt="Go to profile page" /><span>Profile</span></a></li>
       </ul>
     </nav>
 
     <!-- Main Content -->
-    <div class="main-content flex-grow-1">
-      <!-- Topbar -->
-      <div class="d-flex justify-content-between align-items-center topbar mb-4">
+    <main class="main-content flex-grow-1">
+      <header class="d-flex justify-content-between align-items-center topbar mb-4">
         <div class="d-flex align-items-center gap-2">
-          <img src="img/bubblio_logo_no_text.png" alt="Logo" class="logo-img" />
+          <img src="img/bubblio_logo_no_text.png" alt="Bubblio Logo" class="logo-img" />
           <h1 class="hello-text m-0 fw-semibold">Hello Anna!</h1>
         </div>
         <div class="bubble-counter d-flex align-items-center gap-2">
-          <img src="img/bubblio_bubble.png" alt="Bubble" class="bubble-icon" />
+          <img src="img/bubblio_bubble.png" alt="Bubble icon" class="bubble-icon" />
           <span class="bubble-number">21</span>
         </div>
-      </div>
+      </header>
 
       <!-- Tanks + Calendar -->
-      <div class="row gx-4 mb-4 align-items-stretch">
-        <!-- TANKS -->
+      <section class="row gx-4 mb-4 align-items-stretch">
+        <!-- Tanks -->
         <div class="col-md-6 d-flex flex-column">
           <div class="section-with-title h-100">
-            <h3 class="section-title">Your Tanks</h3>
+            <h2 class="section-title">Your Tanks</h2>
             <div class="card p-3 h-100">
-              <ul class="nav nav-tabs mb-3" id="tankTabs">
-                <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tank1">Tank 1</button></li>
-                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tank2">Tank 2</button></li>
+              <ul class="nav nav-tabs mb-3" id="tankTabs" role="tablist">
+                <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tank1" role="tab">Tank 1</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tank2" role="tab">Tank 2</button></li>
               </ul>
               <div class="tab-content">
-                <div class="tab-pane fade show active" id="tank1">
+                <div class="tab-pane fade show active" id="tank1" role="tabpanel">
                   <h5 class="subsection-title">Daily checks</h5>
                   <ul class="list-unstyled mb-0">
                     <li><input type="checkbox" /> Feed the fish</li>
@@ -75,7 +54,7 @@
                     <li><input type="checkbox" /> Observe fish behavior and health</li>
                   </ul>
                 </div>
-                <div class="tab-pane fade" id="tank2">
+                <div class="tab-pane fade" id="tank2" role="tabpanel">
                   <h5 class="subsection-title">Daily checks</h5>
                   <ul class="list-unstyled mb-0">
                     <li><input type="checkbox" /> Feed the fish</li>
@@ -90,27 +69,27 @@
           </div>
         </div>
 
-        <!-- CALENDAR -->
+        <!-- Calendar -->
         <div class="col-md-6 d-flex flex-column">
           <div class="section-with-title h-100">
-            <h3 class="section-title">Calendar</h3>
+            <h2 class="section-title">Calendar</h2>
             <div class="calendar card p-3 h-100">
               <div class="d-flex justify-content-between align-items-center mb-3">
-                <strong id="calendarMonthYear" class="fs-5"></strong>
+                <h4 id="calendarMonthYear" class="fs-5 mb-0"></h4>
                 <div>
-                  <button id="prevMonth">&lt;</button>
-                  <button id="nextMonth">&gt;</button>
+                  <button id="prevMonth" aria-label="Previous month">&lt;</button>
+                  <button id="nextMonth" aria-label="Next month">&gt;</button>
                 </div>
               </div>
               <div id="calendarGrid" class="calendar-grid"></div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- UPCOMING TASKS -->
-      <div class="section-with-title">
-        <h3 class="section-title">Upcoming Tasks</h3>
+      <!-- Upcoming Tasks -->
+      <section class="section-with-title">
+        <h2 class="section-title">Upcoming Tasks</h2>
         <div class="card p-3 position-relative">
           <ul id="task-list" class="list-unstyled mb-0">
             <li><input type="checkbox" /> 17.08.2025 – Clean tank 1</li>
@@ -119,17 +98,17 @@
           </ul>
           <button class="btn-add-task" data-bs-toggle="modal" data-bs-target="#addTaskModal">+</button>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   </div>
 
   <!-- Modal -->
-  <div class="modal fade" id="addTaskModal" tabindex="-1">
+  <div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <form class="modal-content" id="addTaskForm">
         <div class="modal-header">
-          <h5 class="modal-title">Add New Task</h5>
-          <button class="btn-close" data-bs-dismiss="modal" type="button"></button>
+          <h5 class="modal-title" id="addTaskModalLabel">Add New Task</h5>
+          <button class="btn-close" type="button" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
           <input type="date" class="form-control mb-3" id="taskDate" required />

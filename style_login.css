@@ -1,13 +1,24 @@
+:root {
+  --primary: #0077b6;
+  --accent: #003a58;
+  --light: #a8d0e3;
+  --text-dark: #212529;
+  --bubble-bg: #e0f7ff;
+  --white: #ffffff;
+  --calendar-today: #66a2c2;
+}
+
 /* === RESET === */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
+
 body {
   font-family: 'Inter', sans-serif;
   background: #f6faff;
-  color: #212529;
+  color: var(--text-dark);
 }
 
 /* === LAYOUT === */
@@ -16,6 +27,7 @@ body {
   min-height: 100vh;
   width: 100%;
 }
+
 .main-content {
   flex-grow: 1;
   padding: 40px 60px 60px 60px;
@@ -33,22 +45,25 @@ body {
   align-items: flex-start;
   padding: 50px 20px;
 }
+
 .sidebar::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0, 91, 133, 0.096), rgba(0, 38, 65, 0.954) );
+  background: linear-gradient(to top, rgba(0, 91, 133, 0.1), rgba(0, 38, 65, 0.95));
   z-index: 0;
   backdrop-filter: blur(4px);
 }
+
 .sidebar ul {
   position: relative;
   z-index: 1;
   width: 100%;
   padding-left: 0;
 }
+
 .sidebar .nav-link {
-  color: rgb(255, 255, 255);
+  color: var(--white);
   font-size: 25px;
   padding: 40px 18px;
   display: flex;
@@ -56,23 +71,22 @@ body {
   gap: 14px;
   text-decoration: none;
   border-radius: 12px;
-  transition: background 0.3s ease-in-out;
   font-weight: 700;
+  transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
 }
-.sidebar .nav-link:hover {
-  color: white;
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+  background-color: rgba(255, 255, 255, 0.372);
+  color: #212121;
 }
 
 .sidebar .nav-link img {
   width: 40px;
   height: 40px;
-  filter: brightness(0) invert(1); /* białe ikonki */
+  filter: brightness(0) invert(1);
 }
-.sidebar .nav-link.active,
-.sidebar .nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.372);
-  color: #212121
-}
+
 .sidebar .nav-link.active img,
 .sidebar .nav-link:hover img {
   filter: drop-shadow(0 0 6px rgba(252, 252, 252, 0.575));
@@ -85,108 +99,10 @@ body {
   align-items: center;
   margin-bottom: 40px;
 }
-.topbar h4 {
-  font-size: 50px;
-  font-weight: 1000;
-}
+
 .logo-img {
   height: 120px;
   width: 120px;
-}
-.bubble-counter {
-  background: #e0f7ff;
-  padding: 8px 14px;
-  border-radius: 20px;
-  color: #000000;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 30px;
-}
-.bubble-counter img {
-  width: 34px;
-  height: 34px;
-}
-
-/* === TABS === */
-.nav-tabs .nav-link {
-  border-radius: 100px;
-  font-weight: 700;
-  color: #0077b6;
-  padding: 30px 30px;
-}
-.nav-tabs .nav-link.active {
-  background-color: #003a58;
-  color: white;
-  border: none;
-}
-
-/* === CARD === */
-.card {
-  border-radius: 30px;
-  box-shadow: 0 10px 12px rgba(0,0,0,0.05);
-  background: white;
-  border: none;
-}
-.card h5 {
-  font-weight: 900;
-  margin-bottom: 16px;
-  font-size: 20px;
-}
-li {
-  margin-bottom: 10px;
-  font-size: 20px;
-}
-
-/* === CALENDAR === */
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
-  text-align: center;
-}
-.calendar-grid div {
-  padding: 10px 0;
-  font-weight: 600;
-  background: #a8d0e3;
-  border-radius: 5px;
-  color: #000103;
-}
-.weekday-tile {
-  background-color: #ffffff;
-  border: 3px solid #003d5e;
-  color: #ffffff;
-  font-weight: 700;
-  border-radius: 10px;
-  padding: 10px 0;
-}
-.calendar-grid .selected {
-  background-color: #66a2c2;
-  color: white;
-}
-
-/* === BUTTON ADD === */
-.btn-add-task {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  font-size: 45px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  border: 5px solid #323232;
-  background: white;
-  color: #323232;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-.btn-add-task:hover {
-  background-color: #a8d0e3;
-  color: white;
 }
 
 .hello-text {
@@ -194,38 +110,72 @@ li {
   font-weight: 900;
 }
 
+.bubble-counter {
+  background: var(--bubble-bg);
+  padding: 8px 14px;
+  border-radius: 20px;
+  color: #000;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 30px;
+}
+
+.bubble-counter img {
+  width: 34px;
+  height: 34px;
+}
+
+/* === SECTION STYLES === */
 .section-with-title {
   position: relative;
-  margin-top: 40px;
-  margin-bottom: 40px;
+  margin: 40px 0;
 }
 
 .section-with-title .section-title {
   position: absolute;
   top: -20px;
   left: 30px;
-  background: white;
+  background: var(--white);
   padding: 0 15px;
   z-index: 1;
   font-size: 28px;
   font-weight: 700;
-  color: #003a58;
+  color: var(--accent);
 }
 
 .section-with-title .card {
   padding-top: 40px !important;
   border-radius: 30px;
   height: 100%;
+  background: var(--white);
+  box-shadow: 0 10px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.08);;
+}
+.card {
+  border-radius: 30px;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.253);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
+.card:hover {
+  border-color: rgba(0, 119, 182, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 118, 182, 0.418);
+}
+
+
+/* === SUBSECTION TITLE === */
 .subsection-title {
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 15px;
-  color: #003a58;
+  color: var(--accent);
 }
 
-/* === STYL ZAKŁADEK TANKS === */
+/* === TABS (Tank Buttons) === */
 .nav-tabs {
   border-bottom: none;
 }
@@ -243,17 +193,83 @@ li {
 
 .nav-tabs .nav-link:hover {
   background-color: rgba(0, 119, 182, 0.1);
-  color: #003a58;
+  color: var(--accent);
 }
 
 .nav-tabs .nav-link.active {
-  background-color: #0077b6;
+  background-color: var(--primary);
   color: rgb(19, 42, 61);
-  box-shadow: 0 0 8px rgba(81, 142, 174, 0.4); /* lekka poświata */
+  box-shadow: 0 0 8px rgba(81, 142, 174, 0.4);
   font-weight: 800;
 }
 
-/* ANIMACJE KALENDARZA */
+/* === CALENDAR === */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  text-align: center;
+}
+
+.calendar-grid div {
+  padding: 10px 0;
+  font-weight: 600;
+  background: var(--light);
+  border-radius: 5px;
+  color: var(--text-dark);
+}
+
+.weekday-tile {
+  background-color: transparent;
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  font-weight: 700;
+  border-radius: 10px;
+}
+
+.calendar-grid .selected {
+  background-color: var(--calendar-today);
+  color: white;
+}
+
+.empty-tile {
+  visibility: hidden;
+  height: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* === ADD BUTTON === */
+.btn-add-task {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  font-size: 45px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 5px solid #323232;
+  background: var(--white);
+  color: #323232;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.btn-add-task:hover {
+  background-color: var(--light);
+  color: white;
+}
+
+/* === CHECKBOX LIST === */
+li {
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+/* === CALENDAR ANIMATIONS === */
 .calendar-grid.fade-out {
   animation: fadeOutCalendar 0.2s forwards;
 }
@@ -270,13 +286,6 @@ li {
 @keyframes fadeInCalendar {
   from { opacity: 0; transform: translateY(-10px); }
   to   { opacity: 1; transform: translateY(0); }
-}
-
-.empty-tile {
-  visibility: hidden;
-  height: 0;
-  padding: 0;
-  margin: 0;
 }
 
 /* === RESPONSIVE === */
