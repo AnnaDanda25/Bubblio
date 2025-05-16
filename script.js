@@ -6,27 +6,45 @@ document.addEventListener('DOMContentLoaded', function () {
   let currentYear = today.getFullYear();
 
   function updateCalendar(month, year) {
-    const firstDay = new Date(year, month).getDay();
-    const daysInMonth = 32 - new Date(year, month, 32).getDate();
-    calendarMonthYear.textContent = new Date(year, month).toLocaleString('default', { month: 'long', year: 'numeric' });
-    calendarGrid.innerHTML = '';
-    const weekDays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-    weekDays.forEach(day => {
-      const div = document.createElement('div');
-      div.textContent = day;
-      calendarGrid.appendChild(div);
-    });
-    for (let i = 0; i < firstDay; i++) {
-      calendarGrid.appendChild(document.createElement('div'));
-    }
-    for (let i = 1; i <= daysInMonth; i++) {
-      const div = document.createElement('div');
-      div.textContent = i;
-      if (i === today.getDate() && year === today.getFullYear() && month === today.getMonth()) {
-        div.classList.add('selected');
+    calendarGrid.classList.remove('fade-in');
+    calendarGrid.classList.add('fade-out');
+
+    setTimeout(() => {
+      const firstDay = new Date(year, month).getDay();
+      const daysInMonth = 32 - new Date(year, month, 32).getDate();
+      const rawLabel = new Date(year, month).toLocaleString('default', {
+        month: 'long',
+        year: 'numeric'
+      });
+      calendarMonthYear.textContent = rawLabel.charAt(0).toUpperCase() + rawLabel.slice(1);
+
+      calendarGrid.innerHTML = '';
+      const weekDays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+      weekDays.forEach(day => {
+        const div = document.createElement('div');
+        div.textContent = day;
+        div.classList.add('weekday-tile');
+        calendarGrid.appendChild(div);
+      });
+
+      for (let i = 0; i < firstDay; i++) {
+        const emptyDiv = document.createElement('div');
+        emptyDiv.classList.add('empty-tile');
+        calendarGrid.appendChild(emptyDiv);
       }
-      calendarGrid.appendChild(div);
-    }
+
+      for (let i = 1; i <= daysInMonth; i++) {
+        const div = document.createElement('div');
+        div.textContent = i;
+        if (i === today.getDate() && year === today.getFullYear() && month === today.getMonth()) {
+          div.classList.add('selected');
+        }
+        calendarGrid.appendChild(div);
+      }
+
+      calendarGrid.classList.remove('fade-out');
+      calendarGrid.classList.add('fade-in');
+    }, 200);
   }
 
   updateCalendar(currentMonth, currentYear);
@@ -73,7 +91,13 @@ document.addEventListener('DOMContentLoaded', function () {
     taskList.innerHTML = '';
     tasks.forEach(task => {
       const li = document.createElement('li');
-      li.innerHTML = `<input type="checkbox" /> ${task}`;
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.addEventListener('change', function () {
+        li.classList.toggle('text-decoration-line-through', checkbox.checked);
+      });
+      li.appendChild(checkbox);
+      li.append(' ' + task);
       taskList.appendChild(li);
     });
   }
@@ -88,14 +112,18 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function parseDate(task) {
-    const match = task.match(/(\\d{2})\\.(\\d{2})\\.(\\d{4})/);
-    return match ? new Date(match[3], match[2] - 1, match[1]) : new Date();
+    const match = task.match(/^(\d{2})\.(\d{2})\.(\d{4})/);
+    if (match) {
+      return new Date(match[3], match[2] - 1, match[1]);
+    }
+    return new Date(3000, 0, 1); // jeśli nie znajdzie daty, wrzuca na koniec
   }
 
-  document.addEventListener('change', function (e) {
-    if (e.target.type === 'checkbox') {
-      const li = e.target.closest('li');
-      if (li) li.classList.toggle('text-decoration-line-through', e.target.checked);
-    }
+  // Początkowe ustawienie przekreśleń dla istniejących checkboxów
+  document.querySelectorAll('#task-list input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', function () {
+      const li = cb.closest('li');
+      li.classList.toggle('text-decoration-line-through', cb.checked);
+    });
   });
 });

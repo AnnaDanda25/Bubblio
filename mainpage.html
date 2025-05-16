@@ -45,7 +45,7 @@
       <div class="d-flex justify-content-between align-items-center topbar mb-4">
         <div class="d-flex align-items-center gap-2">
           <img src="img/bubblio_logo_no_text.png" alt="Logo" class="logo-img" />
-          <h4 class="m-0 fw-semibold">Hello Anna!</h4>
+          <h1 class="hello-text m-0 fw-semibold">Hello Anna!</h1>
         </div>
         <div class="bubble-counter d-flex align-items-center gap-2">
           <img src="img/bubblio_bubble.png" alt="Bubble" class="bubble-icon" />
@@ -54,54 +54,70 @@
       </div>
 
       <!-- Tanks + Calendar -->
-      <div class="row gx-4 mb-4">
-        <div class="col-md-6">
-          <ul class="nav nav-tabs mb-3" id="tankTabs">
-            <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tank1">Tank 1</button></li>
-            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tank2">Tank 2</button></li>
-          </ul>
-          <div class="tab-content card p-3">
-            <div class="tab-pane fade show active" id="tank1">
-              <ul class="list-unstyled mb-0">
-                <li><input type="checkbox" /> Feed the fish</li>
-                <li><input type="checkbox" /> Check water temperature</li>
-                <li><input type="checkbox" /> Inspect water clarity</li>
-                <li><input type="checkbox" /> Verify equipment is working</li>
-                <li><input type="checkbox" /> Observe fish behavior and health</li>
+      <div class="row gx-4 mb-4 align-items-stretch">
+        <!-- TANKS -->
+        <div class="col-md-6 d-flex flex-column">
+          <div class="section-with-title h-100">
+            <h3 class="section-title">Your Tanks</h3>
+            <div class="card p-3 h-100">
+              <ul class="nav nav-tabs mb-3" id="tankTabs">
+                <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tank1">Tank 1</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tank2">Tank 2</button></li>
               </ul>
-            </div>
-            <div class="tab-pane fade" id="tank2">
-              <p>Tank 2 content here...</p>
+              <div class="tab-content">
+                <div class="tab-pane fade show active" id="tank1">
+                  <h5 class="subsection-title">Daily checks</h5>
+                  <ul class="list-unstyled mb-0">
+                    <li><input type="checkbox" /> Feed the fish</li>
+                    <li><input type="checkbox" /> Check water temperature</li>
+                    <li><input type="checkbox" /> Inspect water clarity</li>
+                    <li><input type="checkbox" /> Verify equipment is working</li>
+                    <li><input type="checkbox" /> Observe fish behavior and health</li>
+                  </ul>
+                </div>
+                <div class="tab-pane fade" id="tank2">
+                  <h5 class="subsection-title">Daily checks</h5>
+                  <ul class="list-unstyled mb-0">
+                    <li><input type="checkbox" /> Feed the fish</li>
+                    <li><input type="checkbox" /> Check water temperature</li>
+                    <li><input type="checkbox" /> Inspect water clarity</li>
+                    <li><input type="checkbox" /> Verify equipment is working</li>
+                    <li><input type="checkbox" /> Observe fish behavior and health</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="col-md-6">
-          <div class="calendar card p-3">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <strong id="calendarMonthYear" class="fs-5"></strong>
-              <div>
-                <button id="prevMonth">&lt;</button>
-                <button id="nextMonth">&gt;</button>
+        <!-- CALENDAR -->
+        <div class="col-md-6 d-flex flex-column">
+          <div class="section-with-title h-100">
+            <h3 class="section-title">Calendar</h3>
+            <div class="calendar card p-3 h-100">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <strong id="calendarMonthYear" class="fs-5"></strong>
+                <div>
+                  <button id="prevMonth">&lt;</button>
+                  <button id="nextMonth">&gt;</button>
+                </div>
               </div>
+              <div id="calendarGrid" class="calendar-grid"></div>
             </div>
-            <div id="calendarGrid" class="calendar-grid"></div>
           </div>
         </div>
       </div>
 
-      <!-- Upcoming Tasks -->
-      <div class="row">
-        <div class="col-12">
-          <div class="card p-3 position-relative">
-            <h5 class="fw-semibold">Upcoming tasks</h5>
-            <ul id="task-list" class="list-unstyled mb-0">
-              <li><input type="checkbox" /> 17.08.2025 – Clean tank 1</li>
-              <li><input type="checkbox" /> 17.08.2025 – Change water in tank 1</li>
-              <li><input type="checkbox" /> 19.08.2025 – Observe fish health</li>
-            </ul>
-            <button class="btn-add-task" data-bs-toggle="modal" data-bs-target="#addTaskModal">+</button>
-          </div>
+      <!-- UPCOMING TASKS -->
+      <div class="section-with-title">
+        <h3 class="section-title">Upcoming Tasks</h3>
+        <div class="card p-3 position-relative">
+          <ul id="task-list" class="list-unstyled mb-0">
+            <li><input type="checkbox" /> 17.08.2025 – Clean tank 1</li>
+            <li><input type="checkbox" /> 17.08.2025 – Change water in tank 1</li>
+            <li><input type="checkbox" /> 19.08.2025 – Observe fish health</li>
+          </ul>
+          <button class="btn-add-task" data-bs-toggle="modal" data-bs-target="#addTaskModal">+</button>
         </div>
       </div>
     </div>

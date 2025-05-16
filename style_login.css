@@ -59,6 +59,10 @@ body {
   transition: background 0.3s ease-in-out;
   font-weight: 700;
 }
+.sidebar .nav-link:hover {
+  color: white;
+}
+
 .sidebar .nav-link img {
   width: 40px;
   height: 40px;
@@ -67,6 +71,7 @@ body {
 .sidebar .nav-link.active,
 .sidebar .nav-link:hover {
   background-color: rgba(255, 255, 255, 0.372);
+  color: #212121
 }
 .sidebar .nav-link.active img,
 .sidebar .nav-link:hover img {
@@ -79,6 +84,10 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 40px;
+}
+.topbar h4 {
+  font-size: 50px;
+  font-weight: 1000;
 }
 .logo-img {
   height: 120px;
@@ -115,7 +124,7 @@ body {
 
 /* === CARD === */
 .card {
-  border-radius: 330px;
+  border-radius: 30px;
   box-shadow: 0 10px 12px rgba(0,0,0,0.05);
   background: white;
   border: none;
@@ -123,7 +132,7 @@ body {
 .card h5 {
   font-weight: 900;
   margin-bottom: 16px;
-  font-size: 30px;
+  font-size: 20px;
 }
 li {
   margin-bottom: 10px;
@@ -143,6 +152,14 @@ li {
   background: #a8d0e3;
   border-radius: 5px;
   color: #000103;
+}
+.weekday-tile {
+  background-color: #ffffff;
+  border: 3px solid #003d5e;
+  color: #ffffff;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 10px 0;
 }
 .calendar-grid .selected {
   background-color: #66a2c2;
@@ -170,6 +187,96 @@ li {
 .btn-add-task:hover {
   background-color: #a8d0e3;
   color: white;
+}
+
+.hello-text {
+  font-size: 40px;
+  font-weight: 900;
+}
+
+.section-with-title {
+  position: relative;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+.section-with-title .section-title {
+  position: absolute;
+  top: -20px;
+  left: 30px;
+  background: white;
+  padding: 0 15px;
+  z-index: 1;
+  font-size: 28px;
+  font-weight: 700;
+  color: #003a58;
+}
+
+.section-with-title .card {
+  padding-top: 40px !important;
+  border-radius: 30px;
+  height: 100%;
+}
+
+.subsection-title {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #003a58;
+}
+
+/* === STYL ZAKŁADEK TANKS === */
+.nav-tabs {
+  border-bottom: none;
+}
+
+.nav-tabs .nav-link {
+  background-color: transparent;
+  color: #013853;
+  font-weight: 700;
+  font-size: 20px;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-tabs .nav-link:hover {
+  background-color: rgba(0, 119, 182, 0.1);
+  color: #003a58;
+}
+
+.nav-tabs .nav-link.active {
+  background-color: #0077b6;
+  color: rgb(19, 42, 61);
+  box-shadow: 0 0 8px rgba(81, 142, 174, 0.4); /* lekka poświata */
+  font-weight: 800;
+}
+
+/* ANIMACJE KALENDARZA */
+.calendar-grid.fade-out {
+  animation: fadeOutCalendar 0.2s forwards;
+}
+
+.calendar-grid.fade-in {
+  animation: fadeInCalendar 0.2s forwards;
+}
+
+@keyframes fadeOutCalendar {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(10px); }
+}
+
+@keyframes fadeInCalendar {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.empty-tile {
+  visibility: hidden;
+  height: 0;
+  padding: 0;
+  margin: 0;
 }
 
 /* === RESPONSIVE === */
