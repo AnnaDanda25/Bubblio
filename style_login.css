@@ -130,7 +130,7 @@ body {
 /* === SECTION STYLES === */
 .section-with-title {
   position: relative;
-  margin: 40px 0;
+  margin: 60px 0;
 }
 
 .section-with-title .section-title {
@@ -146,18 +146,19 @@ body {
 }
 
 .section-with-title .card {
-  padding-top: 40px !important;
   border-radius: 30px;
   height: 100%;
   background: var(--white);
   box-shadow: 0 10px 12px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.08);;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding-top: 40px;
 }
 .card {
+  padding-top: 40px;
   border-radius: 30px;
-  background: white;
+  background: var(--white);
   border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.253);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
@@ -170,7 +171,7 @@ body {
 /* === SUBSECTION TITLE === */
 .subsection-title {
   font-size: 22px;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 15px;
   color: var(--accent);
 }
@@ -184,10 +185,10 @@ body {
   background-color: transparent;
   color: #013853;
   font-weight: 700;
-  font-size: 20px;
+  font-size: 22px;
   border: none;
   border-radius: 12px;
-  padding: 12px 24px;
+  padding: 16px 24px;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -200,7 +201,7 @@ body {
   background-color: var(--primary);
   color: rgb(19, 42, 61);
   box-shadow: 0 0 8px rgba(81, 142, 174, 0.4);
-  font-weight: 800;
+  font-weight: 700;
 }
 
 /* === CALENDAR === */
