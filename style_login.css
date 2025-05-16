@@ -1,328 +1,186 @@
-/* Reset */
+/* === RESET === */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-
-/* Body & Container */
 body {
   font-family: 'Inter', sans-serif;
-  background: white;
-  display: flex;
-  justify-content: center;
-  padding: 20px;
+  background: #f6faff;
+  color: #212529;
 }
 
-.main-container {
-  width: 100%;
-  background: white;
+/* === LAYOUT === */
+.app-container {
   display: flex;
-  flex-direction: column;
   min-height: 100vh;
-  border-radius: 10px;
-  box-shadow: 0 0 10px #ddd;
+  width: 100%;
 }
-
-/* Top bar */
-.top-bar {
-  background: #caf0f8;
-  border-radius: 15px 0 20px 0;
-  display: flex;
-  align-items: center;
-  padding: 10px 20px;
-  gap: 10px;
-}
-
-.logo-img {
-  height: 40px;
-  width: 40px;
-  object-fit: contain;
-}
-
-.welcome-text {
-  font-size: 20px;
-  font-weight: 600;
-  color: #212529;
-}
-
-.bubble-counter {
-  background: white;
-  padding: 5px 10px;
-  border-radius: 20px;
-  color: #212529;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-}
-
-.bubble-counter .bubble-icon {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
-}
-
-/* Content */
-.content {
-  display: flex;
+.main-content {
   flex-grow: 1;
-  padding: 20px;
-  gap: 20px;
-  flex-direction: column;
+  padding: 40px 60px 60px 60px;
 }
 
-.tanks {
-  flex: 1 1 40%;
-}
-
-.calendar-tasks {
-  flex: 1 1 60%;
+/* === SIDEBAR === */
+.sidebar {
+  width: 220px;
+  background-image: url("img/pexels-sebastians-2853937.jpg");
+  background-size: cover;
+  background-position: center;
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  align-items: flex-start;
+  padding: 50px 20px;
 }
-
-/* Tabs */
-.nav-tabs .nav-link {
-  border-radius: 5px 5px 0 0;
-  font-weight: 600;
-  color: #0077b6;
+.sidebar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 91, 133, 0.096), rgba(0, 38, 65, 0.954) );
+  z-index: 0;
+  backdrop-filter: blur(4px);
 }
-
-.nav-tabs .nav-link.active {
-  background-color: #0077b6;
-  color: white;
-  border-color: #0077b6 #0077b6 white;
-}
-
-/* Tank cards */
-.tank-card {
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  padding: 15px 20px;
-  background: white;
-  box-shadow: 0 2px 5px rgb(0 0 0 / 0.1);
-}
-
-.tank-card ul {
-  list-style: none;
+.sidebar ul {
+  position: relative;
+  z-index: 1;
+  width: 100%;
   padding-left: 0;
 }
-
-.tank-card li {
-  margin-bottom: 10px;
-  font-size: 14px;
-  color: #212529;
+.sidebar .nav-link {
+  color: rgb(255, 255, 255);
+  font-size: 25px;
+  padding: 40px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  border-radius: 12px;
+  transition: background 0.3s ease-in-out;
+  font-weight: 700;
+}
+.sidebar .nav-link img {
+  width: 40px;
+  height: 40px;
+  filter: brightness(0) invert(1); /* białe ikonki */
+}
+.sidebar .nav-link.active,
+.sidebar .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.372);
+}
+.sidebar .nav-link.active img,
+.sidebar .nav-link:hover img {
+  filter: drop-shadow(0 0 6px rgba(252, 252, 252, 0.575));
 }
 
-.tank-card input[type='checkbox'] {
-  margin-right: 10px;
-}
-
-/* Calendar */
-.calendar {
-  background: #caf0f8;
-  border-radius: 15px;
-  padding: 15px;
-}
-
-.calendar-header {
+/* === TOPBAR === */
+.topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 40px;
+}
+.logo-img {
+  height: 120px;
+  width: 120px;
+}
+.bubble-counter {
+  background: #e0f7ff;
+  padding: 8px 14px;
+  border-radius: 20px;
+  color: #000000;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 30px;
+}
+.bubble-counter img {
+  width: 34px;
+  height: 34px;
 }
 
-.calendar-header strong {
-  font-weight: 600;
-  font-size: 16px;
-  color: #212529;
-}
-
-.calendar-controls button {
-  background: none;
-  border: none;
-  font-size: 20px;
+/* === TABS === */
+.nav-tabs .nav-link {
+  border-radius: 100px;
+  font-weight: 700;
   color: #0077b6;
-  cursor: pointer;
-  padding: 5px 10px;
-  border-radius: 50%;
-  transition: background-color 0.3s ease;
+  padding: 30px 30px;
 }
-
-.calendar-controls button:hover {
-  background-color: #00b4ff;
+.nav-tabs .nav-link.active {
+  background-color: #003a58;
   color: white;
+  border: none;
 }
 
+/* === CARD === */
+.card {
+  border-radius: 330px;
+  box-shadow: 0 10px 12px rgba(0,0,0,0.05);
+  background: white;
+  border: none;
+}
+.card h5 {
+  font-weight: 900;
+  margin-bottom: 16px;
+  font-size: 30px;
+}
+li {
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+/* === CALENDAR === */
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
+  gap: 5px;
   text-align: center;
 }
-
 .calendar-grid div {
-  padding: 10px;
+  padding: 10px 0;
   font-weight: 600;
-  color: #212529;
-  border-radius: 10px;
-}
-
-.calendar-grid button {
-  border: 1px solid #0077b6;
+  background: #a8d0e3;
   border-radius: 5px;
-  background: none;
-  font-weight: 600;
-  color: #0077b6;
-  cursor: pointer;
+  color: #000103;
 }
-
-.calendar-grid button:hover {
-  background-color: #00b4ff;
-  color: white;
-}
-
 .calendar-grid .selected {
-  background-color: #0077b6;
+  background-color: #66a2c2;
   color: white;
 }
 
-/* Upcoming tasks */
-.upcoming-tasks {
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  padding: 20px;
+/* === BUTTON ADD === */
+.btn-add-task {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  font-size: 45px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 5px solid #323232;
   background: white;
-  position: relative;
-  box-shadow: 0 2px 5px rgb(0 0 0 / 0.1);
-}
-
-.upcoming-tasks h5 {
-  margin-bottom: 15px;
-  font-weight: 600;
-  color: #212529;
-}
-
-.upcoming-tasks ul {
-  list-style: none;
-  padding-left: 0;
-}
-
-.upcoming-tasks li {
-  font-size: 14px;
-  color: #212529;
-  margin-bottom: 10px;
-}
-
-.upcoming-tasks input[type='checkbox'] {
-  margin-right: 10px;
-}
-
-  .upcoming-tasks .btn-add-task {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    font-size: 28px;
-    font-weight: 800;
-    width: 50px;
-    height: 50px;
-    border: 5px solid #333;        /* ciemnoszary obrys */
-    border-radius: 50%;
-    color: #333;                    /* ciemnoszary plusik */
-    background-color: transparent;  /* brak wypełnienia */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-
-  .upcoming-tasks .btn-add-task:hover {
-    background-color: #333;
-    color: white;
-  }
-
-/* Bottom Menu */
-.bottom-menu {
-  position: fixed;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #ffffff;
-  box-shadow: 0px -0.5px 5px rgba(0, 0, 0, 0.1);
-  border-radius: 30px;
-  padding: 10px 30px;
-  width: 375px;
-  max-width: 90vw;
-  z-index: 1000;
-}
-
-.bottom-menu ul {
-  list-style: none;
-  display: flex;
-  justify-content: space-around;
-  margin: 0;
-  padding: 0;
-}
-
-.bottom-menu ul li a {
+  color: #323232;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.bottom-menu ul li a img {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-  transition: filter 0.3s ease;
-}
-
-.bottom-menu ul li a:hover img,
-.bottom-menu ul li a:focus img {
-  filter: brightness(0.7);
   cursor: pointer;
 }
-
-/* Responsive */
-@media (min-width: 768px) {
-  .main-container {
-    max-width: 100%;
-    width: 95vw;
-    padding: 30px;
-  }
-
-  .content {
-    flex-direction: row;
-    gap: 40px;
-  }
-
-  .tanks {
-    flex: 1 1 40%;
-  }
-
-  .calendar-tasks {
-    flex: 1 1 60%;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .top-bar {
-    border-radius: 15px;
-  }
+.btn-add-task:hover {
+  background-color: #a8d0e3;
+  color: white;
 }
 
-/* Completed checkbox - strike through */
-.completed {
-  text-decoration: line-through;
-  color: #999;
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 20px;
+  }
+  .sidebar {
+    width: 70px;
+  }
+  .sidebar .nav-link span {
+    display: none;
+  }
 }
-
-/* Active icon glow in bottom menu - większa poświata + brak białego tła */
-.bottom-menu a.active img {
-  filter: drop-shadow(0 0 8px rgba(0, 119, 182, 0.8)) drop-shadow(0 0 15px rgba(0, 119, 182, 0.6));
-}
-
