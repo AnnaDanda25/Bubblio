@@ -91,15 +91,32 @@ document.addEventListener('DOMContentLoaded', function () {
     e.preventDefault();
     const date = document.getElementById('taskDate').value;
     const desc = document.getElementById('taskDescription').value;
+    const recurringType = document.getElementById('recurringType').value;
+    const interval = parseInt(document.getElementById('recurringInterval').value);
+    const count = parseInt(document.getElementById('recurringCount').value);
+
     if (date && desc) {
-      const newTask = `${formatDate(date)} – ${desc}`;
-      tasks.push(newTask);
+      if (recurringType === 'recurring' && interval > 0 && count > 0) {
+        let currentDate = new Date(date);
+        for (let i = 0; i < count; i++) {
+          const taskDate = new Date(currentDate);
+          const newTask = `${formatDate(taskDate)} – ${desc}`;
+          tasks.push(newTask);
+          currentDate.setDate(currentDate.getDate() + interval);
+        }
+      } else {
+        const newTask = `${formatDate(date)} – ${desc}`;
+        tasks.push(newTask);
+      }
+
       tasks.sort(sortByDate);
       renderTasks();
       bootstrap.Modal.getInstance(document.getElementById('addTaskModal')).hide();
       addTaskForm.reset();
+      document.getElementById('recurringFields').style.display = 'none';
     }
   });
+
 
   function renderTasks() {
     taskList.innerHTML = '';
@@ -134,4 +151,20 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   renderTasks(); // Initial render with sorted tasks
+    // === Your Tanks checkbox strike-through ===
+  document.querySelectorAll('.tab-pane input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', function () {
+      const li = cb.closest('li');
+      if (li) {
+        li.classList.toggle('text-decoration-line-through', cb.checked);
+      }
+    });
+  });
+
+  // Pokaż/ukryj pola cykliczne po zmianie typu
+  document.getElementById('recurringType').addEventListener('change', function () {
+    const recurringFields = document.getElementById('recurringFields');
+    recurringFields.style.display = this.value === 'recurring' ? 'block' : 'none';
+  });
+
 });

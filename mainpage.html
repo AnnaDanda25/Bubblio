@@ -113,7 +113,18 @@
         </div>
         <div class="modal-body">
           <input type="date" class="form-control mb-3" id="taskDate" required />
-          <input type="text" class="form-control" id="taskDescription" placeholder="Task description" required />
+          <input type="text" class="form-control mb-3" id="taskDescription" placeholder="Task description" required />
+          
+          <label for="recurringType" class="form-label mt-2">Repeat:</label>
+          <select class="form-select mb-3" id="recurringType">
+            <option value="once" selected>One-time</option>
+            <option value="recurring">Recurring</option>
+          </select>
+
+          <div id="recurringFields" style="display: none;">
+            <input type="number" class="form-control mb-2" id="recurringInterval" placeholder="Every how many days?" min="1" />
+            <input type="number" class="form-control mb-2" id="recurringCount" placeholder="How many times?" min="1" />
+          </div>
         </div>
         <div class="modal-footer">
           <button class="btn btn-primary w-100" type="submit">Add</button>
