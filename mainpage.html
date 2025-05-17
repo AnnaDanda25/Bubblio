@@ -27,6 +27,7 @@
           <h1 class="hello-text m-0 fw-semibold">Hello Anna!</h1>
         </div>
         <div class="bubble-counter d-flex align-items-center gap-2">
+          <span class="bubble-label">Your Bubbles:</span>
           <img src="img/bubblio_bubble.png" alt="Bubble icon" class="bubble-icon" />
           <span class="bubble-number">21</span>
         </div>
@@ -77,8 +78,8 @@
               <div class="d-flex justify-content-between align-items-center mb-3">
                 <h4 id="calendarMonthYear" class="fs-5 mb-0"></h4>
                 <div>
-                  <button id="prevMonth" aria-label="Previous month">&lt;</button>
-                  <button id="nextMonth" aria-label="Next month">&gt;</button>
+                  <button id="prevMonth" class="calendar-arrow" aria-label="Previous month">⟨</button>
+                  <button id="nextMonth" class="calendar-arrow" aria-label="Next month">⟩</button>
                 </div>
               </div>
               <div id="calendarGrid" class="calendar-grid"></div>

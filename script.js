@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
       calendarGrid.innerHTML = '';
 
       // Weekdays
-      const weekDays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+      const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       weekDays.forEach(day => {
         const div = document.createElement('div');
         div.textContent = day;
