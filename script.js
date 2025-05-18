@@ -167,4 +167,8 @@ document.addEventListener('DOMContentLoaded', function () {
     recurringFields.style.display = this.value === 'recurring' ? 'block' : 'none';
   });
 
+  // === HAMBURGER MENU ===
+  document.getElementById('menuToggle').addEventListener('click', function () {
+    document.getElementById('sidebar').classList.toggle('collapsed');
+  });
 });
