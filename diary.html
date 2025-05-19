@@ -42,22 +42,48 @@
           <div class="col-md-6 section-with-title mb-5">
             <h2 class="section-title">Gallery</h2>
             <div class="card p-4 position-relative">
-              <div class="row g-3">
-                <!-- 9 sample photos -->
-                <script>
-                  for (let i = 1; i <= 9; i++) {
-                    document.write(`
-                      <div class="col-4 text-center">
-                        <img src="img/sample.png" class="img-fluid rounded gallery-thumb" />
-                        <p class="fw-bold mt-1">Sample ${i}</p>
-                      </div>
-                    `);
-                  }
-                </script>
+              <div class="gallery-grid">
+                <div class="gallery-item">
+                  <img src="img/sample.png" alt="Fish 1" class="gallery-thumb" />
+                  <p class="fw-bold mt-2 text-center">Fish 1</p>
+                </div>
+                <div class="gallery-item">
+                  <img src="img/sample.png" alt="Fish 2" class="gallery-thumb" />
+                  <p class="fw-bold mt-2 text-center">Fish 2</p>
+                </div>
+                <div class="gallery-item">
+                  <img src="img/sample.png" alt="Feeding" class="gallery-thumb" />
+                  <p class="fw-bold mt-2 text-center">Feeding</p>
+                </div>
+                <div class="gallery-item">
+                  <img src="img/sample.png" alt="Fish 3" class="gallery-thumb" />
+                  <p class="fw-bold mt-2 text-center">Fish 3</p>
+                </div>
+                <div class="gallery-item">
+                  <img src="img/sample.png" alt="Fish 4" class="gallery-thumb" />
+                  <p class="fw-bold mt-2 text-center">Fish 4</p>
+                </div>
+                <div class="gallery-item">
+                  <img src="img/sample.png" alt="Shrimp" class="gallery-thumb" />
+                  <p class="fw-bold mt-2 text-center">Shrimp</p>
+                </div>
+                <div class="gallery-item">
+                  <img src="img/sample.png" alt="Snail" class="gallery-thumb" />
+                  <p class="fw-bold mt-2 text-center">Snail</p>
+                </div>
+                <div class="gallery-item">
+                  <img src="img/sample.png" alt="Decoration" class="gallery-thumb" />
+                  <p class="fw-bold mt-2 text-center">Decoration</p>
+                </div>
+                <div class="gallery-item">
+                  <img src="img/sample.png" alt="Whole Tank" class="gallery-thumb" />
+                  <p class="fw-bold mt-2 text-center">Whole Tank</p>
+                </div>
               </div>
               <button class="btn-add-task" id="addPhotoBtn" title="Add photo">+</button>
             </div>
           </div>
+
 
           <!-- Notebook Section -->
           <div class="col-md-6 section-with-title mb-5">
