@@ -425,3 +425,42 @@ li {
     display: inline;
   }
 }
+
+/* === HAMBURGER (tablet-friendly) === */
+.mobile-hamburger {
+  display: none;
+}
+
+@media (max-width: 991px) {
+  .mobile-hamburger {
+    display: block;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1001;
+    font-size: 32px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 0 6px rgba(0,0,0,0.2);
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 220px;
+    height: 100%;
+    z-index: 1000;
+    transform: translateX(0); /* POKAZANY */
+    transition: transform 0.3s ease;
+    padding-top: 100px;
+  }
+
+  .sidebar.collapsed {
+    transform: translateX(-100%); /* ZWINIĘTY */
+  }
+}
