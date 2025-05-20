@@ -93,6 +93,15 @@
             <h2 class="section-title">Notebook</h2>
             <div class="card p-4 position-relative card-scrollable" id="notesList">
               <!-- Example Notes -->
+               <div class="sort-notes-container d-flex align-items-center justify-content-end mb-3">
+                <label for="sortNotes" class="me-2 fw-semibold">Sort by:</label>
+                <select id="sortNotes" class="form-select form-select-sm w-auto">
+                  <option value="date-desc">Date ↓</option>
+                  <option value="date-asc">Date ↑</option>
+                  <option value="title-asc">Title A–Z</option>
+                  <option value="title-desc">Title Z–A</option>
+                </select>
+              </div>
               <div class="note-entry mb-3 p-3 bg-light border rounded">
                 <strong class="note-date">12.05.2025</strong>
                 <h5 class="note-title">Temperature Issue</h5>

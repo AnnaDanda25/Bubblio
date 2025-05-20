@@ -226,13 +226,13 @@ body {
     width: 220px;
     height: 100%;
     z-index: 1000;
-    transform: translateX(-100%);
+    transform: translateX(-100%); /* UKRYTY NA START */
     transition: transform 0.3s ease;
     padding-top: 100px;
   }
 
-  .sidebar.collapsed {
-    transform: translateX(0);
+  .sidebar:not(.collapsed) {
+    transform: translateX(0); /* POKAŻ PO KLIKNIĘCIU */
   }
 }
 
@@ -242,7 +242,7 @@ body {
   }
 
   .sidebar {
-    width: 70px;
+    width: 120px;
   }
 
   .sidebar .nav-link span {
@@ -270,6 +270,6 @@ body {
   }
 
   .section-title {
-    font-size: 20px !important;
+    font-size: 20px;
   }
 }

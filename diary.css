@@ -46,6 +46,18 @@
   margin: 4px 0;
 }
 
+.sort-notes-container label {
+  font-size: 16px;
+  color: var(--accent);
+  margin-bottom: 0;
+}
+
+#sortNotes {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+
 /* === LIGHTBOX STYLES === */
 .lightbox-overlay {
   position: fixed;

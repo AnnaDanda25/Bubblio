@@ -7,19 +7,17 @@ document.addEventListener('DOMContentLoaded', function () {
   // Note Form Logic
   const toggleNoteForm = document.getElementById('toggleNoteForm');
   const noteForm = document.getElementById('noteForm');
-  toggleNoteForm?.addEventListener('click', () => {
-    // automatycznie przypisz dzisiejszą datę do ukrytego pola
-    const today = new Date().toLocaleDateString('pl-PL');
-    const noteDate = document.getElementById('noteDate');
-    noteDate.value = today;
-    noteForm.classList.toggle('d-none');
-  });
-
-  // Add Note
   const noteDate = document.getElementById('noteDate');
   const noteTitle = document.getElementById('noteTitle');
   const noteText = document.getElementById('noteText');
   const notesList = document.getElementById('notesList');
+  const sortSelect = document.getElementById('sortNotes');
+
+  toggleNoteForm?.addEventListener('click', () => {
+    const today = new Date().toLocaleDateString('pl-PL');
+    noteDate.value = today;
+    noteForm.classList.toggle('d-none');
+  });
 
   noteForm?.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -35,11 +33,40 @@ document.addEventListener('DOMContentLoaded', function () {
         <h5 class="note-title">${title}</h5>
         <p class="mb-0">${text}</p>
       `;
-      notesList.insertBefore(noteItem, toggleNoteForm.closest('.sticky-button-container'));
+      notesList.appendChild(noteItem); // Tymczasowo dodajemy na koniec
       noteForm.reset();
       noteForm.classList.add('d-none');
+      sortAndRenderNotes(); // i od razu sortujemy całość
     }
   });
+
+  sortSelect?.addEventListener('change', sortAndRenderNotes);
+
+  function sortAndRenderNotes() {
+    const entries = Array.from(notesList.querySelectorAll('.note-entry'));
+    const selected = sortSelect?.value || 'date-desc';
+
+    entries.sort((a, b) => {
+      const dateA = a.querySelector('.note-date').textContent.trim().split('.').reverse().join('-');
+      const dateB = b.querySelector('.note-date').textContent.trim().split('.').reverse().join('-');
+      const titleA = a.querySelector('.note-title').textContent.trim().toLowerCase();
+      const titleB = b.querySelector('.note-title').textContent.trim().toLowerCase();
+
+      if (selected === 'date-asc') return dateA.localeCompare(dateB);
+      if (selected === 'date-desc') return dateB.localeCompare(dateA);
+      if (selected === 'title-asc') return titleA.localeCompare(titleB);
+      if (selected === 'title-desc') return titleB.localeCompare(titleA);
+      return 0;
+    });
+
+    const stickyBtn = notesList.querySelector('.sticky-button-container');
+    entries.forEach(entry => {
+      notesList.insertBefore(entry, stickyBtn);
+    });
+  }
+
+  // Sortuj od razu przy załadowaniu
+  sortAndRenderNotes();
 
   // === LIGHTBOX FUNCTIONALITY ===
   const thumbnails = document.querySelectorAll('.gallery-thumb');
@@ -79,15 +106,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
   prevBtn.addEventListener('click', () => {
     currentIndex = (currentIndex - 1 + thumbnails.length) % thumbnails.length;
-    showImage(currentIndex, 'left');
+    showImage(currentIndex);
   });
 
   nextBtn.addEventListener('click', () => {
     currentIndex = (currentIndex + 1) % thumbnails.length;
-    showImage(currentIndex, 'right');
+    showImage(currentIndex);
   });
 
-  // === Obsługa klawiszy strzałek w lightboxie ===
   document.addEventListener('keydown', (e) => {
     if (!overlay.classList.contains('d-none')) {
       if (e.key === 'ArrowLeft') {
@@ -97,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
         currentIndex = (currentIndex + 1) % thumbnails.length;
         showImage(currentIndex);
       } else if (e.key === 'Escape') {
-        overlay.classList.add('d-none'); // zamykanie lightboxa Esc
+        overlay.classList.add('d-none');
       }
     }
   });
