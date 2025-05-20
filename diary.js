@@ -36,4 +36,67 @@ document.addEventListener('DOMContentLoaded', function () {
       noteForm.classList.add('d-none');
     }
   });
+
+  // === LIGHTBOX FUNCTIONALITY ===
+  const thumbnails = document.querySelectorAll('.gallery-thumb');
+  const overlay = document.getElementById('lightboxOverlay');
+  const lightboxImg = document.getElementById('lightboxImage');
+  const caption = document.getElementById('lightboxCaption');
+  const closeBtn = document.getElementById('lightboxClose');
+  const prevBtn = document.getElementById('lightboxPrev');
+  const nextBtn = document.getElementById('lightboxNext');
+
+  let currentIndex = 0;
+
+  function showImage(index) {
+    const img = thumbnails[index];
+    lightboxImg.classList.remove('fade-only');
+    void lightboxImg.offsetWidth;
+    lightboxImg.src = img.src;
+    caption.textContent = img.alt;
+    currentIndex = index;
+    lightboxImg.classList.add('fade-only');
+  }
+
+  thumbnails.forEach((img, index) => {
+    img.addEventListener('click', () => {
+      showImage(index);
+      overlay.classList.remove('d-none');
+    });
+  });
+
+  closeBtn.addEventListener('click', () => {
+    overlay.classList.add('d-none');
+  });
+
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.classList.add('d-none');
+  });
+
+  prevBtn.addEventListener('click', () => {
+    currentIndex = (currentIndex - 1 + thumbnails.length) % thumbnails.length;
+    showImage(currentIndex, 'left');
+  });
+
+  nextBtn.addEventListener('click', () => {
+    currentIndex = (currentIndex + 1) % thumbnails.length;
+    showImage(currentIndex, 'right');
+  });
+
+  // === Obsługa klawiszy strzałek w lightboxie ===
+  document.addEventListener('keydown', (e) => {
+    if (!overlay.classList.contains('d-none')) {
+      if (e.key === 'ArrowLeft') {
+        currentIndex = (currentIndex - 1 + thumbnails.length) % thumbnails.length;
+        showImage(currentIndex);
+      } else if (e.key === 'ArrowRight') {
+        currentIndex = (currentIndex + 1) % thumbnails.length;
+        showImage(currentIndex);
+      } else if (e.key === 'Escape') {
+        overlay.classList.add('d-none'); // zamykanie lightboxa Esc
+      }
+    }
+  });
+
+
 });
