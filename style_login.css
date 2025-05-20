@@ -476,7 +476,6 @@ li {
 .section-with-title .btn-add-task {
   bottom: 20px;
   right: 20px;
-  position: absolute;
 }
 
 /* === DIARY – GALLERY + NOTEBOOK === */
@@ -648,4 +647,36 @@ li {
 
 .fade-only {
   animation: fadeOnly 0.3s ease-in-out;
+}
+
+/* === SCROLLABLE GALLERY & NOTEBOOK === */
+.card-scrollable {
+  max-height: 650px;
+  overflow-y: auto;
+  padding-right: 10px; /* miejsce na scrollbar */
+}
+
+/* Opcjonalne ulepszenie wyglądu scrolla */
+.card-scrollable::-webkit-scrollbar {
+  width: 8px;
+}
+
+.card-scrollable::-webkit-scrollbar-thumb {
+  background-color: var(--light);
+  border-radius: 8px;
+}
+
+.gallery-scrollable {
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.sticky-button-container {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 10px 0 0;
+  z-index: 10;
+  background: linear-gradient(to top, var(--white), transparent);
 }

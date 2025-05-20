@@ -1,17 +1,21 @@
 document.addEventListener('DOMContentLoaded', function () {
-  // === Hamburger toggle ===
+  // Hamburger
   const menuToggle = document.getElementById('menuToggle');
   const sidebar = document.getElementById('sidebar');
   menuToggle?.addEventListener('click', () => sidebar.classList.toggle('collapsed'));
 
-  // === Note Form Logic ===
+  // Note Form Logic
   const toggleNoteForm = document.getElementById('toggleNoteForm');
   const noteForm = document.getElementById('noteForm');
   toggleNoteForm?.addEventListener('click', () => {
+    // automatycznie przypisz dzisiejszą datę do ukrytego pola
+    const today = new Date().toLocaleDateString('pl-PL');
+    const noteDate = document.getElementById('noteDate');
+    noteDate.value = today;
     noteForm.classList.toggle('d-none');
   });
 
-  // === Add Note ===
+  // Add Note
   const noteDate = document.getElementById('noteDate');
   const noteTitle = document.getElementById('noteTitle');
   const noteText = document.getElementById('noteText');
@@ -31,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
         <h5 class="note-title">${title}</h5>
         <p class="mb-0">${text}</p>
       `;
-      notesList.insertBefore(noteItem, toggleNoteForm);
+      notesList.insertBefore(noteItem, toggleNoteForm.closest('.sticky-button-container'));
       noteForm.reset();
       noteForm.classList.add('d-none');
     }
