@@ -1,0 +1,107 @@
+:root {
+  --primary: #0077b6;
+  --accent: #003a58;
+  --white: #ffffff;
+  --text-dark: #212529;
+  --gray: #828282;
+  --light: #f8f9fa;
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--white);
+}
+
+
+.scroll-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 24px 16px;
+  background-color: var(--white);
+}
+
+
+.registration-card {
+  width: 100%;
+  max-width: 400px;
+  background-color: var(--white);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+
+.registration-card img.logo {
+  width: clamp(140px, 45vw, 200px);
+  height: auto;
+  margin-bottom: 16px;
+  object-fit: contain;
+}
+
+
+.registration-card h2 {
+  font-size: 20px;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.registration-card h3 {
+  font-size: 15px;
+  margin-bottom: 16px;
+  color: #444;
+}
+
+
+form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input.form-control {
+  font-size: 14px;
+  padding: 10px;
+}
+
+button.btn {
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background-color: var(--text-dark);
+  color: var(--white);
+}
+
+button.btn:hover {
+  background-color: #000;
+}
+
+
+p.small {
+  font-size: 12px;
+  color: var(--gray);
+  margin-top: 16px;
+  line-height: 1.4;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: underline;
+}
