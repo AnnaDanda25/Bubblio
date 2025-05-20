@@ -1,0 +1,180 @@
+/* === DIARY – GALLERY === */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.gallery-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.gallery-thumb {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.gallery-thumb:hover {
+  transform: scale(1.03);
+}
+
+.gallery-item p {
+  margin-top: 10px;
+  font-weight: 600;
+  font-size: 16px;
+  text-align: center;
+  color: var(--accent);
+}
+
+/* === DIARY – NOTEBOOK === */
+.note-entry .note-date {
+  font-size: 16px;
+  color: var(--text-dark);
+}
+
+.note-entry .note-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 4px 0;
+}
+
+/* === LIGHTBOX STYLES === */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.lightbox-content {
+  position: relative;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 1000px;
+  max-height: 90vh;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+.lightbox-content img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 80vh;
+  border-radius: 12px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
+#lightboxCaption {
+  margin-top: 20px;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--accent);
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+  background: var(--bubble-bg);
+  padding: 10px 20px;
+  border-radius: 12px;
+  display: inline-block;
+  max-width: 90%;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  font-size: 36px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.lightbox-arrow {
+  position: absolute;
+  top: 50%;
+  font-size: 40px;
+  font-weight: bold;
+  color: var(--bubble-bg);
+  cursor: pointer;
+  padding: 10px;
+  user-select: none;
+  transform: translateY(-50%);
+}
+
+.lightbox-arrow.left {
+  left: 10px;
+}
+
+.lightbox-arrow.right {
+  right: 10px;
+}
+
+.lightbox-arrow:hover {
+  background-color: var(--bubble-bg);
+  color: var(--accent);
+  border-radius: 30%;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  box-shadow: 0 0 10px rgba(0, 118, 182, 0.135)
+}
+
+@keyframes fadeOnly {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-only {
+  animation: fadeOnly 0.3s ease-in-out;
+}
+
+/* === SCROLLABLE CARDS === */
+.card-scrollable {
+  max-height: 650px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.card-scrollable::-webkit-scrollbar {
+  width: 8px;
+}
+
+.card-scrollable::-webkit-scrollbar-thumb {
+  background-color: var(--light);
+  border-radius: 8px;
+}
+
+/* === STICKY BUTTON === */
+.sticky-button-container {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 10px 0 0;
+  z-index: 10;
+  background: linear-gradient(to top, var(--white), transparent);
+}
+
+/* === MOBILE GALLERY === */
+@media (max-width: 768px) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
