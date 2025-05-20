@@ -515,14 +515,21 @@ li {
 
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 zdjęcia w rzędzie na desktopie */
-  gap: 20px;
+  grid-template-columns: repeat(3, 1fr); /* Desktop: 3 zdjęcia */
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr); /* Telefon: 2 zdjęcia */
+  }
 }
 
 .gallery-item {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%; /* WAŻNE: pozwala zająć całą kolumnę */
 }
 
 .gallery-thumb {
@@ -530,12 +537,5 @@ li {
   aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-/* MOBILE: 2 zdjęcia w rzędzie */
-@media (max-width: 768px) {
-  .gallery-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
