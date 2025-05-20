@@ -178,3 +178,21 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* === TABLET EQUAL HEIGHTS FIX === */
+@media (min-width: 768px) and (max-width: 991px) {
+  .section-with-title .card-scrollable {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .gallery-grid {
+    flex-grow: 1;
+  }
+
+  .col-md-6.section-with-title {
+    display: flex;
+    flex-direction: column;
+  }
+}
