@@ -26,7 +26,7 @@ body {
 .logo {
     width: 121px;
     height: 121px;
-    background-image: url('bubblio_logo_no_text.png'); /* Logo jest teraz ustawione jako tło */
+    background-image: url('bubblio_logo_no_text.png');
     background-size: cover;
     background-position: center;
     margin: 0 auto;
