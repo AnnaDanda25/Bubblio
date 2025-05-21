@@ -17,7 +17,7 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   color: var(--accent);
 }
 
@@ -37,7 +37,7 @@ body {
 /* SIDEBAR */
 .sidebar {
   width: 220px;
-  background-image: url("img/pexels-sebastians-2853937.jpg");
+  background-image: url("img/bubbles_background.jpg");
   background-size: cover;
   background-position: center;
   position: relative;
@@ -51,7 +51,11 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0, 91, 133, 0.1), rgba(0, 38, 65, 0.95));
+  background: linear-gradient(
+    to top,
+    rgba(0, 91, 133, 0.1),
+    rgba(0, 38, 65, 0.95)
+  );
   z-index: 0;
   backdrop-filter: blur(4px);
 }
@@ -100,7 +104,11 @@ body {
   align-items: center;
   padding: 40px 0;
   margin-bottom: 40px;
-  background: linear-gradient(to top, rgba(255, 255, 255, 0.053), rgba(137, 203, 250, 0.568));
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.053),
+    rgba(137, 203, 250, 0.568)
+  );
   border-radius: 40px 40px 0px 0px;
 }
 
@@ -207,7 +215,7 @@ body {
   padding: 10px 14px;
   border-radius: 12px;
   cursor: pointer;
-  box-shadow: 0 0 6px rgba(0,0,0,0.2);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
 }
 
 .mobile-hamburger {
