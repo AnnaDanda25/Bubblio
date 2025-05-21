@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bubblio - Main Page</title>
+  <!-- <link rel="stylesheet" href="style_login.css" /> -->
+  <link rel="stylesheet" href="bubbliocore.css" />
+  <link rel="stylesheet" href="mainpage.css" /> 
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="app-container d-flex">
+    <!-- Hamburger (mobile only) -->
+    <button class="hamburger mobile-hamburger" id="menuToggle" aria-label="Toggle menu">☰</button>
+
+    <!-- Sidebar -->
+    <nav class="sidebar collapsed" id="sidebar" aria-label="Main menu">
+      <ul class="nav flex-column mt-4">
+        <li class="nav-item"><a href="#" class="nav-link active"><img src="img/mainpage_menu_icon.png" alt="Go to home page" /><span>Home</span></a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><img src="img/tank_menu_icon.png" alt="Go to tanks page" /><span>Tanks</span></a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><img src="img/diary_menu_icon.png" alt="Go to diary page" /><span>Diary</span></a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><img src="img/profile_menu_icon.png" alt="Go to profile page" /><span>Profile</span></a></li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content flex-grow-1">
+      <header class="d-flex justify-content-between align-items-center topbar mb-4">
+        <div class="d-flex align-items-center gap-2">
+          <img src="img/bubblio_logo_no_text.png" alt="Bubblio Logo" class="logo-img" />
+          <h1 class="hello-text m-0 fw-semibold">Hello Anna!</h1>
+        </div>
+        <div class="bubble-counter d-flex align-items-center gap-2">
+          <span class="bubble-label">Your Bubbles:</span>
+          <img src="img/bubblio_bubble.png" alt="Bubble icon" class="bubble-icon" />
+          <span class="bubble-number">21</span>
+        </div>
+      </header>
+
+      <!-- Tanks + Calendar -->
+      <section class="row gx-4 mb-4 align-items-stretch">
+        <!-- Tanks -->
+        <div class="col-md-6 d-flex flex-column">
+          <div class="section-with-title h-100">
+            <h2 class="section-title">Your Tanks</h2>
+            <div class="card p-3 h-100">
+              <ul class="nav nav-tabs mb-3" id="tankTabs" role="tablist">
+                <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tank1" role="tab">Tank 1</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tank2" role="tab">Tank 2</button></li>
+              </ul>
+              <div class="tab-content">
+                <div class="tab-pane fade show active" id="tank1" role="tabpanel">
+                  <h5 class="subsection-title">Daily checks</h5>
+                  <ul class="list-unstyled mb-0">
+                    <li><input type="checkbox" /> Feed the fish</li>
+                    <li><input type="checkbox" /> Check water temperature</li>
+                    <li><input type="checkbox" /> Inspect water clarity</li>
+                    <li><input type="checkbox" /> Verify equipment is working</li>
+                    <li><input type="checkbox" /> Observe fish behavior and health</li>
+                  </ul>
+                </div>
+                <div class="tab-pane fade" id="tank2" role="tabpanel">
+                  <h5 class="subsection-title">Daily checks</h5>
+                  <ul class="list-unstyled mb-0">
+                    <li><input type="checkbox" /> Feed the fish</li>
+                    <li><input type="checkbox" /> Check water temperature</li>
+                    <li><input type="checkbox" /> Inspect water clarity</li>
+                    <li><input type="checkbox" /> Verify equipment is working</li>
+                    <li><input type="checkbox" /> Observe fish behavior and health</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calendar -->
+        <div class="col-md-6 d-flex flex-column">
+          <div class="section-with-title h-100">
+            <h2 class="section-title">Calendar</h2>
+            <div class="calendar card p-3 h-100">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 id="calendarMonthYear" class="fs-5 mb-0"></h4>
+                <div>
+                  <button id="prevMonth" class="calendar-arrow" aria-label="Previous month">⟨</button>
+                  <button id="nextMonth" class="calendar-arrow" aria-label="Next month">⟩</button>
+                </div>
+              </div>
+              <div id="calendarGrid" class="calendar-grid"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Upcoming Tasks -->
+      <section class="section-with-title">
+        <h2 class="section-title">Upcoming Tasks</h2>
+        <div class="card p-3 position-relative">
+          <ul id="task-list" class="list-unstyled mb-0">
+            <li><input type="checkbox" /> 17.08.2025 – Clean tank 1</li>
+            <li><input type="checkbox" /> 17.08.2025 – Change water in tank 1</li>
+            <li><input type="checkbox" /> 19.08.2025 – Observe fish health</li>
+          </ul>
+          <button class="btn-add-task" data-bs-toggle="modal" data-bs-target="#addTaskModal">+</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form class="modal-content" id="addTaskForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addTaskModalLabel">Add New Task</h5>
+          <button class="btn-close" type="button" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="date" class="form-control mb-3" id="taskDate" required />
+          <input type="text" class="form-control mb-3" id="taskDescription" placeholder="Task description" required />
+          
+          <label for="recurringType" class="form-label mt-2">Repeat:</label>
+          <select class="form-select mb-3" id="recurringType">
+            <option value="once" selected>One-time</option>
+            <option value="recurring">Recurring</option>
+          </select>
+
+          <div id="recurringFields" style="display: none;">
+            <input type="number" class="form-control mb-2" id="recurringInterval" placeholder="Every how many days?" min="1" />
+            <input type="number" class="form-control mb-2" id="recurringCount" placeholder="How many times?" min="1" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary w-100" type="submit">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
