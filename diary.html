@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bubblio - Diary</title>
+  <link rel="stylesheet" href="bubbliocore.css" />
+  <link rel="stylesheet" href="diary.css" /> 
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="app-container d-flex">
+    <button class="hamburger mobile-hamburger" id="menuToggle">☰</button>
+
+    <!-- Sidebar -->
+    <nav class="sidebar collapsed" id="sidebar">
+      <ul class="nav flex-column mt-4">
+        <li class="nav-item"><a href="main.html" class="nav-link"><img src="img/mainpage_menu_icon.png" /><span>Home</span></a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><img src="img/tank_menu_icon.png" /><span>Tanks</span></a></li>
+        <li class="nav-item"><a href="#" class="nav-link active"><img src="img/diary_menu_icon.png" /><span>Diary</span></a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><img src="img/profile_menu_icon.png" /><span>Profile</span></a></li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content flex-grow-1">
+      <header class="d-flex justify-content-between align-items-center topbar mb-4">
+        <div class="d-flex align-items-center gap-2">
+          <img src="img/bubblio_logo_no_text.png" class="logo-img" />
+          <h1 class="hello-text m-0 fw-semibold">Hello Anna!</h1>
+        </div>
+        <div class="bubble-counter d-flex align-items-center gap-2">
+          <span>Your Bubbles:</span>
+          <img src="img/bubblio_bubble.png" class="bubble-icon" />
+          <span class="bubble-number">21</span>
+        </div>
+      </header>
+
+      <!-- Diary Section Grid -->
+      <section class="section-with-title">
+        <div class="row gx-5">
+          <!-- Gallery Section -->
+          <div class="col-md-6 section-with-title mb-5">
+            <h2 class="section-title">Gallery</h2>
+            <div class="card p-4 position-relative card-scrollable">
+              <div class="gallery-grid">
+                <div class="gallery-item">
+                  <img src="img/fish1.jpg" alt="Fish 1" class="gallery-thumb" />
+                  <p class="fw-bold mt-2 text-center">Fish 1</p>
+                </div>
+                <div class="gallery-item">
+                  <img src="img/fish2.jpg" alt="Fish 2" class="gallery-thumb" />
+                  <p class="fw-bold mt-2 text-center">Fish 2</p>
+                </div>
+                <div class="gallery-item">
+                  <img src="img/fish3.jpg" alt="Feeding" class="gallery-thumb" />
+                  <p class="fw-bold mt-2 text-center">Feeding</p>
+                </div>
+                <div class="gallery-item">
+                  <img src="img/fish4.jpg" alt="Fish 3" class="gallery-thumb" />
+                  <p class="fw-bold mt-2 text-center">Fish 3</p>
+                </div>
+                <div class="gallery-item">
+                  <img src="img/fish5.jpg" alt="Fish 4" class="gallery-thumb" />
+                  <p class="fw-bold mt-2 text-center">Fish 4</p>
+                </div>
+                <div class="gallery-item">
+                  <img src="img/fish6.jpg" alt="Shrimp" class="gallery-thumb" />
+                  <p class="fw-bold mt-2 text-center">Shrimp</p>
+                </div>
+                <div class="gallery-item">
+                  <img src="img/fish7.jpg" alt="Snail" class="gallery-thumb" />
+                  <p class="fw-bold mt-2 text-center">Snail</p>
+                </div>
+                <div class="gallery-item">
+                  <img src="img/sample.png" alt="Decoration" class="gallery-thumb" />
+                  <p class="fw-bold mt-2 text-center">Decoration</p>
+                </div>
+                <div class="gallery-item">
+                  <img src="img/sample.png" alt="Whole Tank" class="gallery-thumb" />
+                  <p class="fw-bold mt-2 text-center">Whole Tank</p>
+                </div>
+              </div>
+              <div class="sticky-button-container">
+                <button class="btn-add-task" id="addPhotoBtn" title="Add photo">+</button>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- Notebook Section -->
+          <div class="col-md-6 section-with-title mb-5">
+            <h2 class="section-title">Notebook</h2>
+            <div class="card p-4 position-relative card-scrollable" id="notesList">
+              <!-- Example Notes -->
+               <div class="sort-notes-container d-flex align-items-center justify-content-end mb-3">
+                <label for="sortNotes" class="me-2 fw-semibold">Sort by:</label>
+                <select id="sortNotes" class="form-select form-select-sm w-auto">
+                  <option value="date-desc">Date ↓</option>
+                  <option value="date-asc">Date ↑</option>
+                  <option value="title-asc">Title A–Z</option>
+                  <option value="title-desc">Title Z–A</option>
+                </select>
+              </div>
+              <div class="note-entry mb-3 p-3 bg-light border rounded">
+                <strong class="note-date">12.05.2025</strong>
+                <h5 class="note-title">Temperature Issue</h5>
+                <p class="mb-0">Fish seemed tired, will adjust the temperature.</p>
+              </div>
+              <div class="note-entry mb-3 p-3 bg-light border rounded">
+                <strong class="note-date">13.05.2025</strong>
+                <h5 class="note-title">Filter Cleaning</h5>
+                <p class="mb-0">Water cloudy, filter needs cleaning.</p>
+              </div>
+              <div class="note-entry mb-3 p-3 bg-light border rounded">
+                <strong class="note-date">14.05.2025</strong>
+                <h5 class="note-title">Feeding Time</h5>
+                <p class="mb-0">Shrimp mix given, good appetite.</p>
+              </div>
+              <div class="note-entry mb-3 p-3 bg-light border rounded">
+                <strong class="note-date">15.05.2025</strong>
+                <h5 class="note-title">Tank Check</h5>
+                <p class="mb-0">Everything stable. All good.</p>
+              </div>
+              <div class="note-entry mb-3 p-3 bg-light border rounded">
+                <strong class="note-date">16.05.2025</strong>
+                <h5 class="note-title">Snail Spotted</h5>
+                <p class="mb-0">One small snail discovered near plants.</p>
+              </div>
+              <div class="sticky-button-container">
+                <button class="btn-add-task" id="toggleNoteForm" title="Add note">+</button>
+              </div>
+            </div>
+
+            <!-- Hidden Form -->
+            <form id="noteForm" class="d-none mt-4">
+              <div class="d-flex flex-wrap gap-2">
+                <input type="hidden" id="noteDate" />
+                <input type="text" id="noteTitle" class="form-control" placeholder="Note title..." required />
+                <input type="text" id="noteText" class="form-control flex-grow-1" placeholder="Your note..." required />
+                <button class="btn btn-primary" type="submit">Add</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Lightbox overlay -->
+  <div id="lightboxOverlay" class="lightbox-overlay d-none">
+    <div class="lightbox-content">
+      <span id="lightboxClose" class="lightbox-close">&times;</span>
+      <span id="lightboxPrev" class="lightbox-arrow left">&#10094;</span>
+      <img id="lightboxImage" src="" alt="Zoomed image" />
+      <span id="lightboxNext" class="lightbox-arrow right">&#10095;</span>
+      <p id="lightboxCaption"></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="diary.js"></script>
+</body>
+</html>
