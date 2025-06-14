@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const sortSelect = document.getElementById('sortNotes');
 
   toggleNoteForm?.addEventListener('click', () => {
-    const today = new Date().toLocaleDateString('pl-PL');
+    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
     noteDate.value = today;
     noteForm.classList.toggle('d-none');
   });
@@ -26,17 +26,37 @@ document.addEventListener('DOMContentLoaded', function () {
     const text = noteText.value.trim();
 
     if (date && title && text) {
-      const noteItem = document.createElement('div');
-      noteItem.className = 'note-entry mb-3 p-3 bg-light border rounded';
-      noteItem.innerHTML = `
-        <strong class="note-date">${date}</strong>
-        <h5 class="note-title">${title}</h5>
-        <p class="mb-0">${text}</p>
-      `;
-      notesList.appendChild(noteItem); // Tymczasowo dodajemy na koniec
-      noteForm.reset();
-      noteForm.classList.add('d-none');
-      sortAndRenderNotes(); // i od razu sortujemy całość
+      fetch('/diary/add_note', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+          title: title,
+          content: text
+        })
+      })
+        .then(response => {
+          if (!response.ok) throw new Error('Network response was not ok');
+          return response.text();
+        })
+        .then(() => {
+          const noteItem = document.createElement('div');
+          noteItem.className = 'note-entry mb-3 p-3 bg-light border rounded';
+          noteItem.innerHTML = `
+            <strong class="note-date">${date}</strong>
+            <h5 class="note-title">${title}</h5>
+            <p class="mb-0">${text}</p>
+          `;
+          notesList.insertBefore(noteItem, notesList.querySelector('.sticky-button-container'));
+          noteForm.reset();
+          noteForm.classList.add('d-none');
+          sortAndRenderNotes();
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert("There was a problem adding the note.");
+        });
     }
   });
 
@@ -47,8 +67,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const selected = sortSelect?.value || 'date-desc';
 
     entries.sort((a, b) => {
-      const dateA = a.querySelector('.note-date').textContent.trim().split('.').reverse().join('-');
-      const dateB = b.querySelector('.note-date').textContent.trim().split('.').reverse().join('-');
+      const dateA = a.querySelector('.note-date').textContent.trim();
+      const dateB = b.querySelector('.note-date').textContent.trim();
       const titleA = a.querySelector('.note-title').textContent.trim().toLowerCase();
       const titleB = b.querySelector('.note-title').textContent.trim().toLowerCase();
 
@@ -65,13 +85,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Sortuj od razu przy załadowaniu
   sortAndRenderNotes();
 
   // Obsługa modala dodawania zdjęcia
   const addPhotoBtn = document.getElementById('addPhotoBtn');
   const photoModal = new bootstrap.Modal(document.getElementById('photoModal'));
-
   addPhotoBtn?.addEventListener('click', () => {
     photoModal.show();
   });
