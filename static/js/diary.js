@@ -68,6 +68,14 @@ document.addEventListener('DOMContentLoaded', function () {
   // Sortuj od razu przy załadowaniu
   sortAndRenderNotes();
 
+  // Obsługa modala dodawania zdjęcia
+  const addPhotoBtn = document.getElementById('addPhotoBtn');
+  const photoModal = new bootstrap.Modal(document.getElementById('photoModal'));
+
+  addPhotoBtn?.addEventListener('click', () => {
+    photoModal.show();
+  });
+
   // === LIGHTBOX FUNCTIONALITY ===
   const thumbnails = document.querySelectorAll('.gallery-thumb');
   const overlay = document.getElementById('lightboxOverlay');

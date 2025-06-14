@@ -14,6 +14,8 @@ class User(db.Model):
     # Relacje
     tasks = db.relationship('Task', backref='user', lazy=True)
     tanks = db.relationship('Tank', backref='owner', lazy=True)
+    photos = db.relationship('Photo', backref='user', lazy=True)  # 🆕
+    notes = db.relationship('Note', backref='user', lazy=True)    # 🆕
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
@@ -23,6 +25,7 @@ class User(db.Model):
 
     def __repr__(self):
         return f"<User {self.login}>"
+
 
 # ✅ Model zadania (task) w kalendarzu
 class Task(db.Model):
@@ -40,19 +43,46 @@ class Task(db.Model):
     def __repr__(self):
         return f"<Task {self.title} on {self.date}>"
 
+
+# ✅ Model zbiornika (tank)
 class Tank(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     volume = db.Column(db.Integer, nullable=False)
     temperature = db.Column(db.Float, nullable=True)
     ph = db.Column(db.Float, nullable=True)
-    kh = db.Column(db.Integer, nullable=True)  # 🆕
-    gh = db.Column(db.Integer, nullable=True)  # 🆕
-    description = db.Column(db.Text, nullable=True)  # 🆕
-    image = db.Column(db.String(100), nullable=True)  # 🆕
+    kh = db.Column(db.Integer, nullable=True)
+    gh = db.Column(db.Integer, nullable=True)
+    description = db.Column(db.Text, nullable=True)
+    image = db.Column(db.String(100), nullable=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
         return f"<Tank {self.name} ({self.volume}L)>"
+
+
+# 📷 Model zdjęcia w galerii
+class Photo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(100), nullable=False)
+    title = db.Column(db.String(100), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<Photo {self.title or self.filename}>"
+
+
+# 📝 Model notatki
+class Note(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    date = db.Column(db.String(10), nullable=False)  # Format: YYYY-MM-DD
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<Note {self.title} on {self.date}>"
