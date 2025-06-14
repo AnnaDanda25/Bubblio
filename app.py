@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, redirect, url_for
 from flask_migrate import Migrate
 from models import db, User, Task, Tank
 
@@ -7,7 +7,7 @@ from mainpage.routes import mainpage
 from auth import auth
 from profile import profile
 from tanks import tanks
-from diary import diary  # ✅ NOWOŚĆ: importujemy blueprint diary
+from diary import diary
 
 # 🔧 Konfiguracja aplikacji Flask
 app = Flask(__name__)
@@ -24,7 +24,12 @@ app.register_blueprint(mainpage)
 app.register_blueprint(auth)
 app.register_blueprint(profile)
 app.register_blueprint(tanks)
-app.register_blueprint(diary)  # ✅ rejestracja blueprintu Diary
+app.register_blueprint(diary)
+
+# 👉 Domyślny route przekierowuje na login
+@app.route('/')
+def index():
+    return redirect(url_for('auth.login'))
 
 # 🛠️ Tworzymy tabele (jeśli nie istnieją)
 with app.app_context():

@@ -93,14 +93,14 @@
                   <div class="tank-stocking">
                     <h4>Tank stocking</h4>
                     <div class="fish-list">
-                      {% if tank.fish %}
+                       {% if tank.fish %}
                         {% for fish in tank.fish %}
                           <div class="fish-item">
                             <img src="{{ url_for('static', filename='img/fish_icons/' ~ fish.image) }}" />
                             {{ fish.name }} [{{ fish.quantity }}]
                           </div>
                         {% endfor %}
-                      {% else %}
+                      {% else %} 
                         <div class="fish-item">No fish yet</div>
                       {% endif %}
                     </div>
