@@ -4,8 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Bubblio - Diary</title>
-  <link rel="stylesheet" href="bubbliocore.css" />
-  <link rel="stylesheet" href="diary.css" /> 
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bubbliocore.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/diary.css') }}" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body>
@@ -15,10 +16,10 @@
     <!-- Sidebar -->
     <nav class="sidebar collapsed" id="sidebar">
       <ul class="nav flex-column mt-4">
-        <li class="nav-item"><a href="main.html" class="nav-link"><img src="img/mainpage_menu_icon.png" /><span>Home</span></a></li>
-        <li class="nav-item"><a href="#" class="nav-link"><img src="img/tank_menu_icon.png" /><span>Tanks</span></a></li>
-        <li class="nav-item"><a href="#" class="nav-link active"><img src="img/diary_menu_icon.png" /><span>Diary</span></a></li>
-        <li class="nav-item"><a href="#" class="nav-link"><img src="img/profile_menu_icon.png" /><span>Profile</span></a></li>
+        <li class="nav-item"><a href="main.html" class="nav-link"><img src="{{ url_for('static', filename='img/mainpage_menu_icon.png') }}" /><span>Home</span></a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><img src="{{ url_for('static', filename='img/tank_menu_icon.png') }}" /><span>Tanks</span></a></li>
+        <li class="nav-item"><a href="#" class="nav-link active"><img src="{{ url_for('static', filename='img/diary_menu_icon.png') }}" /><span>Diary</span></a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><img src="{{ url_for('static', filename='img/profile_menu_icon.png') }}" /><span>Profile</span></a></li>
       </ul>
     </nav>
 
@@ -26,12 +27,12 @@
     <main class="main-content flex-grow-1">
       <header class="d-flex justify-content-between align-items-center topbar mb-4">
         <div class="d-flex align-items-center gap-2">
-          <img src="img/bubblio_logo_no_text.png" class="logo-img" />
+          <img src="{{ url_for('static', filename='img/bubblio_logo_no_text.png') }}" class="logo-img" />
           <h1 class="hello-text m-0 fw-semibold">Hello Anna!</h1>
         </div>
         <div class="bubble-counter d-flex align-items-center gap-2">
           <span>Your Bubbles:</span>
-          <img src="img/bubblio_bubble.png" class="bubble-icon" />
+          <img src="{{ url_for('static', filename='img/bubblio_bubble.png') }}" class="bubble-icon" />
           <span class="bubble-number">21</span>
         </div>
       </header>
@@ -45,39 +46,39 @@
             <div class="card p-4 position-relative card-scrollable">
               <div class="gallery-grid">
                 <div class="gallery-item">
-                  <img src="img/fish1.jpg" alt="Fish 1" class="gallery-thumb" />
+                  <img src="{{ url_for('static', filename='img/fish1.jpg') }}" alt="Fish 1" class="gallery-thumb" />
                   <p class="fw-bold mt-2 text-center">Fish 1</p>
                 </div>
                 <div class="gallery-item">
-                  <img src="img/fish2.jpg" alt="Fish 2" class="gallery-thumb" />
+                  <img src="{{ url_for('static', filename='img/fish2.jpg') }}" alt="Fish 2" class="gallery-thumb" />
                   <p class="fw-bold mt-2 text-center">Fish 2</p>
                 </div>
                 <div class="gallery-item">
-                  <img src="img/fish3.jpg" alt="Feeding" class="gallery-thumb" />
+                  <img src="{{ url_for('static', filename='img/fish3.jpg') }}" alt="Feeding" class="gallery-thumb" />
                   <p class="fw-bold mt-2 text-center">Feeding</p>
                 </div>
                 <div class="gallery-item">
-                  <img src="img/fish4.jpg" alt="Fish 3" class="gallery-thumb" />
+                  <img src="{{ url_for('static', filename='img/fish4.jpg') }}" alt="Fish 3" class="gallery-thumb" />
                   <p class="fw-bold mt-2 text-center">Fish 3</p>
                 </div>
                 <div class="gallery-item">
-                  <img src="img/fish5.jpg" alt="Fish 4" class="gallery-thumb" />
+                  <img src="{{ url_for('static', filename='img/fish5.jpg') }}" alt="Fish 4" class="gallery-thumb" />
                   <p class="fw-bold mt-2 text-center">Fish 4</p>
                 </div>
                 <div class="gallery-item">
-                  <img src="img/fish6.jpg" alt="Shrimp" class="gallery-thumb" />
+                  <img src="{{ url_for('static', filename='img/fish6.jpg') }}" alt="Shrimp" class="gallery-thumb" />
                   <p class="fw-bold mt-2 text-center">Shrimp</p>
                 </div>
                 <div class="gallery-item">
-                  <img src="img/fish7.jpg" alt="Snail" class="gallery-thumb" />
+                  <img src="{{ url_for('static', filename='img/fish7.jpg') }}" alt="Snail" class="gallery-thumb" />
                   <p class="fw-bold mt-2 text-center">Snail</p>
                 </div>
                 <div class="gallery-item">
-                  <img src="img/sample.png" alt="Decoration" class="gallery-thumb" />
+                  <img src="{{ url_for('static', filename='img/sample.png') }}" alt="Decoration" class="gallery-thumb" />
                   <p class="fw-bold mt-2 text-center">Decoration</p>
                 </div>
                 <div class="gallery-item">
-                  <img src="img/sample.png" alt="Whole Tank" class="gallery-thumb" />
+                  <img src="{{ url_for('static', filename='img/sample.png') }}" alt="Whole Tank" class="gallery-thumb" />
                   <p class="fw-bold mt-2 text-center">Whole Tank</p>
                 </div>
               </div>
@@ -87,13 +88,12 @@
             </div>
           </div>
 
-
           <!-- Notebook Section -->
           <div class="col-md-6 section-with-title mb-5">
             <h2 class="section-title">Notebook</h2>
             <div class="card p-4 position-relative card-scrollable" id="notesList">
               <!-- Example Notes -->
-               <div class="sort-notes-container d-flex align-items-center justify-content-end mb-3">
+              <div class="sort-notes-container d-flex align-items-center justify-content-end mb-3">
                 <label for="sortNotes" class="me-2 fw-semibold">Sort by:</label>
                 <select id="sortNotes" class="form-select form-select-sm w-auto">
                   <option value="date-desc">Date ↓</option>
@@ -158,7 +158,7 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
-  <script src="diary.js"></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/diary.js') }}"></script>
 </body>
 </html>

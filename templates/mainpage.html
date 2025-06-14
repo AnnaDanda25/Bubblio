@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Bubblio - Main Page</title>
-  <!-- <link rel="stylesheet" href="style_login.css" /> -->
-  <link rel="stylesheet" href="bubbliocore.css" />
-  <link rel="stylesheet" href="mainpage.css" /> 
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bubbliocore.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/mainpage.css') }}" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body>
@@ -17,23 +17,58 @@
     <!-- Sidebar -->
     <nav class="sidebar collapsed" id="sidebar" aria-label="Main menu">
       <ul class="nav flex-column mt-4">
-        <li class="nav-item"><a href="#" class="nav-link active"><img src="img/mainpage_menu_icon.png" alt="Go to home page" /><span>Home</span></a></li>
-        <li class="nav-item"><a href="#" class="nav-link"><img src="img/tank_menu_icon.png" alt="Go to tanks page" /><span>Tanks</span></a></li>
-        <li class="nav-item"><a href="#" class="nav-link"><img src="img/diary_menu_icon.png" alt="Go to diary page" /><span>Diary</span></a></li>
-        <li class="nav-item"><a href="#" class="nav-link"><img src="img/profile_menu_icon.png" alt="Go to profile page" /><span>Profile</span></a></li>
+        <li class="nav-item">
+          <a href="#" class="nav-link active">
+            <img src="{{ url_for('static', filename='img/mainpage_menu_icon.png') }}" alt="Go to home page" />
+            <span>Home</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <img src="{{ url_for('static', filename='img/tank_menu_icon.png') }}" alt="Go to tanks page" />
+            <span>Tanks</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <img src="{{ url_for('static', filename='img/diary_menu_icon.png') }}" alt="Go to diary page" />
+            <span>Diary</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <img src="{{ url_for('static', filename='img/profile_menu_icon.png') }}" alt="Go to profile page" />
+            <span>Profile</span>
+          </a>
+        </li>
       </ul>
     </nav>
 
     <!-- Main Content -->
     <main class="main-content flex-grow-1">
+      <!-- FLASH MESSAGES -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="container mt-3">
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <!-- Topbar -->
       <header class="d-flex justify-content-between align-items-center topbar mb-4">
         <div class="d-flex align-items-center gap-2">
-          <img src="img/bubblio_logo_no_text.png" alt="Bubblio Logo" class="logo-img" />
-          <h1 class="hello-text m-0 fw-semibold">Hello Anna!</h1>
+          <img src="{{ url_for('static', filename='img/bubblio_logo_no_text.png') }}" alt="Bubblio Logo" class="logo-img" />
+          <h1 class="hello-text m-0 fw-semibold">Hello {{ session['user_name'] }}!</h1>
         </div>
         <div class="bubble-counter d-flex align-items-center gap-2">
           <span class="bubble-label">Your Bubbles:</span>
-          <img src="img/bubblio_bubble.png" alt="Bubble icon" class="bubble-icon" />
+          <img src="{{ url_for('static', filename='img/bubblio_bubble.png') }}" alt="Bubble icon" class="bubble-icon" />
           <span class="bubble-number">21</span>
         </div>
       </header>
@@ -98,9 +133,11 @@
         <h2 class="section-title">Upcoming Tasks</h2>
         <div class="card p-3 position-relative">
           <ul id="task-list" class="list-unstyled mb-0">
-            <li><input type="checkbox" /> 17.08.2025 – Clean tank 1</li>
-            <li><input type="checkbox" /> 17.08.2025 – Change water in tank 1</li>
-            <li><input type="checkbox" /> 19.08.2025 – Observe fish health</li>
+            {% for task in tasks %}
+              <li><input type="checkbox" {% if task.is_done %}checked{% endif %} /> {{ task.date }} – {{ task.title }}</li>
+            {% else %}
+              <li class="text-muted">No tasks yet.</li>
+            {% endfor %}
           </ul>
           <button class="btn-add-task" data-bs-toggle="modal" data-bs-target="#addTaskModal">+</button>
         </div>
@@ -111,24 +148,24 @@
   <!-- Modal -->
   <div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-      <form class="modal-content" id="addTaskForm">
+      <form class="modal-content" id="addTaskForm" method="POST" action="{{ url_for('mainpage.add_task') }}">
         <div class="modal-header">
           <h5 class="modal-title" id="addTaskModalLabel">Add New Task</h5>
           <button class="btn-close" type="button" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <input type="date" class="form-control mb-3" id="taskDate" required />
-          <input type="text" class="form-control mb-3" id="taskDescription" placeholder="Task description" required />
+          <input type="date" class="form-control mb-3" name="taskDate" required />
+          <input type="text" class="form-control mb-3" name="taskDescription" placeholder="Task description" required />
           
           <label for="recurringType" class="form-label mt-2">Repeat:</label>
-          <select class="form-select mb-3" id="recurringType">
+          <select class="form-select mb-3" name="recurringType" id="recurringType">
             <option value="once" selected>One-time</option>
             <option value="recurring">Recurring</option>
           </select>
 
           <div id="recurringFields" style="display: none;">
-            <input type="number" class="form-control mb-2" id="recurringInterval" placeholder="Every how many days?" min="1" />
-            <input type="number" class="form-control mb-2" id="recurringCount" placeholder="How many times?" min="1" />
+            <input type="number" class="form-control mb-2" name="recurringInterval" placeholder="Every how many days?" min="1" />
+            <input type="number" class="form-control mb-2" name="recurringCount" placeholder="How many times?" min="1" />
           </div>
         </div>
         <div class="modal-footer">
@@ -139,6 +176,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="script.js"></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

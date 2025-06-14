@@ -1,0 +1,81 @@
+.profile-content {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 0 16px;
+  text-align: center;
+}
+
+.profile-content h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.profile-info {
+  font-size: 16px;
+  color: var(--text-dark);
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.profile-info div {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.profile-info div:last-child {
+  border-bottom: none;
+}
+
+.label {
+  color: var(--gray);
+  font-weight: 500;
+}
+
+.value {
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+button.btn {
+  height: 40px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-dark {
+  background: #212529;
+  color: white;
+}
+
+.btn-info {
+  background: var(--bg-light-blue);
+  color: var(--text-dark);
+}
+
+.btn-info:hover {
+  background-color: #9ed9ea;
+}
+
+/* Mobile tweaks */
+@media (max-width: 768px) {
+  .profile-content h2 {
+    font-size: 18px;
+  }
+
+  .profile-info div {
+    font-size: 14px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  button.btn {
+    font-size: 13px;
+  }
+}
