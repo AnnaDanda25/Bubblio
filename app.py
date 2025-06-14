@@ -1,31 +1,35 @@
 from flask import Flask
-from models import db, User, Task
+from flask_migrate import Migrate
+from models import db, User, Task, Tank
+
+# 📦 Importuj Blueprinty
 from mainpage.routes import mainpage
 from auth import auth
-from profile import profile  # ⬅️ import nowego blueprintu
+from profile import profile
+from tanks import tanks
+from diary import diary  # ✅ NOWOŚĆ: importujemy blueprint diary
 
-# tworzymy aplikację
+# 🔧 Konfiguracja aplikacji Flask
 app = Flask(__name__)
-
-# konfiguracja bazy danych
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bubblio.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'supersekretnyklucz'
 
-# klucz sesji (dla logowania)
-app.config['SECRET_KEY'] = 'supersekretnyklucz'  # zmień na silny klucz w produkcji
-
-# inicjalizujemy bazę z aplikacją
+# 🔁 Inicjalizacja bazy danych i migracji
 db.init_app(app)
+migrate = Migrate(app, db)
 
-# rejestrujemy blueprinty
+# 🧩 Rejestracja blueprintów
 app.register_blueprint(mainpage)
 app.register_blueprint(auth)
-app.register_blueprint(profile)  # ⬅️ rejestracja profile
+app.register_blueprint(profile)
+app.register_blueprint(tanks)
+app.register_blueprint(diary)  # ✅ rejestracja blueprintu Diary
 
-# tworzymy tabele, jeśli nie istnieją
+# 🛠️ Tworzymy tabele (jeśli nie istnieją)
 with app.app_context():
     db.create_all()
 
-# uruchamiamy aplikację
+# 🚀 Uruchomienie aplikacji
 if __name__ == '__main__':
     app.run(debug=True)

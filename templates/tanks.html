@@ -17,19 +17,40 @@
       <!-- Sidebar -->
       <nav class="sidebar collapsed" id="sidebar">
         <ul class="nav flex-column mt-4">
-          <li class="nav-item"><a href="main.html" class="nav-link"><img src="{{ url_for('static', filename='img/mainpage_menu_icon.png') }}" /><span>Home</span></a></li>
-          <li class="nav-item"><a href="#" class="nav-link active"><img src="{{ url_for('static', filename='img/tank_menu_icon.png') }}" /><span>Tanks</span></a></li>
-          <li class="nav-item"><a href="#" class="nav-link"><img src="{{ url_for('static', filename='img/diary_menu_icon.png') }}" /><span>Diary</span></a></li>
-          <li class="nav-item"><a href="#" class="nav-link"><img src="{{ url_for('static', filename='img/profile_menu_icon.png') }}" /><span>Profile</span></a></li>
+          <li class="nav-item">
+            <a href="{{ url_for('mainpage.home') }}" class="nav-link">
+              <img src="{{ url_for('static', filename='img/mainpage_menu_icon.png') }}" />
+              <span>Home</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('tanks.view_tanks') }}" class="nav-link active">
+              <img src="{{ url_for('static', filename='img/tank_menu_icon.png') }}" />
+              <span>Tanks</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('diary.view_diary') }}" class="nav-link">
+              <img src="{{ url_for('static', filename='img/diary_menu_icon.png') }}" />
+              <span>Diary</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('profile.view_profile') }}" class="nav-link">
+              <img src="{{ url_for('static', filename='img/profile_menu_icon.png') }}" />
+              <span>Profile</span>
+            </a>
+          </li>
         </ul>
       </nav>
+
 
       <!-- Main Content -->
       <main class="main-content flex-grow-1">
         <header class="d-flex justify-content-between align-items-center topbar mb-4">
           <div class="d-flex align-items-center gap-2">
             <img src="{{ url_for('static', filename='img/bubblio_logo_no_text.png') }}" class="logo-img" />
-            <h1 class="hello-text m-0 fw-semibold">Hello Anna!</h1>
+            <h1 class="hello-text m-0 fw-semibold">Hello {{ user.name }}!</h1>
           </div>
           <div class="bubble-counter d-flex align-items-center gap-2">
             <span>Your Bubbles:</span>
@@ -38,68 +59,80 @@
           </div>
         </header>
 
-        <!-- Tank Card -->
+        <!-- Empty state -->
         <div id="emptyState" style="display: none; text-align: center; margin-top: 60px;">
           <p style="font-size: 24px; margin-bottom: 20px;">You have no tanks yet.</p>
-          <button class="add-tank-btn" onclick="closeDeleteModal(); closeTankModal(); document.getElementById('addTankModal').style.display = 'block';">Add New Tank</button>
+          <button class="add-tank-btn" onclick="document.getElementById('addTankModal').style.display = 'block';">Add New Tank</button>
         </div>
 
-        <!-- Slider Wrapper -->
+        <!-- Slider -->
         <div class="slider-wrapper">
           <div class="tank-slider-container">
-            <!-- Slide -->
-            <div class="tank-card slide active">
-              <h2 class="tank-name-title text-center">Tank 1</h2>
-              <div class="tank-details">
-                <div class="tank-left">
-                  <img src="{{ url_for('static', filename='img/fishtank1.jpg') }}" class="tank-image" alt="Tank Image" />
-                  <div class="tank-params">
-                    <p><strong>Volume (L):</strong> 54</p>
-                    <p><strong>pH:</strong> 7.2</p>
-                    <p><strong>KH:</strong> 5</p>
-                    <p><strong>Temp (°C):</strong> 25.0</p>
-                    <p><strong>GH:</strong> 8</p>
-                    <p class="tank-description"><strong>Description:</strong> My first fish tank!</p>
+            {% if tanks %}
+              {% for tank in tanks %}
+              <div class="tank-card slide {% if loop.index0 == 0 %}active{% endif %}">
+                <h2 class="tank-name-title text-center">{{ tank.name }}</h2>
+                <div class="tank-details">
+                  <div class="tank-left">
+                    {% if tank.image %}
+                      <img src="{{ url_for('static', filename='uploads/' ~ tank.image) }}" class="tank-image" alt="Tank Image" />
+                    {% else %}
+                      <img src="{{ url_for('static', filename='img/default_tank.jpg') }}" class="tank-image" alt="Tank Image" />
+                    {% endif %}
+
+                    <div class="tank-params">
+                      <p><strong>Volume (L):</strong> {{ tank.volume }}</p>
+                      <p><strong>pH:</strong> {{ tank.ph or "?" }}</p>
+                      <p><strong>KH:</strong> {{ tank.kh or "?" }}</p>
+                      <p><strong>Temp (°C):</strong> {{ tank.temperature or "?" }}</p>
+                      <p><strong>GH:</strong> {{ tank.gh or "?" }}</p>
+                      <p class="tank-description"><strong>Description:</strong> {{ tank.description or "No description." }}</p>
+                    </div>
+                  </div>
+
+                  <div class="tank-stocking">
+                    <h4>Tank stocking</h4>
+                    <div class="fish-list">
+                      {% if tank.fish %}
+                        {% for fish in tank.fish %}
+                          <div class="fish-item">
+                            <img src="{{ url_for('static', filename='img/fish_icons/' ~ fish.image) }}" />
+                            {{ fish.name }} [{{ fish.quantity }}]
+                          </div>
+                        {% endfor %}
+                      {% else %}
+                        <div class="fish-item">No fish yet</div>
+                      {% endif %}
+                    </div>
                   </div>
                 </div>
 
-                <div class="tank-stocking">
-                  <h4>Tank stocking</h4>
-                  <div class="fish-list">
-                    <div class="fish-item">
-                      <img src="{{ url_for('static', filename='img/neon.jpg') }}" alt="Neon Tetra" /> Neon Tetra [8]
-                    </div>
-                    <div class="fish-item">
-                      <img src="{{ url_for('static', filename='img/guppy.jpg') }}" alt="Guppy" /> Guppy [5]
-                    </div>
-                    <div class="fish-item">
-                      <img src="{{ url_for('static', filename='img/redcherryshrimp.jpg') }}" alt="Red Cherry Shrimp" /> Red Cherry Shrimp [10]
-                    </div>
-                  </div>
+                <div class="tank-actions">
+                  <button>Edit Tank</button>
+                  <button>Manage Stock</button>
+                  <button class="delete-btn">Delete Tank</button>
+                  <button class="add-tank-btn">Add New Tank</button>
                 </div>
               </div>
-
-              <!-- Buttons -->
-              <div class="tank-actions">
-                <button>Edit Tank</button>
-                <button>Manage Stock</button>
-                <button class="delete-btn">Delete Tank</button>
-                <button class="add-tank-btn">Add New Tank</button>
-              </div>
-            </div>
-
-            <!-- Kolejne .slide -->
+              {% endfor %}
+            {% else %}
+              <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                  document.getElementById("emptyState").style.display = "block";
+                  document.querySelector(".slider-wrapper").style.display = "none";
+                });
+              </script>
+            {% endif %}
           </div>
 
           <!-- Slider Controls -->
           <div class="slider-controls">
             <button id="prevSlide" class="slider-arrow left">&#10094;</button>
-            <div class="dots" id="dots">
-              <span class="dot active" onclick="goToSlide(0)"></span>
-            </div>
+            <div class="dots" id="dots"></div>
             <button id="nextSlide" class="slider-arrow right">&#10095;</button>
           </div>
         </div>
+
 
         <!-- Modals -->
         <!-- Add Tank -->
@@ -107,15 +140,15 @@
           <div class="modal-content">
             <span class="close-btn" onclick="closeTankModal()">&times;</span>
             <h2>Add New Tank</h2>
-            <form id="addTankForm">
-              <input type="text" id="tankName" placeholder="Tank name" required />
-              <input type="number" id="volume" placeholder="Volume (L)" required />
-              <input type="number" step="0.1" id="temperature" placeholder="Temperature (°C)" required />
-              <input type="number" step="0.1" id="ph" placeholder="pH" required />
-              <input type="number" step="1" id="kh" placeholder="KH" required />
-              <input type="number" step="1" id="gh" placeholder="GH" required />
-              <textarea id="description" placeholder="Description"></textarea>
-              <input type="file" id="tankImage" accept="image/*" />
+            <form id="addTankForm" method="POST" action="{{ url_for('tanks.add_tank') }}" enctype="multipart/form-data">
+              <input type="text" id="tankName" name="name" placeholder="Tank name" required />
+              <input type="number" id="volume" name="volume" placeholder="Volume (L)" required />
+              <input type="number" step="0.1" id="temperature" name="temperature" placeholder="Temperature (°C)" required />
+              <input type="number" step="0.1" id="ph" name="ph" placeholder="pH" required />
+              <input type="number" step="1" id="kh" name="kh" placeholder="KH" required />
+              <input type="number" step="1" id="gh" name="gh" placeholder="GH" required />
+              <textarea id="description" name="description" placeholder="Description"></textarea>
+              <input type="file" id="tankImage" name="image" accept="image/*" />
               <div class="modal-buttons">
                 <button type="submit">Save</button>
                 <button type="button" onclick="closeTankModal()">Cancel</button>

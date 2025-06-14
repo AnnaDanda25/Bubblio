@@ -18,31 +18,32 @@
     <nav class="sidebar collapsed" id="sidebar" aria-label="Main menu">
       <ul class="nav flex-column mt-4">
         <li class="nav-item">
-          <a href="#" class="nav-link active">
+          <a href="{{ url_for('mainpage.home') }}" class="nav-link active">
             <img src="{{ url_for('static', filename='img/mainpage_menu_icon.png') }}" alt="Go to home page" />
             <span>Home</span>
           </a>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          <a href="{{ url_for('tanks.view_tanks') }}" class="nav-link">
             <img src="{{ url_for('static', filename='img/tank_menu_icon.png') }}" alt="Go to tanks page" />
             <span>Tanks</span>
           </a>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          <a href="{{ url_for('diary.view_diary') }}" class="nav-link">
             <img src="{{ url_for('static', filename='img/diary_menu_icon.png') }}" alt="Go to diary page" />
             <span>Diary</span>
           </a>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          <a href="{{ url_for('profile.view_profile') }}" class="nav-link">
             <img src="{{ url_for('static', filename='img/profile_menu_icon.png') }}" alt="Go to profile page" />
             <span>Profile</span>
           </a>
         </li>
       </ul>
     </nav>
+
 
     <!-- Main Content -->
     <main class="main-content flex-grow-1">
