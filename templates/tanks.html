@@ -70,7 +70,7 @@
           <div class="tank-slider-container">
             {% if tanks %}
               {% for tank in tanks %}
-              <div class="slide {% if loop.index0 == 0 %}active{% endif %}">
+              <div class="slide {% if loop.index0 == 0 %}active{% endif %}" data-tank-id="{{ tank.id }}">
                 <div class="tank-card">
                   <h2 class="tank-name-title text-center">{{ tank.name }}</h2>
                   <div class="tank-details">
@@ -184,30 +184,44 @@
         <!-- Edit Tank -->
         <div id="editTankModal" class="modal">
           <div class="modal-content">
-            <span class="close-btn" onclick="closeEditModal()">&times;</span>
+            <span class="close" onclick="document.getElementById('editTankModal').style.display='none'">&times;</span>
             <h2>Edit Tank</h2>
-            <form id="editTankForm" method="POST" action="{{ url_for('tanks.edit_tank') }}" enctype="multipart/form-data">
-              <label for="editTankSelect">Select tank to edit:</label>
-              <select id="editTankSelect" required></select>
-
+            <form id="editTankForm" action="{{ url_for('tanks.edit_tank') }}" method="POST" enctype="multipart/form-data">
+              <!-- Poprawka: name="tank_id" -->
               <input type="hidden" id="editTankId" name="tank_id" />
 
-              <input type="text" id="editTankName" name="name" placeholder="Tank name" required />
-              <input type="number" id="editVolume" name="volume" placeholder="Volume (L)" required />
-              <input type="number" step="0.1" id="editTemperature" name="temperature" placeholder="Temperature (°C)" required />
-              <input type="number" step="0.1" id="editPh" name="ph" placeholder="pH" required />
-              <input type="number" step="1" id="editKh" name="kh" placeholder="KH" required />
-              <input type="number" step="1" id="editGh" name="gh" placeholder="GH" required />
-              <textarea id="editDescription" name="description" placeholder="Description"></textarea>
-              <input type="file" id="editImage" name="image" accept="image/*" />
-              <div class="modal-buttons">
-                <button type="submit">Save Changes</button>
-                <button type="button" onclick="closeEditModal()">Cancel</button>
-              </div>
+              <label for="editTankSelect">Select Tank:</label>
+              <select id="editTankSelect" name="editTankSelect" required></select>
+
+              <label for="editTankName">Tank Name:</label>
+              <input type="text" id="editTankName" name="editTankName" required />
+
+              <label for="editVolume">Volume (L):</label>
+              <input type="number" id="editVolume" name="editVolume" required />
+
+              <label for="editTemperature">Temperature (°C):</label>
+              <input type="number" id="editTemperature" name="editTemperature" step="0.1" />
+
+              <label for="editPh">pH:</label>
+              <input type="number" id="editPh" name="editPh" step="0.1" />
+
+              <label for="editKh">KH:</label>
+              <input type="number" id="editKh" name="editKh" />
+
+              <label for="editGh">GH:</label>
+              <input type="number" id="editGh" name="editGh" />
+
+              <label for="editDescription">Description:</label>
+              <textarea id="editDescription" name="editDescription"></textarea>
+
+              <label for="editImage">Change Image (optional):</label>
+              <input type="file" id="editImage" name="editImage" accept="image/*" />
+
+              <button type="submit">Save Changes</button>
             </form>
           </div>
         </div>
-
+        
         <!-- Manage Stock -->
         <div id="manageStockModal" class="modal">
           <div class="modal-content">

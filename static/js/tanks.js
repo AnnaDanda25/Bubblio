@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function addEventListenersToCard(card) {
     const buttons = card.querySelectorAll(".tank-actions button");
     const editBtn = buttons[0];
-    const manageBtn = buttons[1]; // do wdrożenia
+    const manageBtn = buttons[1];
     const deleteBtn = buttons[2];
     const addBtn = buttons[3];
 
@@ -62,71 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
       addTankModal.style.display = "block";
     });
   }
-
-  addTankForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const tankName = document.getElementById("tankName").value;
-    const volume = document.getElementById("volume").value;
-    const temperature = document.getElementById("temperature").value;
-    const ph = document.getElementById("ph").value;
-    const kh = document.getElementById("kh").value;
-    const gh = document.getElementById("gh").value;
-    const description = document.getElementById("description").value;
-    const imageFile = document.getElementById("tankImage").files[0];
-
-    const reader = new FileReader();
-    reader.onload = function () {
-      const imageUrl = reader.result;
-
-      const slide = document.createElement("div");
-      slide.classList.add("slide");
-
-      const card = document.createElement("div");
-      card.classList.add("tank-card");
-      card.innerHTML = `
-        <h2 class="tank-name-title text-center">${tankName}</h2>
-        <div class="tank-details">
-          <div class="tank-left">
-            <img src="${imageUrl}" alt="${tankName}" class="tank-image" />
-            <div class="tank-params">
-              <p><strong>Volume (L):</strong> ${volume}</p>
-              <p><strong>pH:</strong> ${ph}</p>
-              <p><strong>KH:</strong> ${kh}</p>
-              <p><strong>Temp (°C):</strong> ${temperature}</p>
-              <p><strong>GH:</strong> ${gh}</p>
-              <p class="tank-description"><strong>Description:</strong> ${description}</p>
-            </div>
-          </div>
-          <div class="tank-stocking">
-            <h4>Tank Stocking</h4>
-            <div class="fish-list">
-              <div class="fish-item">No fish yet</div>
-            </div>
-          </div>
-        </div>
-        <div class="tank-actions">
-          <button>Edit Tank</button>
-          <button>Manage Stock</button>
-          <button class="delete-btn">Delete Tank</button>
-          <button class="add-tank-btn">Add New Tank</button>
-        </div>
-      `;
-
-      slide.appendChild(card);
-      sliderContainer.appendChild(slide);
-      addEventListenersToCard(card);
-      showSlide(getSlides().length - 1);
-      addTankForm.reset();
-      addTankModal.style.display = "none";
-    };
-
-    if (imageFile) {
-      reader.readAsDataURL(imageFile);
-    } else {
-      reader.onload({ target: { result: "img/example_tank.jpg" } });
-    }
-  });
 
   function openDeleteModal() {
     tankSelect.innerHTML = "";
@@ -176,24 +111,12 @@ document.addEventListener("DOMContentLoaded", () => {
     editTemperature.value = params[3].textContent.split(":")[1].trim();
     editGh.value = params[4].textContent.split(":")[1].trim();
     editDescription.value = slide.querySelector(".tank-description").textContent.replace("Description:", "").trim();
+
+    document.getElementById("editTankId").value = slide.dataset.tankId;
   }
 
-  editForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-    const slides = getSlides();
-    const slide = slides[currentEditIndex];
-
-    slide.querySelector(".tank-name-title").textContent = editTankName.value;
-    const params = slide.querySelectorAll(".tank-params p");
-    params[0].innerHTML = `<strong>Volume (L):</strong> ${editVolume.value}`;
-    params[1].innerHTML = `<strong>pH:</strong> ${editPh.value}`;
-    params[2].innerHTML = `<strong>KH:</strong> ${editKh.value}`;
-    params[3].innerHTML = `<strong>Temp (°C):</strong> ${editTemperature.value}`;
-    params[4].innerHTML = `<strong>GH:</strong> ${editGh.value}`;
-    slide.querySelector(".tank-description").innerHTML = `<strong>Description:</strong> ${editDescription.value}`;
-
-    closeEditModal();
-  });
+  // ❌ USUWAMY ręczne zapisywanie do DOM — formularz leci do Flask!
+  // editForm.addEventListener("submit", function (e) { e.preventDefault(); ... });
 
   function closeEditModal() {
     editModal.style.display = "none";
@@ -232,5 +155,4 @@ document.addEventListener("DOMContentLoaded", () => {
     const newIndex = (currentSlide + 1) % slides.length;
     showSlide(newIndex);
   });
-
 });

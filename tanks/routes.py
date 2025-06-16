@@ -140,6 +140,7 @@ def delete_tank():
     return redirect(url_for('tanks.view_tanks'))
 
 
+# ✏️ Backendowa edycja zbiornika
 @tanks.route('/edit_tank', methods=['POST'])
 def edit_tank():
     if 'user_id' not in session:
@@ -150,28 +151,30 @@ def edit_tank():
     tank = Tank.query.filter_by(id=tank_id, user_id=session['user_id']).first()
 
     if not tank:
-        flash("Tank not found or access denied.", "danger")
+        flash("Tank not found.", "danger")
         return redirect(url_for('tanks.view_tanks'))
 
-    tank.name = request.form.get('name')
-    tank.volume = int(request.form.get('volume'))
-    tank.temperature = float(request.form.get('temperature'))
-    tank.ph = float(request.form.get('ph'))
-    tank.kh = int(request.form.get('kh'))
-    tank.gh = int(request.form.get('gh'))
-    tank.description = request.form.get('description')
-
-    image = request.files.get('image')
-    if image and image.filename:
-        uploads_dir = os.path.join('static', 'uploads')
-        os.makedirs(uploads_dir, exist_ok=True)
-        image_filename = secure_filename(image.filename)
-        image.save(os.path.join(uploads_dir, image_filename))
-        tank.image = image_filename
-
     try:
+        tank.name = request.form.get('editTankName')
+        tank.volume = int(request.form.get('editVolume'))
+        tank.temperature = float(request.form.get('editTemperature') or 0)
+        tank.ph = float(request.form.get('editPh') or 0)
+        tank.kh = int(request.form.get('editKh') or 0)
+        tank.gh = int(request.form.get('editGh') or 0)
+        tank.description = request.form.get('editDescription')
+
+        image = request.files.get('editImage')
+        if image and image.filename != '':
+            uploads_dir = os.path.join('static', 'uploads')
+            os.makedirs(uploads_dir, exist_ok=True)
+            image_filename = secure_filename(image.filename)
+            image_path = os.path.join(uploads_dir, image_filename)
+            image.save(image_path)
+            tank.image = image_filename
+
         db.session.commit()
         flash("Tank updated successfully!", "success")
+
     except Exception as e:
         db.session.rollback()
         flash(f"Error updating tank: {str(e)}", "danger")
