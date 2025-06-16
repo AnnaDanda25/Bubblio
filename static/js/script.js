@@ -98,4 +98,20 @@ document.addEventListener('DOMContentLoaded', function () {
       sidebar.classList.toggle('collapsed');
     });
   }
+
+    // === Scrollable tank tabs (Your Tanks) ===
+  const scrollContainer = document.querySelector('.tab-scroll-container');
+  const btnLeft = document.querySelector('.tab-scroll-left');
+  const btnRight = document.querySelector('.tab-scroll-right');
+
+  if (scrollContainer && btnLeft && btnRight) {
+    btnLeft.addEventListener('click', () => {
+      scrollContainer.scrollBy({ left: -150, behavior: 'smooth' });
+    });
+
+    btnRight.addEventListener('click', () => {
+      scrollContainer.scrollBy({ left: 150, behavior: 'smooth' });
+    });
+  }
+
 });

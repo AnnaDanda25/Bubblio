@@ -1,7 +1,8 @@
 from flask import render_template, request, redirect, url_for, session, flash
 from mainpage import mainpage
-from models import db, Task
+from models import db, Task, Tank
 from datetime import datetime, timedelta
+
 
 # Strona główna (main page) – dostęp tylko po zalogowaniu
 @mainpage.route('/')
@@ -12,7 +13,10 @@ def home():
 
     user_id = session['user_id']
     tasks = Task.query.filter_by(user_id=user_id).order_by(Task.date.asc()).all()
-    return render_template('mainpage.html', tasks=tasks)
+    tanks = Tank.query.filter_by(user_id=user_id).all()
+
+    return render_template('mainpage.html', tasks=tasks, tanks=tanks)
+
 
 # Dodawanie zadania – tylko dla zalogowanego użytkownika
 @mainpage.route('/add_task', methods=['POST'])
