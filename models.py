@@ -61,6 +61,22 @@ class Tank(db.Model):
 
     def __repr__(self):
         return f"<Tank {self.name} ({self.volume}L)>"
+    
+
+# Model ryby
+class Fish(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)         # np. "Neon Innesa"
+    species = db.Column(db.String(100), nullable=True)       # opcjonalna nazwa gatunkowa
+    count = db.Column(db.Integer, default=1, nullable=False) # liczba sztuk
+    image = db.Column(db.String(100), nullable=True)         # obrazek ryby
+
+    tank_id = db.Column(db.Integer, db.ForeignKey('tank.id'), nullable=False)
+    tank = db.relationship("Tank", backref=db.backref("fish", lazy=True))
+
+    def __repr__(self):
+        return f"<Fish {self.name} (x{self.count})>"
+
 
 
 # 📷 Model zdjęcia w galerii
