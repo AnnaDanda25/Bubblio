@@ -3,8 +3,9 @@ from models import db, User, Tank, Fish
 from tanks import tanks
 from werkzeug.utils import secure_filename
 import os
+import json  # ✅ Do zapisu i odczytu daily_checks
 
-# 🔍 Widok zbiorników danego użytkownika
+# 🌊 Widok zbiorników użytkownika
 @tanks.route('/')
 def view_tanks():
     if 'user_id' not in session:
@@ -14,14 +15,9 @@ def view_tanks():
     user = User.query.get(session['user_id'])
     user_tanks = Tank.query.filter_by(user_id=user.id).all()
 
-    # 👇 DEBUG: logujemy dane w terminalu
-    print(f"[DEBUG] Logged-in user ID: {user.id} ({user.login})")
-    print(f"[DEBUG] Number of tanks: {len(user_tanks)}")
-
     return render_template('tanks.html', tanks=user_tanks, user=user)
 
-
-# ➕ Obsługa dodawania zbiornika
+# ➕ Dodawanie zbiornika
 @tanks.route('/add_tank', methods=['POST'])
 def add_tank():
     if 'user_id' not in session:
@@ -42,39 +38,30 @@ def add_tank():
         uploads_dir = os.path.join('static', 'uploads')
         os.makedirs(uploads_dir, exist_ok=True)
         image_filename = secure_filename(image.filename)
-        image_path = os.path.join(uploads_dir, image_filename)
-        image.save(image_path)
+        image.save(os.path.join(uploads_dir, image_filename))
 
-        try:
-            new_tank = Tank(
-                name=name,
-                volume=int(volume),
-                temperature=float(temperature) if temperature else None,
-                ph=float(ph) if ph else None,
-                kh=int(kh) if kh else None,
-                gh=int(gh) if gh else None,
-                description=description,
-                image=image_filename,
-                user_id=session.get('user_id')  # ⬅️ bezpieczne pobieranie
-            )
-
-            print("[DEBUG] Tworzony Tank:")
-            print(f"Name: {new_tank.name}")
-            print(f"Volume: {new_tank.volume}")
-            print(f"User ID: {new_tank.user_id}")
-
-            db.session.add(new_tank)
-            db.session.commit()
-            flash("Tank added successfully!", "success")
-        except Exception as e:
-            db.session.rollback()
-            flash(f"Error adding tank: {str(e)}", "danger")
-
+    try:
+        new_tank = Tank(
+            name=name,
+            volume=int(volume),
+            temperature=float(temperature) if temperature else None,
+            ph=float(ph) if ph else None,
+            kh=int(kh) if kh else None,
+            gh=int(gh) if gh else None,
+            description=description,
+            image=image_filename,
+            user_id=session.get('user_id')
+        )
+        db.session.add(new_tank)
+        db.session.commit()
+        flash("Tank added successfully!", "success")
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error adding tank: {str(e)}", "danger")
 
     return redirect(url_for('tanks.view_tanks'))
 
-
-# 🐠 Obsługa dodawania ryby do zbiornika
+# 🐠 Dodawanie ryby do zbiornika
 @tanks.route('/add_fish', methods=['POST'])
 def add_fish():
     if 'user_id' not in session:
@@ -92,8 +79,7 @@ def add_fish():
         fish_dir = os.path.join('static', 'img', 'fish_icons')
         os.makedirs(fish_dir, exist_ok=True)
         image_filename = secure_filename(image.filename)
-        image_path = os.path.join(fish_dir, image_filename)
-        image.save(image_path)
+        image.save(os.path.join(fish_dir, image_filename))
 
     try:
         new_fish = Fish(
@@ -112,8 +98,7 @@ def add_fish():
 
     return redirect(url_for('tanks.view_tanks'))
 
-
-# 🗑️ Obsługa usuwania zbiornika
+# 🗑️ Usuwanie zbiornika
 @tanks.route('/delete_tank', methods=['POST'])
 def delete_tank():
     if 'user_id' not in session:
@@ -121,12 +106,9 @@ def delete_tank():
         return redirect(url_for('auth.login'))
 
     tank_id = request.form.get('tank_id')
-    if not tank_id:
-        flash("Invalid request: no tank selected.", "danger")
-        return redirect(url_for('tanks.view_tanks'))
+    tank = Tank.query.filter_by(id=tank_id, user_id=session['user_id']).first()
 
-    tank = Tank.query.get(tank_id)
-    if tank and tank.user_id == session['user_id']:
+    if tank:
         try:
             db.session.delete(tank)
             db.session.commit()
@@ -139,8 +121,7 @@ def delete_tank():
 
     return redirect(url_for('tanks.view_tanks'))
 
-
-# ✏️ Backendowa edycja zbiornika
+# ✏️ Edycja zbiornika
 @tanks.route('/edit_tank', methods=['POST'])
 def edit_tank():
     if 'user_id' not in session:
@@ -168,8 +149,7 @@ def edit_tank():
             uploads_dir = os.path.join('static', 'uploads')
             os.makedirs(uploads_dir, exist_ok=True)
             image_filename = secure_filename(image.filename)
-            image_path = os.path.join(uploads_dir, image_filename)
-            image.save(image_path)
+            image.save(os.path.join(uploads_dir, image_filename))
             tank.image = image_filename
 
         db.session.commit()
@@ -178,5 +158,25 @@ def edit_tank():
     except Exception as e:
         db.session.rollback()
         flash(f"Error updating tank: {str(e)}", "danger")
+
+    return redirect(url_for('tanks.view_tanks'))
+
+# ✅ Zapis ustawień daily checks
+@tanks.route('/update_checks', methods=['POST'])
+def update_checks():
+    if 'user_id' not in session:
+        flash("Please log in.", "warning")
+        return redirect(url_for('auth.login'))
+
+    tank_id = request.form.get('tank_id')
+    selected_checks = request.form.getlist('checks')  # np. ['feed', 'temp']
+
+    tank = Tank.query.filter_by(id=tank_id, user_id=session['user_id']).first()
+    if tank:
+        tank.daily_checks = json.dumps(selected_checks)  # zapis jako JSON
+        db.session.commit()
+        flash("Daily checks saved!", "success")
+    else:
+        flash("Tank not found or access denied.", "danger")
 
     return redirect(url_for('tanks.view_tanks'))

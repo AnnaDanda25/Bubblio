@@ -155,4 +155,33 @@ document.addEventListener("DOMContentLoaded", () => {
     const newIndex = (currentSlide + 1) % slides.length;
     showSlide(newIndex);
   });
+
+    // 🧠 Obsługa Settings Modal
+  const settingsForm = document.getElementById('dailyChecksForm');
+  const tankIdInput = document.getElementById('settingsTankId');
+  const checkboxes = settingsForm?.querySelectorAll('input[name="checks"]');
+
+  function openSettingsModal(tankId) {
+    document.getElementById('settingsModal').style.display = 'block';
+
+    // Ustaw tank_id w ukrytym polu formularza
+    tankIdInput.value = tankId;
+
+    // Pobierz zapisane dane z atrybutu data-checks
+    const slide = [...getSlides()].find(slide => slide.dataset.tankId === tankId);
+    const checks = slide?.dataset.checks ? JSON.parse(slide.dataset.checks) : [];
+
+    // Odznacz wszystkie
+    checkboxes.forEach(cb => cb.checked = false);
+
+    // Zaznacz wybrane
+    checks.forEach(val => {
+      const checkbox = settingsForm.querySelector(`input[value="${val}"]`);
+      if (checkbox) checkbox.checked = true;
+    });
+
+    openSettingsTab('dailyTab');  // domyślna zakładka
+  }
+
+
 });
