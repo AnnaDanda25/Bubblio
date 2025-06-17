@@ -2,6 +2,7 @@ from flask import render_template, request, redirect, url_for, session, flash
 from mainpage import mainpage
 from models import db, Task, Tank
 from datetime import datetime, timedelta
+import json  # ✅ potrzebne do serializacji daily_checks
 
 
 # Strona główna (main page) – dostęp tylko po zalogowaniu
@@ -14,6 +15,11 @@ def home():
     user_id = session['user_id']
     tasks = Task.query.filter_by(user_id=user_id).order_by(Task.date.asc()).all()
     tanks = Tank.query.filter_by(user_id=user_id).all()
+
+    # ✅ Konwersja daily_checks do JSON string (jeśli to lista)
+    for tank in tanks:
+        if isinstance(tank.daily_checks, list):
+            tank.daily_checks = json.dumps(tank.daily_checks)
 
     return render_template('mainpage.html', tasks=tasks, tanks=tanks)
 

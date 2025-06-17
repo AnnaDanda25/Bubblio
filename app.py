@@ -1,4 +1,5 @@
 import os
+import json
 from flask import Flask, redirect, url_for
 from flask_migrate import Migrate
 from models import db, User, Task, Tank
@@ -24,6 +25,11 @@ app.config['SECRET_KEY'] = 'supersekretnyklucz'
 # 🔁 Inicjalizacja bazy danych i migracji
 db.init_app(app)
 migrate = Migrate(app, db)
+
+# ✅ Rejestracja własnego filtra Jinja: fromjson
+@app.template_filter('fromjson')
+def fromjson_filter(s):
+    return json.loads(s)
 
 # 🧩 Rejestracja blueprintów
 app.register_blueprint(mainpage)

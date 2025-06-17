@@ -182,6 +182,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     openSettingsTab('dailyTab');  // domyślna zakładka
   }
-
+  // 📌 Dodajemy eventy do przycisków "Settings"
+  document.querySelectorAll('.settings-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const slide = btn.closest('.slide');
+      const tankId = slide.dataset.tankId;
+      openSettingsModal(tankId);
+    });
+  });
 
 });

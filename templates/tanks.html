@@ -70,7 +70,9 @@
           <div class="tank-slider-container">
             {% if tanks %}
               {% for tank in tanks %}
-              <div class="slide {% if loop.index0 == 0 %}active{% endif %}" data-tank-id="{{ tank.id }}" data-checks="{{ tank.daily_checks or '[]' }}">
+              <div class="slide {% if loop.index0 == 0 %}active{% endif %}" 
+                  data-tank-id="{{ tank.id }}" 
+                  data-checks='{{ tank.daily_checks | tojson | safe }}'>
                 <div class="tank-card">
                   <h2 class="tank-name-title text-center">{{ tank.name }}</h2>
                   <div class="tank-details">
@@ -118,7 +120,6 @@
                     <button class="add-tank-btn">Add New Tank</button>
                     <button class="settings-btn" onclick="document.getElementById('settingsModal').style.display='block'">Settings</button>
                   </div>
-
                 </div>
               </div>
               {% endfor %}
@@ -139,6 +140,7 @@
             <button class="slider-arrow" id="nextBtn">&#10095;</button>
           </div>
         </div>
+
 
         <!-- Modals -->
         <!-- Add Tank -->

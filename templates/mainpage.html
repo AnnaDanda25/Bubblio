@@ -105,11 +105,23 @@
                   <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="tank{{ tank.id }}" role="tabpanel">
                     <h5 class="subsection-title">Daily checks</h5>
                     <ul class="list-unstyled mb-0">
-                      <li><input type="checkbox" /> Feed the fish</li>
-                      <li><input type="checkbox" /> Check water temperature</li>
-                      <li><input type="checkbox" /> Inspect water clarity</li>
-                      <li><input type="checkbox" /> Verify equipment is working</li>
-                      <li><input type="checkbox" /> Observe fish behavior and health</li>
+                      {% set check_labels = {
+                        'temp': 'Check water temperature',
+                        'behavior': 'Observe fish behavior',
+                        'food': 'Check leftover food',
+                        'clarity': 'Check water clarity',
+                        'count': 'Count fish/invertebrates',
+                        'equipment': 'Check filter and equipment',
+                        'disease': 'Look for signs of disease',
+                        'waterlevel': 'Check water level',
+                        'co2': 'Check CO₂ system (if used)',
+                        'plants': 'Inspect plants and algae'
+                      } %}
+
+                      {% set checks = (tank.daily_checks if tank.daily_checks else '[]')|fromjson %}
+                      {% for check in checks %}
+                        <li><input type="checkbox" /> {{ check_labels[check] }}</li>
+                      {% endfor %}
                     </ul>
                   </div>
                 {% endfor %}

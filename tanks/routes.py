@@ -173,7 +173,7 @@ def update_checks():
 
     tank = Tank.query.filter_by(id=tank_id, user_id=session['user_id']).first()
     if tank:
-        tank.daily_checks = json.dumps(selected_checks)  # zapis jako JSON
+        tank.daily_checks = selected_checks
         db.session.commit()
         flash("Daily checks saved!", "success")
     else:
