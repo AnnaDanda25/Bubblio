@@ -73,21 +73,31 @@ document.addEventListener('DOMContentLoaded', function () {
     updateCalendar(currentMonth, currentYear);
   });
 
-  // === Your Tanks checkbox strike-through ===
-  document.querySelectorAll('.tab-pane input[type="checkbox"]').forEach(cb => {
-    cb.addEventListener('change', function () {
+  // === Daily Checks & Upcoming Tasks checkbox strike-through ===
+  function updateCheckboxStrikethroughs() {
+    document.querySelectorAll('#task-list input[type="checkbox"], .tab-pane input[type="checkbox"]').forEach(cb => {
       const li = cb.closest('li');
       if (li) {
-        li.classList.toggle('text-decoration-line-through', cb.checked);
+        if (cb.checked) {
+          li.classList.add('text-decoration-line-through');
+        }
+        cb.addEventListener('change', function () {
+          li.classList.toggle('text-decoration-line-through', cb.checked);
+        });
       }
     });
-  });
+  }
 
-  // Show/hide recurring fields
-  document.getElementById('recurringType').addEventListener('change', function () {
-    const recurringFields = document.getElementById('recurringFields');
-    recurringFields.style.display = this.value === 'recurring' ? 'block' : 'none';
-  });
+  updateCheckboxStrikethroughs();
+
+  // === Show/hide recurring fields ===
+  const recurringType = document.getElementById('recurringType');
+  if (recurringType) {
+    recurringType.addEventListener('change', function () {
+      const recurringFields = document.getElementById('recurringFields');
+      recurringFields.style.display = this.value === 'recurring' ? 'block' : 'none';
+    });
+  }
 
   // === Hamburger menu ===
   const menuToggle = document.getElementById('menuToggle');
@@ -96,6 +106,21 @@ document.addEventListener('DOMContentLoaded', function () {
   if (menuToggle && sidebar) {
     menuToggle.addEventListener('click', function () {
       sidebar.classList.toggle('collapsed');
+    });
+  }
+
+  // === Scrollable tank tabs (Your Tanks) ===
+  const scrollContainer = document.querySelector('.tab-scroll-container');
+  const btnLeft = document.querySelector('.tab-scroll-left');
+  const btnRight = document.querySelector('.tab-scroll-right');
+
+  if (scrollContainer && btnLeft && btnRight) {
+    btnLeft.addEventListener('click', () => {
+      scrollContainer.scrollBy({ left: -150, behavior: 'smooth' });
+    });
+
+    btnRight.addEventListener('click', () => {
+      scrollContainer.scrollBy({ left: 150, behavior: 'smooth' });
     });
   }
 });

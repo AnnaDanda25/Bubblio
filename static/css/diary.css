@@ -3,6 +3,8 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .gallery-item {
@@ -14,6 +16,8 @@
 
 .gallery-thumb {
   width: 100%;
+  height: auto;
+  max-width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: 12px;
@@ -34,6 +38,29 @@
 }
 
 /* === DIARY – NOTEBOOK === */
+.note-entry {
+  max-height: 130px;
+  max-width: 800px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  margin-left: auto;
+  margin-right: auto;
+  transition: background 0.3s ease;
+}
+
+.note-entry:hover {
+  background-color: var(--light-hover);
+}
+
+.note-entry p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .note-entry .note-date {
   font-size: 16px;
   color: var(--text-dark);
@@ -55,6 +82,67 @@
 #sortNotes {
   font-weight: 600;
   font-size: 14px;
+}
+
+/* === MODAL PODGLĄDU NOTATKI === */
+#viewNoteModal .modal-dialog {
+  width: 100%;
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+@media (max-width: 991px) {
+  #viewNoteModal .modal-dialog {
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 576px) {
+  #viewNoteModal .modal-dialog {
+    max-width: 95%;
+    margin: 1rem auto;
+  }
+}
+
+#viewNoteModal .modal-content {
+  padding: 20px;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+#viewNoteContent {
+  white-space: pre-wrap;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* === NOTE LIGHTBOX === */
+#noteLightboxOverlay .note-lightbox {
+  text-align: left;
+  max-width: 800px;
+  padding: 30px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+#noteLightboxOverlay h5#viewNoteTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+#noteLightboxOverlay p#viewNoteDate {
+  font-size: 14px;
+  color: gray;
+  margin-bottom: 20px;
+}
+
+#noteLightboxOverlay p#viewNoteContent {
+  font-size: 16px;
+  line-height: 1.6;
+  white-space: pre-wrap;
 }
 
 
@@ -141,7 +229,7 @@
   color: var(--accent);
   border-radius: 30%;
   transition: background-color 0.2s ease, color 0.2s ease;
-  box-shadow: 0 0 10px rgba(0, 118, 182, 0.135)
+  box-shadow: 0 0 10px rgba(0, 118, 182, 0.135);
 }
 
 @keyframes fadeOnly {
@@ -184,10 +272,11 @@
   background: linear-gradient(to top, var(--white), transparent);
 }
 
-/* === MOBILE GALLERY === */
+/* === RESPONSYWNOŚĆ – GALERIA === */
 @media (max-width: 768px) {
   .gallery-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 }
 

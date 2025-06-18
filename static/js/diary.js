@@ -8,13 +8,13 @@ document.addEventListener('DOMContentLoaded', function () {
   const toggleNoteForm = document.getElementById('toggleNoteForm');
   const noteForm = document.getElementById('noteForm');
   const noteDate = document.getElementById('noteDate');
-  const noteTitle = document.getElementById('noteTitle');
+  const noteTitleInput = document.getElementById('noteTitle');
   const noteText = document.getElementById('noteText');
   const notesList = document.getElementById('notesList');
   const sortSelect = document.getElementById('sortNotes');
 
   toggleNoteForm?.addEventListener('click', () => {
-    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+    const today = new Date().toISOString().slice(0, 10);
     noteDate.value = today;
     noteForm.classList.toggle('d-none');
   });
@@ -22,19 +22,14 @@ document.addEventListener('DOMContentLoaded', function () {
   noteForm?.addEventListener('submit', function (e) {
     e.preventDefault();
     const date = noteDate.value;
-    const title = noteTitle.value.trim();
+    const title = noteTitleInput.value.trim();
     const text = noteText.value.trim();
 
     if (date && title && text) {
       fetch('/diary/add_note', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: new URLSearchParams({
-          title: title,
-          content: text
-        })
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ title, content: text })
       })
         .then(response => {
           if (!response.ok) throw new Error('Network response was not ok');
@@ -42,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(() => {
           const noteItem = document.createElement('div');
-          noteItem.className = 'note-entry mb-3 p-3 bg-light border rounded';
+          noteItem.className = 'note-entry mb-3 p-3 bg-light border rounded position-relative';
           noteItem.innerHTML = `
             <strong class="note-date">${date}</strong>
             <h5 class="note-title">${title}</h5>
@@ -87,14 +82,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   sortAndRenderNotes();
 
-  // Obsługa modala dodawania zdjęcia
+  // Photo modal
   const addPhotoBtn = document.getElementById('addPhotoBtn');
   const photoModal = new bootstrap.Modal(document.getElementById('photoModal'));
-  addPhotoBtn?.addEventListener('click', () => {
-    photoModal.show();
-  });
+  addPhotoBtn?.addEventListener('click', () => photoModal.show());
 
-  // === LIGHTBOX FUNCTIONALITY ===
+  // Lightbox for photos
   const thumbnails = document.querySelectorAll('.gallery-thumb');
   const overlay = document.getElementById('lightboxOverlay');
   const lightboxImg = document.getElementById('lightboxImage');
@@ -122,35 +115,81 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  closeBtn.addEventListener('click', () => {
-    overlay.classList.add('d-none');
-  });
-
+  closeBtn.addEventListener('click', () => overlay.classList.add('d-none'));
   overlay.addEventListener('click', (e) => {
     if (e.target === overlay) overlay.classList.add('d-none');
   });
-
-  prevBtn.addEventListener('click', () => {
-    currentIndex = (currentIndex - 1 + thumbnails.length) % thumbnails.length;
-    showImage(currentIndex);
-  });
-
-  nextBtn.addEventListener('click', () => {
-    currentIndex = (currentIndex + 1) % thumbnails.length;
-    showImage(currentIndex);
-  });
-
+  prevBtn.addEventListener('click', () => showImage((currentIndex - 1 + thumbnails.length) % thumbnails.length));
+  nextBtn.addEventListener('click', () => showImage((currentIndex + 1) % thumbnails.length));
   document.addEventListener('keydown', (e) => {
     if (!overlay.classList.contains('d-none')) {
-      if (e.key === 'ArrowLeft') {
-        currentIndex = (currentIndex - 1 + thumbnails.length) % thumbnails.length;
-        showImage(currentIndex);
-      } else if (e.key === 'ArrowRight') {
-        currentIndex = (currentIndex + 1) % thumbnails.length;
-        showImage(currentIndex);
-      } else if (e.key === 'Escape') {
-        overlay.classList.add('d-none');
-      }
+      if (e.key === 'ArrowLeft') showImage((currentIndex - 1 + thumbnails.length) % thumbnails.length);
+      else if (e.key === 'ArrowRight') showImage((currentIndex + 1) % thumbnails.length);
+      else if (e.key === 'Escape') overlay.classList.add('d-none');
     }
+  });
+
+  // Edit Note Modal
+  const editNoteModal = document.getElementById('editNoteModal');
+  const editNoteForm = document.getElementById('editNoteForm');
+  const editTitle = document.getElementById('editNoteTitle');
+  const editContent = document.getElementById('editNoteContent');
+  const editDate = document.getElementById('editNoteDate');
+
+  editNoteModal.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget;
+    const noteId = button.getAttribute('data-note-id');
+    const title = button.getAttribute('data-note-title');
+    const content = button.getAttribute('data-note-content');
+    const date = button.getAttribute('data-note-date');
+
+    editTitle.value = title;
+    editContent.value = content;
+    editDate.value = date;
+    editNoteForm.action = `/diary/edit_note/${noteId}`;
+  });
+
+  // Edit Photo Modal
+  const editPhotoModal = document.getElementById('editPhotoModal');
+  const editPhotoForm = document.getElementById('editPhotoForm');
+  const editPhotoTitleInput = document.getElementById('editPhotoTitle');
+
+  editPhotoModal.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget;
+    const photoId = button.getAttribute('data-photo-id');
+    const title = button.getAttribute('data-photo-title');
+
+    editPhotoTitleInput.value = title;
+    editPhotoForm.action = `/diary/edit_photo/${photoId}`;
+  });
+
+  // Note Lightbox Modal (custom)
+  const noteLightbox = document.getElementById('noteLightboxOverlay');
+  const noteClose = document.getElementById('noteLightboxClose');
+  const viewNoteTitle = document.getElementById('viewNoteTitle');
+  const viewNoteContent = document.getElementById('viewNoteContent');
+  const viewNoteDate = document.getElementById('viewNoteDate');
+
+  notesList?.addEventListener('click', function (e) {
+    const noteEntry = e.target.closest('.note-entry');
+    const isEdit = e.target.closest('[data-bs-target="#editNoteModal"]');
+    const isDelete = e.target.closest('form[action*="delete_note"]');
+
+    if (noteEntry && !isEdit && !isDelete) {
+      const title = noteEntry.querySelector('.note-title')?.textContent || 'Untitled';
+      const content = noteEntry.querySelector('p')?.textContent || '';
+      const date = noteEntry.querySelector('.note-date')?.textContent || '';
+
+      viewNoteTitle.textContent = title;
+      viewNoteContent.textContent = content;
+      viewNoteDate.textContent = date;
+
+      noteLightbox.classList.remove('d-none');
+    }
+  });
+
+  noteClose?.addEventListener('click', () => noteLightbox.classList.add('d-none'));
+  noteLightbox?.addEventListener('click', (e) => {
+    if (e.target === noteLightbox) noteLightbox.classList.add('d-none');
   });
 });

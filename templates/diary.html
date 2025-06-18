@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/bubbliocore.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/diary.css') }}" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
 </head>
 <body>
   <div class="app-container d-flex">
@@ -36,9 +37,9 @@
           <span class="bubble-number">21</span>
         </div>
       </header>
-
       <section class="section-with-title">
         <div class="row gx-5">
+
           <!-- Gallery Section -->
           <div class="col-md-6 section-with-title mb-5">
             <h2 class="section-title">Gallery</h2>
@@ -46,9 +47,30 @@
               {% if photos %}
                 <div class="gallery-grid">
                   {% for photo in photos %}
-                    <div class="gallery-item">
+                    <div class="gallery-item position-relative">
                       <img src="{{ url_for('static', filename='uploads/' + photo.filename) }}" alt="{{ photo.title }}" class="gallery-thumb" />
                       <p class="fw-bold mt-2 text-center">{{ photo.title }}</p>
+
+                      <!-- 🗑️ Delete -->
+                      <form method="POST"
+                            action="{{ url_for('diary.delete_photo', photo_id=photo.id) }}"
+                            onsubmit="return confirm('Delete this photo?');"
+                            class="position-absolute top-0 end-0 m-2">
+                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete photo">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </form>
+
+                      <!-- ✏️ Edit -->
+                      <button type="button"
+                              class="btn btn-sm btn-outline-secondary position-absolute top-0 start-0 m-2"
+                              title="Edit photo title"
+                              data-bs-toggle="modal"
+                              data-bs-target="#editPhotoModal"
+                              data-photo-id="{{ photo.id }}"
+                              data-photo-title="{{ photo.title }}">
+                        <i class="bi bi-pencil"></i>
+                      </button>
                     </div>
                   {% endfor %}
                 </div>
@@ -96,11 +118,36 @@
 
               {% if notes %}
                 {% for note in notes %}
-                  <div class="note-entry mb-3 p-3 bg-light border rounded">
+                  <div class="note-entry mb-3 p-3 bg-light border rounded position-relative">
+                    <!-- 🗑️ Przycisk usuwania -->
+                    <form method="POST"
+                          action="{{ url_for('diary.delete_note', note_id=note.id) }}"
+                          onsubmit="return confirm('Delete this note?');"
+                          class="position-absolute top-0 end-0 m-2">
+                      <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete note">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </form>
+
+                    <!-- ✏️ Przycisk edycji -->
+                    <button type="button"
+                            class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 me-5 mt-2"
+                            title="Edit note"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editNoteModal"
+                            data-note-id="{{ note.id }}"
+                            data-note-title="{{ note.title }}"
+                            data-note-content="{{ note.content }}"
+                            data-note-date="{{ note.date }}">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+
+                    <!-- 📝 Treść notatki -->
                     <strong class="note-date">{{ note.date }}</strong>
                     <h5 class="note-title">{{ note.title }}</h5>
                     <p class="mb-0">{{ note.content }}</p>
                   </div>
+
                 {% endfor %}
               {% else %}
                 <p class="text-center">No notes yet. Click + to add your first one!</p>
@@ -132,6 +179,44 @@
             </div>
           </div>
 
+          <!-- Edit Note Modal -->
+          <div class="modal fade" id="editNoteModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+              <form id="editNoteForm" class="modal-content" method="POST">
+                <div class="modal-header">
+                  <h5 class="modal-title">Edit Note</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex flex-column gap-3">
+                  <input type="hidden" name="date" id="editNoteDate" />
+                  <input type="text" name="title" id="editNoteTitle" class="form-control" required />
+                  <textarea name="content" id="editNoteContent" class="form-control" rows="4" required></textarea>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+              </form>
+            </div>
+          </div>
+          <!-- Edit Photo Modal -->
+          <div class="modal fade" id="editPhotoModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+              <form id="editPhotoForm" class="modal-content" method="POST">
+                <div class="modal-header">
+                  <h5 class="modal-title">Edit Photo Title</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex flex-column gap-3">
+                  <input type="text" name="title" id="editPhotoTitle" class="form-control" required />
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+
         </div>
       </section>
     </main>
@@ -147,19 +232,17 @@
       <p id="lightboxCaption"></p>
     </div>
   </div>
-
+  <!-- Note Lightbox Modal -->
+  <div id="noteLightboxOverlay" class="lightbox-overlay d-none">
+    <div class="lightbox-content note-lightbox">
+      <span id="noteLightboxClose" class="lightbox-close">&times;</span>
+      <h5 id="viewNoteTitle" class="mb-2 fw-bold text-accent"></h5>
+      <p id="viewNoteDate" class="text-muted small"></p>
+      <p id="viewNoteContent" class="mt-3"></p>
+    </div>
+  </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="{{ url_for('static', filename='js/script.js') }}"></script>
   <script src="{{ url_for('static', filename='js/diary.js') }}"></script>
-  <script>
-    // Ustaw dzisiejszą datę w ukrytym polu w formularzu notatki
-    document.addEventListener('DOMContentLoaded', () => {
-      const noteDateInput = document.getElementById('noteDate');
-      if (noteDateInput) {
-        const today = new Date().toISOString().split('T')[0];
-        noteDateInput.value = today;
-      }
-    });
-  </script>
 </body>
 </html>

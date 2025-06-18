@@ -3,6 +3,7 @@
   border-bottom: none;
 }
 
+
 .nav-tabs .nav-link {
   background-color: transparent;
   color: #013853;
@@ -12,7 +13,9 @@
   border-radius: 12px;
   padding: 16px 24px;
   transition: background-color 0.3s ease, color 0.3s ease;
+  white-space: nowrap; /* ⬅️ To dodaj */
 }
+
 
 .nav-tabs .nav-link:hover {
   background-color: rgba(0, 119, 182, 0.1);
@@ -108,4 +111,24 @@ li {
 @keyframes fadeInCalendar {
   from { opacity: 0; transform: translateY(-10px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+.tank-tab-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.tab-scroll-container {
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  flex-grow: 1;
+}
+
+#tankTabs {
+  display: flex;
+  flex-wrap: nowrap;
+  margin-bottom: 0;
 }

@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, date
 from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
@@ -14,8 +14,8 @@ class User(db.Model):
     # Relacje
     tasks = db.relationship('Task', backref='user', lazy=True)
     tanks = db.relationship('Tank', backref='owner', lazy=True)
-    photos = db.relationship('Photo', backref='user', lazy=True)  # 🆕
-    notes = db.relationship('Note', backref='user', lazy=True)    # 🆕
+    photos = db.relationship('Photo', backref='user', lazy=True)
+    notes = db.relationship('Note', backref='user', lazy=True)
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
@@ -56,11 +56,31 @@ class Tank(db.Model):
     description = db.Column(db.Text, nullable=True)
     image = db.Column(db.String(100), nullable=True)
 
+    daily_checks = db.Column(db.PickleType, nullable=True)  # 🆕 lista codziennych zadań
+
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    # ⬇️ Relacja do important tasks (nowy model poniżej)
+    important_tasks = db.relationship('ImportantTask', backref='tank', lazy=True, cascade='all, delete-orphan')
+
     def __repr__(self):
         return f"<Tank {self.name} ({self.volume}L)>"
+
+
+# 🐠 Model ryby
+class Fish(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)         # np. "Neon Innesa"
+    species = db.Column(db.String(100), nullable=True)       # opcjonalna nazwa gatunkowa
+    count = db.Column(db.Integer, default=1, nullable=False) # liczba sztuk
+    image = db.Column(db.String(100), nullable=True)         # obrazek ryby
+
+    tank_id = db.Column(db.Integer, db.ForeignKey('tank.id'), nullable=False)
+    tank = db.relationship("Tank", backref=db.backref("fish", lazy=True))
+
+    def __repr__(self):
+        return f"<Fish {self.name} (x{self.count})>"
 
 
 # 📷 Model zdjęcia w galerii
@@ -80,10 +100,21 @@ class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.Text, nullable=False)
-    # date = db.Column(db.String(10), nullable=False)  # Format: YYYY-MM-DD
     date = db.Column(db.Date, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
         return f"<Note {self.title} on {self.date}>"
+
+
+# 🔁 Model cyklicznego ważnego zadania
+class ImportantTask(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    tank_id = db.Column(db.Integer, db.ForeignKey('tank.id'), nullable=False)
+    task_type = db.Column(db.String(50), nullable=False)  # np. 'waterchange', 'trimplants'
+    start_date = db.Column(db.Date, nullable=True)
+    interval_days = db.Column(db.Integer, nullable=True)
+
+    def __repr__(self):
+        return f"<ImportantTask {self.task_type} for tank {self.tank_id}>"

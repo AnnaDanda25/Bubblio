@@ -81,31 +81,50 @@
           <div class="section-with-title h-100">
             <h2 class="section-title">Your Tanks</h2>
             <div class="card p-3 h-100">
-              <ul class="nav nav-tabs mb-3" id="tankTabs" role="tablist">
-                <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tank1" role="tab">Tank 1</button></li>
-                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tank2" role="tab">Tank 2</button></li>
-              </ul>
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="tab-scroll-container d-flex overflow-auto" style="scroll-behavior: smooth;">
+                  <ul class="nav nav-tabs flex-nowrap" id="tankTabs" role="tablist">
+                    {% for tank in tanks %}
+                      <li class="nav-item">
+                        <button class="nav-link {% if loop.first %}active{% endif %}" data-bs-toggle="tab"
+                                data-bs-target="#tank{{ loop.index }}" role="tab">
+                          {{ tank.name }}
+                        </button>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+                <div class="d-flex ms-2">
+                  <button class="calendar-arrow tab-scroll-left" aria-label="Scroll left">⟨</button>
+                  <button class="calendar-arrow tab-scroll-right" aria-label="Scroll right">⟩</button>
+                </div>
+              </div>
+
               <div class="tab-content">
-                <div class="tab-pane fade show active" id="tank1" role="tabpanel">
-                  <h5 class="subsection-title">Daily checks</h5>
-                  <ul class="list-unstyled mb-0">
-                    <li><input type="checkbox" /> Feed the fish</li>
-                    <li><input type="checkbox" /> Check water temperature</li>
-                    <li><input type="checkbox" /> Inspect water clarity</li>
-                    <li><input type="checkbox" /> Verify equipment is working</li>
-                    <li><input type="checkbox" /> Observe fish behavior and health</li>
-                  </ul>
-                </div>
-                <div class="tab-pane fade" id="tank2" role="tabpanel">
-                  <h5 class="subsection-title">Daily checks</h5>
-                  <ul class="list-unstyled mb-0">
-                    <li><input type="checkbox" /> Feed the fish</li>
-                    <li><input type="checkbox" /> Check water temperature</li>
-                    <li><input type="checkbox" /> Inspect water clarity</li>
-                    <li><input type="checkbox" /> Verify equipment is working</li>
-                    <li><input type="checkbox" /> Observe fish behavior and health</li>
-                  </ul>
-                </div>
+                {% for tank in tanks %}
+                  <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="tank{{ tank.id }}" role="tabpanel">
+                    <h5 class="subsection-title">Daily checks</h5>
+                    <ul class="list-unstyled mb-0">
+                      {% set check_labels = {
+                        'temp': 'Check water temperature',
+                        'behavior': 'Observe fish behavior',
+                        'food': 'Check leftover food',
+                        'clarity': 'Check water clarity',
+                        'count': 'Count fish/invertebrates',
+                        'equipment': 'Check filter and equipment',
+                        'disease': 'Look for signs of disease',
+                        'waterlevel': 'Check water level',
+                        'co2': 'Check CO₂ system (if used)',
+                        'plants': 'Inspect plants and algae'
+                      } %}
+
+                      {% set checks = (tank.daily_checks if tank.daily_checks else '[]')|fromjson %}
+                      {% for check in checks %}
+                        <li><input type="checkbox" /> {{ check_labels[check] }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                {% endfor %}
               </div>
             </div>
           </div>
@@ -134,15 +153,29 @@
         <h2 class="section-title">Upcoming Tasks</h2>
         <div class="card p-3 position-relative">
           <ul id="task-list" class="list-unstyled mb-0">
+            {% set has_any_tasks = false %}
+
+            <!-- Zadania z bazy danych -->
             {% for task in tasks %}
+              {% set has_any_tasks = true %}
               <li><input type="checkbox" {% if task.is_done %}checked{% endif %} /> {{ task.date }} – {{ task.title }}</li>
-            {% else %}
-              <li class="text-muted">No tasks yet.</li>
             {% endfor %}
+
+            <!-- Zadania important_tasks wygenerowane dynamicznie -->
+            {% for task in virtual_tasks %}
+              {% set has_any_tasks = true %}
+              <li><input type="checkbox" disabled /> {{ task.date }} – {{ task.title }} <span class="text-muted">(from important tasks)</span></li>
+            {% endfor %}
+
+
+            {% if not has_any_tasks %}
+              <li class="text-muted">No tasks yet.</li>
+            {% endif %}
           </ul>
           <button class="btn-add-task" data-bs-toggle="modal" data-bs-target="#addTaskModal">+</button>
         </div>
       </section>
+
     </main>
   </div>
 
