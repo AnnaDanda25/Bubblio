@@ -5,10 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Bubblio - Tanks</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bubbliocore.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/tanks.css') }}" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/bubbliocore.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/tanks.css') }}"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div class="app-container d-flex">
@@ -19,118 +31,171 @@
         <ul class="nav flex-column mt-4">
           <li class="nav-item">
             <a href="{{ url_for('mainpage.home') }}" class="nav-link">
-              <img src="{{ url_for('static', filename='img/mainpage_menu_icon.png') }}" />
+              <img
+                src="{{ url_for('static', filename='img/mainpage_menu_icon.png') }}"
+              />
               <span>Home</span>
             </a>
           </li>
           <li class="nav-item">
             <a href="{{ url_for('tanks.view_tanks') }}" class="nav-link active">
-              <img src="{{ url_for('static', filename='img/tank_menu_icon.png') }}" />
+              <img
+                src="{{ url_for('static', filename='img/tank_menu_icon.png') }}"
+              />
               <span>Tanks</span>
             </a>
           </li>
           <li class="nav-item">
             <a href="{{ url_for('diary.view_diary') }}" class="nav-link">
-              <img src="{{ url_for('static', filename='img/diary_menu_icon.png') }}" />
+              <img
+                src="{{ url_for('static', filename='img/diary_menu_icon.png') }}"
+              />
               <span>Diary</span>
             </a>
           </li>
           <li class="nav-item">
             <a href="{{ url_for('profile.view_profile') }}" class="nav-link">
-              <img src="{{ url_for('static', filename='img/profile_menu_icon.png') }}" />
+              <img
+                src="{{ url_for('static', filename='img/profile_menu_icon.png') }}"
+              />
               <span>Profile</span>
             </a>
           </li>
         </ul>
       </nav>
 
-
       <!-- Main Content -->
       <main class="main-content flex-grow-1">
-        <header class="d-flex justify-content-between align-items-center topbar mb-4">
+        <header
+          class="d-flex justify-content-between align-items-center topbar mb-4"
+        >
           <div class="d-flex align-items-center gap-2">
-            <img src="{{ url_for('static', filename='img/bubblio_logo_no_text.png') }}" class="logo-img" />
+            <img
+              src="{{ url_for('static', filename='img/bubblio_logo_no_text.png') }}"
+              class="logo-img"
+            />
             <h1 class="hello-text m-0 fw-semibold">Hello {{ user.name }}!</h1>
           </div>
           <div class="bubble-counter d-flex align-items-center gap-2">
             <span>Your Bubbles:</span>
-            <img src="{{ url_for('static', filename='img/bubblio_bubble.png') }}" class="bubble-icon" />
+            <img
+              src="{{ url_for('static', filename='img/bubblio_bubble.png') }}"
+              class="bubble-icon"
+            />
             <span class="bubble-number">21</span>
           </div>
         </header>
 
         <!-- Empty state -->
-        <div id="emptyState" style="display: none; text-align: center; margin-top: 60px;">
-          <p style="font-size: 24px; margin-bottom: 20px;">You have no tanks yet.</p>
-          <button class="add-tank-btn" onclick="document.getElementById('addTankModal').style.display = 'block';">Add New Tank</button>
+        <div
+          id="emptyState"
+          style="display: none; text-align: center; margin-top: 60px"
+        >
+          <p style="font-size: 24px; margin-bottom: 20px">
+            You have no tanks yet.
+          </p>
+          <button
+            class="add-tank-btn"
+            onclick="document.getElementById('addTankModal').style.display = 'block';"
+          >
+            Add New Tank
+          </button>
         </div>
 
         <!-- Slider -->
         <div class="slider-wrapper">
           <div class="tank-slider-container">
-            {% if tanks %}
-              {% for tank in tanks %}
-              <div class="slide {% if loop.index0 == 0 %}active{% endif %}" 
-                data-tank-id="{{ tank.id }}" 
-                data-checks='{{ tank.daily_checks | tojson | safe }}'
-                data-important-tasks='{{ tank.important_tasks | tojson | safe }}'>
-                <div class="tank-card">
-                  <h2 class="tank-name-title text-center">{{ tank.name }}</h2>
-                  <div class="tank-details">
-                    <div class="tank-left">
-                      {% if tank.image %}
-                        <img src="{{ url_for('static', filename='uploads/' ~ tank.image) }}" class="tank-image" alt="Tank Image" />
-                      {% else %}
-                        <img src="{{ url_for('static', filename='img/default_tank.jpg') }}" class="tank-image" alt="Tank Image" />
-                      {% endif %}
+            {% if tanks %} {% for tank in tanks %}
+            <div
+              class="slide {% if loop.index0 == 0 %}active{% endif %}"
+              data-tank-id="{{ tank.id }}"
+              data-checks="{{ tank.daily_checks | tojson | safe }}"
+              data-important-tasks="{{ tank.important_tasks | tojson | safe }}"
+            >
+              <div class="tank-card">
+                <h2 class="tank-name-title text-center">{{ tank.name }}</h2>
+                <div class="tank-details">
+                  <div class="tank-left">
+                    {% if tank.image %}
+                    <img
+                      src="{{ url_for('static', filename='uploads/' ~ tank.image) }}"
+                      class="tank-image"
+                      alt="Tank Image"
+                    />
+                    {% else %}
+                    <img
+                      src="{{ url_for('static', filename='img/default_tank.jpg') }}"
+                      class="tank-image"
+                      alt="Tank Image"
+                    />
+                    {% endif %}
 
-                      <div class="tank-params">
-                        <p><strong>Volume (L):</strong> {{ tank.volume }}</p>
-                        <p><strong>pH:</strong> {{ tank.ph or "?" }}</p>
-                        <p><strong>KH:</strong> {{ tank.kh or "?" }}</p>
-                        <p><strong>Temp (°C):</strong> {{ tank.temperature or "?" }}</p>
-                        <p><strong>GH:</strong> {{ tank.gh or "?" }}</p>
-                        <p class="tank-description"><strong>Description:</strong> {{ tank.description or "No description." }}</p>
-                      </div>
-                    </div>
-
-                    <div class="tank-stocking">
-                      <h4>Tank Stocking</h4>
-                      <div class="fish-list">
-                        {% if tank.fish %}
-                          {% for fish in tank.fish %}
-                            <div class="fish-item">
-                              {% if fish.image %}
-                                <img src="{{ url_for('static', filename='img/fish_icons/' ~ fish.image) }}" alt="{{ fish.name }}" />
-                              {% else %}
-                                <img src="{{ url_for('static', filename='img/fish_icons/default_fish.jpg') }}" alt="Default Fish" />
-                              {% endif %}
-                              {{ fish.name }} (x{{ fish.count }})
-                            </div>
-                          {% endfor %}
-                        {% else %}
-                          <div class="fish-item">No fish yet</div>
-                        {% endif %}
-                      </div>
+                    <div class="tank-params">
+                      <p><strong>Volume (L):</strong> {{ tank.volume }}</p>
+                      <p><strong>pH:</strong> {{ tank.ph or "?" }}</p>
+                      <p><strong>KH:</strong> {{ tank.kh or "?" }}</p>
+                      <p>
+                        <strong>Temp (°C):</strong> {{ tank.temperature or "?"
+                        }}
+                      </p>
+                      <p><strong>GH:</strong> {{ tank.gh or "?" }}</p>
+                      <p class="tank-description">
+                        <strong>Description:</strong> {{ tank.description or "No
+                        description." }}
+                      </p>
                     </div>
                   </div>
-                  <div class="tank-actions">
-                    <button>Edit Tank</button>
-                    <button>Manage Stock</button>
-                    <button class="delete-btn">Delete Tank</button>
-                    <button class="add-tank-btn">Add New Tank</button>
-                    <button class="settings-btn" onclick="document.getElementById('settingsModal').style.display='block'">Settings</button>
+
+                  <div class="tank-stocking">
+                    <h4>Tank Stocking</h4>
+                    <p>
+                      <strong>Total stock:</strong>
+                      <span id="stock-percent-{{ tank.id }}">Loading...</span>
+                    </p>
+
+                    <div class="fish-list">
+                      {% if tank.fish_stock %} {% for fs in tank.fish_stock %}
+                      <div class="fish-item">
+                        {% if fs.fish.image %}
+                        <img
+                          src="{{ url_for('static', filename='img/fishspecies/' ~ fs.fish.image) }}"
+                          alt="{{ fs.fish.name }}"
+                        />
+                        {% else %}
+                        <img
+                          src="{{ url_for('static', filename='img/fishspecies/default_fish.jpg') }}"
+                          alt="Default Fish"
+                        />
+                        {% endif %} {{ fs.fish.name }} (x{{ fs.count }})
+                      </div>
+                      {% endfor %} {% else %}
+                      <div class="fish-item">No fish yet</div>
+                      {% endif %}
+                    </div>
                   </div>
                 </div>
+                <div class="tank-actions">
+                  <button>Edit Tank</button>
+                  <button class="manage-stock-btn">Manage Stock</button>
+                  <button class="delete-btn">Delete Tank</button>
+                  <button class="add-tank-btn">Add New Tank</button>
+                  <button
+                    class="settings-btn"
+                    onclick="document.getElementById('settingsModal').style.display='block'"
+                  >
+                    Settings
+                  </button>
+                </div>
               </div>
-              {% endfor %}
-            {% else %}
-              <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                  document.getElementById("emptyState").style.display = "block";
-                  document.querySelector(".slider-wrapper").style.display = "none";
-                });
-              </script>
+            </div>
+            {% endfor %} {% else %}
+            <script>
+              document.addEventListener("DOMContentLoaded", function () {
+                document.getElementById("emptyState").style.display = "block";
+                document.querySelector(".slider-wrapper").style.display =
+                  "none";
+              });
+            </script>
             {% endif %}
           </div>
 
@@ -142,21 +207,69 @@
           </div>
         </div>
 
-
         <!-- Modals -->
         <!-- Add Tank -->
         <div id="addTankModal" class="modal">
           <div class="modal-content">
             <span class="close-btn" onclick="closeTankModal()">&times;</span>
             <h2>Add New Tank</h2>
-            <form id="addTankForm" method="POST" action="{{ url_for('tanks.add_tank') }}" enctype="multipart/form-data">
-              <input type="text" id="tankName" name="name" placeholder="Tank name" required />
-              <input type="number" id="volume" name="volume" placeholder="Volume (L)" required />
-              <input type="number" step="0.1" id="temperature" name="temperature" placeholder="Temperature (°C)" required />
-              <input type="number" step="0.1" id="ph" name="ph" placeholder="pH" required />
-              <input type="number" step="1" id="kh" name="kh" placeholder="KH" required />
-              <input type="number" step="1" id="gh" name="gh" placeholder="GH" required />
-              <textarea id="description" name="description" placeholder="Description"></textarea>
+            <form
+              id="addTankForm"
+              method="POST"
+              action="{{ url_for('tanks.add_tank') }}"
+              enctype="multipart/form-data"
+            >
+              <input
+                type="text"
+                id="tankName"
+                name="name"
+                placeholder="Tank name"
+                required
+              />
+              <input
+                type="number"
+                id="volume"
+                name="volume"
+                placeholder="Volume (L)"
+                required
+              />
+              <input
+                type="number"
+                step="0.1"
+                id="temperature"
+                name="temperature"
+                placeholder="Temperature (°C)"
+                required
+              />
+              <input
+                type="number"
+                step="0.1"
+                id="ph"
+                name="ph"
+                placeholder="pH"
+                required
+              />
+              <input
+                type="number"
+                step="1"
+                id="kh"
+                name="kh"
+                placeholder="KH"
+                required
+              />
+              <input
+                type="number"
+                step="1"
+                id="gh"
+                name="gh"
+                placeholder="GH"
+                required
+              />
+              <textarea
+                id="description"
+                name="description"
+                placeholder="Description"
+              ></textarea>
               <input type="file" id="tankImage" name="image" accept="image/*" />
               <div class="modal-buttons">
                 <button type="submit">Save</button>
@@ -171,13 +284,19 @@
           <div class="modal-content">
             <span class="close-btn" onclick="closeDeleteModal()">&times;</span>
             <h2>Delete Tank</h2>
-            <form id="deleteTankForm" method="POST" action="{{ url_for('tanks.delete_tank') }}">
+            <form
+              id="deleteTankForm"
+              method="POST"
+              action="{{ url_for('tanks.delete_tank') }}"
+            >
               <label for="tankSelect">Select tank to delete:</label>
               <select id="tankSelect" name="tank_id" required></select>
               <p>Are you sure you want to delete this tank?</p>
               <div class="modal-buttons">
                 <button type="submit">Yes, delete</button>
-                <button type="button" onclick="closeDeleteModal()">Cancel</button>
+                <button type="button" onclick="closeDeleteModal()">
+                  Cancel
+                </button>
               </div>
             </form>
           </div>
@@ -186,23 +305,46 @@
         <!-- Edit Tank -->
         <div id="editTankModal" class="modal">
           <div class="modal-content">
-            <span class="close" onclick="document.getElementById('editTankModal').style.display='none'">&times;</span>
+            <span
+              class="close"
+              onclick="document.getElementById('editTankModal').style.display='none'"
+              >&times;</span
+            >
             <h2>Edit Tank</h2>
-            <form id="editTankForm" action="{{ url_for('tanks.edit_tank') }}" method="POST" enctype="multipart/form-data">
+            <form
+              id="editTankForm"
+              action="{{ url_for('tanks.edit_tank') }}"
+              method="POST"
+              enctype="multipart/form-data"
+            >
               <!-- Poprawka: name="tank_id" -->
               <input type="hidden" id="editTankId" name="tank_id" />
 
               <label for="editTankSelect">Select Tank:</label>
-              <select id="editTankSelect" name="editTankSelect" required></select>
+              <select
+                id="editTankSelect"
+                name="editTankSelect"
+                required
+              ></select>
 
               <label for="editTankName">Tank Name:</label>
-              <input type="text" id="editTankName" name="editTankName" required />
+              <input
+                type="text"
+                id="editTankName"
+                name="editTankName"
+                required
+              />
 
               <label for="editVolume">Volume (L):</label>
               <input type="number" id="editVolume" name="editVolume" required />
 
               <label for="editTemperature">Temperature (°C):</label>
-              <input type="number" id="editTemperature" name="editTemperature" step="0.1" />
+              <input
+                type="number"
+                id="editTemperature"
+                name="editTemperature"
+                step="0.1"
+              />
 
               <label for="editPh">pH:</label>
               <input type="number" id="editPh" name="editPh" step="0.1" />
@@ -217,7 +359,12 @@
               <textarea id="editDescription" name="editDescription"></textarea>
 
               <label for="editImage">Change Image (optional):</label>
-              <input type="file" id="editImage" name="editImage" accept="image/*" />
+              <input
+                type="file"
+                id="editImage"
+                name="editImage"
+                accept="image/*"
+              />
 
               <button type="submit">Save Changes</button>
             </form>
@@ -227,32 +374,48 @@
         <!-- Manage Stock -->
         <div id="manageStockModal" class="modal">
           <div class="modal-content">
-            <span class="close-btn" onclick="closeManageStockModal()">&times;</span>
+            <span class="close-btn" onclick="closeManageStockModal()"
+              >&times;</span
+            >
             <h2>Manage Stock</h2>
 
-            <form id="manageStockForm" method="POST" action="{{ url_for('tanks.add_fish') }}" enctype="multipart/form-data">
-              <label for="tank_id">Select tank:</label>
-              <select id="tank_id" name="tank_id" required>
-                {% for tank in tanks %}
-                  <option value="{{ tank.id }}">{{ tank.name }}</option>
-                {% endfor %}
-              </select>
+            <!-- Ukryte pole z ID zbiornika -->
+            <input type="hidden" name="tank_id" id="modalTankId" />
 
-              <label for="name">Fish name:</label>
-              <input type="text" id="name" name="name" placeholder="e.g. Neon" required />
+            <!-- Lista aktualnych ryb w zbiorniku -->
+            <div id="existingFishList" style="margin: 20px 0">
+              <h4>Current Stock</h4>
+              <!-- zostanie uzupełnione z JS -->
+            </div>
 
-              <label for="species">Species (optional):</label>
-              <input type="text" id="species" name="species" placeholder="e.g. Paracheirodon innesi" />
+            <hr />
 
-              <label for="count">How many?</label>
-              <input type="number" id="count" name="count" placeholder="Count" min="1" required />
+            <!-- Dodawanie nowej ryby -->
+            <h4>Add New Fish</h4>
+            <form id="manageStockForm" method="POST">
+              <label for="newFishSelect">Select fish species:</label>
+              <select id="newFishSelect" name="fish_id" required></select>
 
-              <label for="image">Fish image:</label>
-              <input type="file" id="image" name="image" accept="image/*" />
+              <label for="newFishCount">How many?</label>
+              <input
+                type="number"
+                id="newFishCount"
+                name="count"
+                placeholder="Count"
+                required
+                min="1"
+              />
 
-              <div class="modal-buttons" style="margin-top: 20px;">
+              <!-- Podgląd ryby + kompatybilność -->
+              <div id="fishCompatibility" style="margin-top: 15px">
+                <!-- Wypełnia JS -->
+              </div>
+
+              <div class="modal-buttons" style="margin-top: 20px">
                 <button type="submit">Add Fish</button>
-                <button type="button" onclick="closeManageStockModal()">Cancel</button>
+                <button type="button" onclick="closeManageStockModal()">
+                  Cancel
+                </button>
               </div>
             </form>
           </div>
@@ -261,28 +424,54 @@
         <!-- Settings Modal -->
         <div id="settingsModal" class="modal">
           <div class="modal-content wide-modal">
-            <span class="close" onclick="document.getElementById('settingsModal').style.display='none'">&times;</span>
+            <span
+              class="close"
+              onclick="document.getElementById('settingsModal').style.display='none'"
+              >&times;</span
+            >
             <h2>Tank Settings</h2>
 
             <!-- Zakładki -->
             <ul class="nav nav-tabs" id="settingsTabNav" role="tablist">
               <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="checks-tab" data-bs-toggle="tab" data-bs-target="#checksTab" type="button" role="tab" aria-controls="checksTab" aria-selected="true">
+                <button
+                  class="nav-link active"
+                  id="checks-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#checksTab"
+                  type="button"
+                  role="tab"
+                  aria-controls="checksTab"
+                  aria-selected="true"
+                >
                   Daily Checks
                 </button>
               </li>
               <li class="nav-item" role="presentation">
-                <button class="nav-link" id="tasks-tab" data-bs-toggle="tab" data-bs-target="#tasksTab" type="button" role="tab" aria-controls="tasksTab" aria-selected="false">
+                <button
+                  class="nav-link"
+                  id="tasks-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#tasksTab"
+                  type="button"
+                  role="tab"
+                  aria-controls="tasksTab"
+                  aria-selected="false"
+                >
                   Important Tasks
                 </button>
               </li>
             </ul>
 
             <!-- Daily Checks -->
-            <div class="tab-content" id="checksTab" style="display: block;">
+            <div class="tab-content" id="checksTab" style="display: block">
               <p>Here you can customize daily checks for this tank.</p>
 
-              <form method="POST" action="{{ url_for('tanks.update_checks') }}" id="dailyChecksForm">
+              <form
+                method="POST"
+                action="{{ url_for('tanks.update_checks') }}"
+                id="dailyChecksForm"
+              >
                 <input type="hidden" name="tank_id" id="settingsTankId" />
 
                 <div class="daily-checks-list">
@@ -328,63 +517,85 @@
                   </label>
                 </div>
 
-
-
                 <div class="modal-buttons mt-3">
-                  <button type="submit" class="btn btn-primary w-100">Save Daily Checks</button>
+                  <button type="submit" class="btn btn-primary w-100">
+                    Save Daily Checks
+                  </button>
                 </div>
               </form>
             </div>
 
-
             <!-- Important Tasks -->
-            <div class="tab-content" id="tasksTab" style="display: none;">
+            <div class="tab-content" id="tasksTab" style="display: none">
               <p>Select important recurring tasks and configure them below.</p>
-              <form method="POST" action="{{ url_for('tanks.update_important_tasks') }}" id="importantTasksForm">
+              <form
+                method="POST"
+                action="{{ url_for('tanks.update_important_tasks') }}"
+                id="importantTasksForm"
+              >
                 <input type="hidden" name="tank_id" id="importantTasksTankId" />
 
                 <div class="important-tasks-list">
-                  {% set task_definitions = [
-                    ('waterchange', 'Water Change'),
-                    ('vacuum', 'Gravel vacuuming / substrate cleaning'),
-                    ('filter', 'Clean filter media'),
-                    ('trim', 'Trim plants'),
-                    ('glass', 'Clean aquarium glass'),
-                    ('topoff', 'Top off evaporated water'),
-                    ('equipment', 'Clean equipment'),
-                    ('fertilizer', 'Replenish fertilizers or CO₂ supplies')
-                  ] %}
+                  {% set task_definitions = [ ('waterchange', 'Water Change'),
+                  ('vacuum', 'Gravel vacuuming / substrate cleaning'),
+                  ('filter', 'Clean filter media'), ('trim', 'Trim plants'),
+                  ('glass', 'Clean aquarium glass'), ('topoff', 'Top off
+                  evaporated water'), ('equipment', 'Clean equipment'),
+                  ('fertilizer', 'Replenish fertilizers or CO₂ supplies') ] %}
+                  {% for value, label in task_definitions %} {% set
+                  existing_task = None %} {% for t in
+                  selected_tank.important_tasks if t.task_type == value %} {%
+                  set existing_task = t %} {% endfor %}
 
-                  {% for value, label in task_definitions %}
-                    {% set existing_task = None %}
-                    {% for t in selected_tank.important_tasks if t.task_type == value %}
-                      {% set existing_task = t %}
-                    {% endfor %}
-
-                    <div class="important-task-item mb-3">
-                      <div class="form-check">
-                        <input class="form-check-input task-toggle" type="checkbox" value="on"
-                              name="task_{{ value }}"
-                              id="task_{{ value }}"
-                              {% if existing_task %}checked{% endif %}>
-                        <label class="form-check-label ms-2" for="task_{{ value }}">
-                          {{ label }}
-                        </label>
-                      </div>
-                      <div class="task-options mt-2 ms-4 {% if not existing_task %}d-none{% endif %}">
-                        <label class="form-label">Start Date:</label>
-                        <input type="date" class="form-control mb-2" name="start_{{ value }}"
-                              value="{{ existing_task.start_date if existing_task else '' }}" />
-                        <label class="form-label">Repeat every (days):</label>
-                        <input type="number" class="form-control" name="interval_{{ value }}" min="1"
-                              value="{{ existing_task.interval_days if existing_task else '' }}" />
-                      </div>
+                  <div class="important-task-item mb-3">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input task-toggle"
+                        type="checkbox"
+                        value="on"
+                        name="task_{{ value }}"
+                        id="task_{{ value }}"
+                        {%
+                        if
+                        existing_task
+                        %}checked{%
+                        endif
+                        %}
+                      />
+                      <label
+                        class="form-check-label ms-2"
+                        for="task_{{ value }}"
+                      >
+                        {{ label }}
+                      </label>
                     </div>
+                    <div
+                      class="task-options mt-2 ms-4 {% if not existing_task %}d-none{% endif %}"
+                    >
+                      <label class="form-label">Start Date:</label>
+                      <input
+                        type="date"
+                        class="form-control mb-2"
+                        name="start_{{ value }}"
+                        value="{{ existing_task.start_date if existing_task else '' }}"
+                      />
+                      <label class="form-label">Repeat every (days):</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        name="interval_{{ value }}"
+                        min="1"
+                        value="{{ existing_task.interval_days if existing_task else '' }}"
+                      />
+                    </div>
+                  </div>
                   {% endfor %}
                 </div>
 
                 <div class="modal-buttons mt-3">
-                  <button type="submit" class="btn btn-primary w-100">Save Important Tasks</button>
+                  <button type="submit" class="btn btn-primary w-100">
+                    Save Important Tasks
+                  </button>
                 </div>
               </form>
             </div>
