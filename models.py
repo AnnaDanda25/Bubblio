@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, date
 from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
@@ -61,6 +61,9 @@ class Tank(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    # ⬇️ Relacja do important tasks (nowy model poniżej)
+    important_tasks = db.relationship('ImportantTask', backref='tank', lazy=True, cascade='all, delete-orphan')
+
     def __repr__(self):
         return f"<Tank {self.name} ({self.volume}L)>"
 
@@ -103,3 +106,15 @@ class Note(db.Model):
 
     def __repr__(self):
         return f"<Note {self.title} on {self.date}>"
+
+
+# 🔁 Model cyklicznego ważnego zadania
+class ImportantTask(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    tank_id = db.Column(db.Integer, db.ForeignKey('tank.id'), nullable=False)
+    task_type = db.Column(db.String(50), nullable=False)  # np. 'waterchange', 'trimplants'
+    start_date = db.Column(db.Date, nullable=True)
+    interval_days = db.Column(db.Integer, nullable=True)
+
+    def __repr__(self):
+        return f"<ImportantTask {self.task_type} for tank {self.tank_id}>"

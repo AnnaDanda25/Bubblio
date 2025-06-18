@@ -153,15 +153,29 @@
         <h2 class="section-title">Upcoming Tasks</h2>
         <div class="card p-3 position-relative">
           <ul id="task-list" class="list-unstyled mb-0">
+            {% set has_any_tasks = false %}
+
+            <!-- Zadania z bazy danych -->
             {% for task in tasks %}
+              {% set has_any_tasks = true %}
               <li><input type="checkbox" {% if task.is_done %}checked{% endif %} /> {{ task.date }} – {{ task.title }}</li>
-            {% else %}
-              <li class="text-muted">No tasks yet.</li>
             {% endfor %}
+
+            <!-- Zadania important_tasks wygenerowane dynamicznie -->
+            {% for task in virtual_tasks %}
+              {% set has_any_tasks = true %}
+              <li><input type="checkbox" disabled /> {{ task.date }} – {{ task.title }} <span class="text-muted">(from important tasks)</span></li>
+            {% endfor %}
+
+
+            {% if not has_any_tasks %}
+              <li class="text-muted">No tasks yet.</li>
+            {% endif %}
           </ul>
           <button class="btn-add-task" data-bs-toggle="modal" data-bs-target="#addTaskModal">+</button>
         </div>
       </section>
+
     </main>
   </div>
 

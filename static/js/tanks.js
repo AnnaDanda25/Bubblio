@@ -187,8 +187,98 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener('click', () => {
       const slide = btn.closest('.slide');
       const tankId = slide.dataset.tankId;
-      openSettingsModal(tankId);
+      importantTankId.value = tankId;
+
+      resetImportantTasks();  // czyści wszystko
+
+      const tasksDataAttr = slide.dataset.importantTasks;
+      if (tasksDataAttr) {
+        try {
+          const savedTasks = JSON.parse(tasksDataAttr);  // np. [{task_type: 'waterchange', start_date: '2024-01-01', interval_days: 7}, ...]
+          savedTasks.forEach(task => {
+            const checkbox = importantForm.querySelector(`input.task-toggle[value="${task.task_type}"]`);
+            const optionsWrapper = checkbox?.closest('.important-task-item');
+            if (checkbox && optionsWrapper) {
+              checkbox.checked = true;
+              optionsWrapper.querySelector('.task-options')?.classList.remove('d-none');
+
+              // Ustaw datę i interwał
+              optionsWrapper.querySelector(`input[name="${task.task_type}_start"]`).value = task.start_date;
+              optionsWrapper.querySelector(`input[name="${task.task_type}_interval"]`).value = task.interval_days;
+            }
+          });
+        } catch (err) {
+          console.error("Could not parse important tasks:", err);
+        }
+      }
     });
   });
+
+
+
+    // === Important Tasks – pokaż opcje przy zaznaczeniu ===
+  const importantForm = document.getElementById('importantTasksForm');
+
+  if (importantForm) {
+    const taskCheckboxes = importantForm.querySelectorAll('.task-toggle');
+
+    taskCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', () => {
+        const wrapper = checkbox.closest('.important-task-item');
+        const options = wrapper.querySelector('.task-options');
+        if (options) {
+          options.classList.toggle('d-none', !checkbox.checked);
+        }
+      });
+    });
+
+    const importantTankId = document.getElementById('importantTasksTankId');
+    function resetImportantTasks() {
+      // Ukryj wszystkie pola opcji i odznacz checkboxy
+      const allTaskItems = importantForm.querySelectorAll('.important-task-item');
+      allTaskItems.forEach(item => {
+        const checkbox = item.querySelector('.task-toggle');
+        const options = item.querySelector('.task-options');
+        if (checkbox) checkbox.checked = false;
+        if (options) options.classList.add('d-none');
+      });
+    }
+
+    document.querySelectorAll('.settings-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const slide = btn.closest('.slide');
+        const tankId = slide.dataset.tankId;
+        importantTankId.value = tankId;
+        resetImportantTasks();  // domyślnie czyści wszystkie checkboxy i pola
+      });
+    });
+  }
+
+  // === Przełączanie zakładek w Settings Modal ===
+  const tabButtons = document.querySelectorAll('#settingsTabNav .nav-link');
+  const checksTab = document.getElementById('checksTab');
+  const tasksTab = document.getElementById('tasksTab');
+
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      // Dezaktywuj wszystkie
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+
+      // Ukryj wszystkie taby
+      if (checksTab) checksTab.style.display = 'none';
+      if (tasksTab) tasksTab.style.display = 'none';
+
+      // Aktywuj kliknięty
+      button.classList.add('active');
+
+      // Pokaż odpowiedni tab
+      const targetId = button.getAttribute('data-bs-target');
+      const targetTab = document.querySelector(targetId);
+      if (targetTab) {
+        targetTab.style.display = 'block';
+      }
+    });
+  });
+
 
 });

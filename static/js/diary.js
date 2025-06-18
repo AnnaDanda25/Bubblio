@@ -153,4 +153,42 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
   });
+
+    // === OBSŁUGA MODALA EDYCJI NOTATKI ===
+  const editNoteModal = document.getElementById('editNoteModal');
+  const editNoteForm = document.getElementById('editNoteForm');
+  const editTitle = document.getElementById('editNoteTitle');
+  const editContent = document.getElementById('editNoteContent');
+  const editDate = document.getElementById('editNoteDate');
+
+  editNoteModal.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget;
+
+    const noteId = button.getAttribute('data-note-id');
+    const title = button.getAttribute('data-note-title');
+    const content = button.getAttribute('data-note-content');
+    const date = button.getAttribute('data-note-date');
+
+    editTitle.value = title;
+    editContent.value = content;
+    editDate.value = date;
+
+    // Ustaw odpowiednią akcję formularza
+    editNoteForm.action = `/diary/edit_note/${noteId}`
+  });
+
+    // === OBSŁUGA MODALA EDYCJI ZDJĘCIA ===
+  const editPhotoModal = document.getElementById('editPhotoModal');
+  const editPhotoForm = document.getElementById('editPhotoForm');
+  const editPhotoTitleInput = document.getElementById('editPhotoTitle');
+
+  editPhotoModal.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget;
+    const photoId = button.getAttribute('data-photo-id');
+    const title = button.getAttribute('data-photo-title');
+
+    editPhotoTitleInput.value = title;
+    editPhotoForm.action = `/diary/edit_photo/${photoId}`;
+  });
+
 });

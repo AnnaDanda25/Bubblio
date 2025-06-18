@@ -1,5 +1,5 @@
 from flask import render_template, request, redirect, session, flash, url_for
-from models import db, User, Tank, Fish
+from models import db, User, Tank, Fish, ImportantTask
 from tanks import tanks
 from werkzeug.utils import secure_filename
 import os
@@ -14,8 +14,10 @@ def view_tanks():
 
     user = User.query.get(session['user_id'])
     user_tanks = Tank.query.filter_by(user_id=user.id).all()
+    selected_tank = user_tanks[0] if user_tanks else None  # 🔧 Dodane
 
-    return render_template('tanks.html', tanks=user_tanks, user=user)
+    return render_template('tanks.html', tanks=user_tanks, user=user, selected_tank=selected_tank)
+
 
 # ➕ Dodawanie zbiornika
 @tanks.route('/add_tank', methods=['POST'])
@@ -180,3 +182,43 @@ def update_checks():
         flash("Tank not found or access denied.", "danger")
 
     return redirect(url_for('tanks.view_tanks'))
+
+
+# ✅ Zapis ustawień important tasks
+@tanks.route('/update_important_tasks', methods=['POST'])
+def update_important_tasks():
+    if 'user_id' not in session:
+        flash("Please log in.", "warning")
+        return redirect(url_for('auth.login'))
+
+    tank_id = request.form.get('tank_id')
+    tank = Tank.query.filter_by(id=tank_id, user_id=session['user_id']).first()
+    
+    if not tank:
+        flash("Tank not found or access denied.", "danger")
+        return redirect(url_for('tanks.view_tanks'))
+
+    # 🧹 Usuń poprzednie ważne zadania
+    ImportantTask.query.filter_by(tank_id=tank.id).delete()
+
+    # 🔁 Zapisz zaznaczone
+    for key in request.form:
+        if key.startswith("important_tasks"):
+            value = request.form[key]
+            task_type = value
+            start_date = request.form.get(f"{task_type}_start")
+            interval = request.form.get(f"{task_type}_interval")
+
+            if start_date and interval:
+                new_task = ImportantTask(
+                    tank_id=tank.id,
+                    task_type=task_type,
+                    start_date=datetime.strptime(start_date, "%Y-%m-%d").date(),
+                    interval_days=int(interval)
+                )
+                db.session.add(new_task)
+
+    db.session.commit()
+    flash("Important tasks saved!", "success")
+    return redirect(url_for('tanks.view_tanks'))
+

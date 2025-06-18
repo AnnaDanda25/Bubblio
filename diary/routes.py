@@ -90,3 +90,99 @@ def add_note():
 
     flash("Note added successfully!", "success")
     return redirect(url_for('diary.view_diary'))
+
+# 🗑️ Usuwanie notatki
+@diary.route('/delete_note/<int:note_id>', methods=['POST'])
+def delete_note(note_id):
+    if 'user_id' not in session:
+        flash("Please log in.", "warning")
+        return redirect(url_for('auth.login'))
+
+    note = Note.query.get_or_404(note_id)
+
+    # Upewnij się, że notatka należy do zalogowanego użytkownika
+    if note.user_id != session['user_id']:
+        flash("Unauthorized access.", "danger")
+        return redirect(url_for('diary.view_diary'))
+
+    db.session.delete(note)
+    db.session.commit()
+
+    flash("Note deleted successfully!", "success")
+    return redirect(url_for('diary.view_diary'))
+
+# ✏️ Edytowanie notatki
+@diary.route('/edit_note/<int:note_id>', methods=['POST'])
+def edit_note(note_id):
+    if 'user_id' not in session:
+        flash("Please log in.", "warning")
+        return redirect(url_for('auth.login'))
+
+    note = Note.query.get_or_404(note_id)
+
+    if note.user_id != session['user_id']:
+        flash("Unauthorized access.", "danger")
+        return redirect(url_for('diary.view_diary'))
+
+    note.title = request.form.get('title')
+    note.content = request.form.get('content')
+
+    date = request.form.get('date')
+    try:
+        note.date = datetime.strptime(date, '%Y-%m-%d').date()
+    except ValueError:
+        flash("Invalid date format.", "danger")
+        return redirect(url_for('diary.view_diary'))
+
+    db.session.commit()
+    flash("Note updated successfully!", "success")
+    return redirect(url_for('diary.view_diary'))
+
+
+# 🗑️ Usuwanie zdjęcia
+@diary.route('/delete_photo/<int:photo_id>', methods=['POST'])
+def delete_photo(photo_id):
+    if 'user_id' not in session:
+        flash("Please log in.", "warning")
+        return redirect(url_for('auth.login'))
+
+    photo = Photo.query.get_or_404(photo_id)
+
+    if photo.user_id != session['user_id']:
+        flash("Unauthorized access.", "danger")
+        return redirect(url_for('diary.view_diary'))
+
+    # Usuń plik z dysku
+    photo_path = os.path.join('static', 'uploads', photo.filename)
+    if os.path.exists(photo_path):
+        os.remove(photo_path)
+
+    db.session.delete(photo)
+    db.session.commit()
+
+    flash("Photo deleted successfully!", "success")
+    return redirect(url_for('diary.view_diary'))
+
+# ✏️ Edycja tytułu zdjęcia
+@diary.route('/edit_photo/<int:photo_id>', methods=['POST'])
+def edit_photo(photo_id):
+    if 'user_id' not in session:
+        flash("Please log in.", "warning")
+        return redirect(url_for('auth.login'))
+
+    photo = Photo.query.get_or_404(photo_id)
+
+    if photo.user_id != session['user_id']:
+        flash("Unauthorized access.", "danger")
+        return redirect(url_for('diary.view_diary'))
+
+    new_title = request.form.get('title')
+    if new_title:
+        photo.title = new_title
+        db.session.commit()
+        flash("Photo title updated!", "success")
+    else:
+        flash("Title cannot be empty.", "danger")
+
+    return redirect(url_for('diary.view_diary'))
+

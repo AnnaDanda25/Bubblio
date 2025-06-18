@@ -496,3 +496,21 @@
   line-height: 1.4;
   word-break: break-word;
 }
+
+/* Ważne checkboxy z etykietami - układ poziomy */
+.important-task-item .form-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.important-task-item .form-check-input {
+  flex-shrink: 0; /* checkbox nie rozciąga się */
+  width: auto;
+  height: auto;
+}
+
+.important-task-item .form-check-label {
+  flex-grow: 1;
+  margin-bottom: 0;
+}

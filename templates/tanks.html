@@ -71,8 +71,9 @@
             {% if tanks %}
               {% for tank in tanks %}
               <div class="slide {% if loop.index0 == 0 %}active{% endif %}" 
-                  data-tank-id="{{ tank.id }}" 
-                  data-checks='{{ tank.daily_checks | tojson | safe }}'>
+                data-tank-id="{{ tank.id }}" 
+                data-checks='{{ tank.daily_checks | tojson | safe }}'
+                data-important-tasks='{{ tank.important_tasks | tojson | safe }}'>
                 <div class="tank-card">
                   <h2 class="tank-name-title text-center">{{ tank.name }}</h2>
                   <div class="tank-details">
@@ -338,25 +339,57 @@
 
             <!-- Important Tasks -->
             <div class="tab-content" id="tasksTab" style="display: none;">
-              <p>Here you can define recurring tasks.</p>
-              <form>
-                <div class="mb-2">
-                  <input type="text" class="form-control" placeholder="Task name" />
+              <p>Select important recurring tasks and configure them below.</p>
+              <form method="POST" action="{{ url_for('tanks.update_important_tasks') }}" id="importantTasksForm">
+                <input type="hidden" name="tank_id" id="importantTasksTankId" />
+
+                <div class="important-tasks-list">
+                  {% set task_definitions = [
+                    ('waterchange', 'Water Change'),
+                    ('vacuum', 'Gravel vacuuming / substrate cleaning'),
+                    ('filter', 'Clean filter media'),
+                    ('trim', 'Trim plants'),
+                    ('glass', 'Clean aquarium glass'),
+                    ('topoff', 'Top off evaporated water'),
+                    ('equipment', 'Clean equipment'),
+                    ('fertilizer', 'Replenish fertilizers or CO₂ supplies')
+                  ] %}
+
+                  {% for value, label in task_definitions %}
+                    {% set existing_task = None %}
+                    {% for t in selected_tank.important_tasks if t.task_type == value %}
+                      {% set existing_task = t %}
+                    {% endfor %}
+
+                    <div class="important-task-item mb-3">
+                      <div class="form-check">
+                        <input class="form-check-input task-toggle" type="checkbox" value="on"
+                              name="task_{{ value }}"
+                              id="task_{{ value }}"
+                              {% if existing_task %}checked{% endif %}>
+                        <label class="form-check-label ms-2" for="task_{{ value }}">
+                          {{ label }}
+                        </label>
+                      </div>
+                      <div class="task-options mt-2 ms-4 {% if not existing_task %}d-none{% endif %}">
+                        <label class="form-label">Start Date:</label>
+                        <input type="date" class="form-control mb-2" name="start_{{ value }}"
+                              value="{{ existing_task.start_date if existing_task else '' }}" />
+                        <label class="form-label">Repeat every (days):</label>
+                        <input type="number" class="form-control" name="interval_{{ value }}" min="1"
+                              value="{{ existing_task.interval_days if existing_task else '' }}" />
+                      </div>
+                    </div>
+                  {% endfor %}
                 </div>
-                <div class="mb-2">
-                  <input type="number" class="form-control" placeholder="Every how many days?" min="1" />
+
+                <div class="modal-buttons mt-3">
+                  <button type="submit" class="btn btn-primary w-100">Save Important Tasks</button>
                 </div>
-                <div class="mb-2">
-                  <input type="number" class="form-control" placeholder="How many times?" min="1" />
-                </div>
-                <button class="btn btn-primary w-100" type="submit">Save Task</button>
               </form>
             </div>
           </div>
         </div>
-
-
-
       </main>
     </div>
 
