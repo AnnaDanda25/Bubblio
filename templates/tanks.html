@@ -5,10 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Bubblio - Tanks</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bubbliocore.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/tanks.css') }}" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/bubbliocore.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/tanks.css') }}"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div class="app-container d-flex">
@@ -19,115 +31,159 @@
         <ul class="nav flex-column mt-4">
           <li class="nav-item">
             <a href="{{ url_for('mainpage.home') }}" class="nav-link">
-              <img src="{{ url_for('static', filename='img/mainpage_menu_icon.png') }}" />
+              <img
+                src="{{ url_for('static', filename='img/mainpage_menu_icon.png') }}"
+              />
               <span>Home</span>
             </a>
           </li>
           <li class="nav-item">
             <a href="{{ url_for('tanks.view_tanks') }}" class="nav-link active">
-              <img src="{{ url_for('static', filename='img/tank_menu_icon.png') }}" />
+              <img
+                src="{{ url_for('static', filename='img/tank_menu_icon.png') }}"
+              />
               <span>Tanks</span>
             </a>
           </li>
           <li class="nav-item">
             <a href="{{ url_for('diary.view_diary') }}" class="nav-link">
-              <img src="{{ url_for('static', filename='img/diary_menu_icon.png') }}" />
+              <img
+                src="{{ url_for('static', filename='img/diary_menu_icon.png') }}"
+              />
               <span>Diary</span>
             </a>
           </li>
           <li class="nav-item">
             <a href="{{ url_for('profile.view_profile') }}" class="nav-link">
-              <img src="{{ url_for('static', filename='img/profile_menu_icon.png') }}" />
+              <img
+                src="{{ url_for('static', filename='img/profile_menu_icon.png') }}"
+              />
               <span>Profile</span>
             </a>
           </li>
         </ul>
       </nav>
 
-
       <!-- Main Content -->
       <main class="main-content flex-grow-1">
-        <header class="d-flex justify-content-between align-items-center topbar mb-4">
+        <header
+          class="d-flex justify-content-between align-items-center topbar mb-4"
+        >
           <div class="d-flex align-items-center gap-2">
-            <img src="{{ url_for('static', filename='img/bubblio_logo_no_text.png') }}" class="logo-img" />
+            <img
+              src="{{ url_for('static', filename='img/bubblio_logo_no_text.png') }}"
+              class="logo-img"
+            />
             <h1 class="hello-text m-0 fw-semibold">Hello {{ user.name }}!</h1>
           </div>
           <div class="bubble-counter d-flex align-items-center gap-2">
             <span>Your Bubbles:</span>
-            <img src="{{ url_for('static', filename='img/bubblio_bubble.png') }}" class="bubble-icon" />
+            <img
+              src="{{ url_for('static', filename='img/bubblio_bubble.png') }}"
+              class="bubble-icon"
+            />
             <span class="bubble-number">21</span>
           </div>
         </header>
 
         <!-- Empty state -->
-        <div id="emptyState" style="display: none; text-align: center; margin-top: 60px;">
-          <p style="font-size: 24px; margin-bottom: 20px;">You have no tanks yet.</p>
-          <button class="add-tank-btn" onclick="document.getElementById('addTankModal').style.display = 'block';">Add New Tank</button>
+        <div
+          id="emptyState"
+          style="display: none; text-align: center; margin-top: 60px"
+        >
+          <p style="font-size: 24px; margin-bottom: 20px">
+            You have no tanks yet.
+          </p>
+          <button
+            class="add-tank-btn"
+            onclick="document.getElementById('addTankModal').style.display = 'block';"
+          >
+            Add New Tank
+          </button>
         </div>
 
         <!-- Slider -->
         <div class="slider-wrapper">
           <div class="tank-slider-container">
-            {% if tanks %}
-              {% for tank in tanks %}
-              <div class="slide {% if loop.index0 == 0 %}active{% endif %}" data-tank-id="{{ tank.id }}">
-                <div class="tank-card">
-                  <h2 class="tank-name-title text-center">{{ tank.name }}</h2>
-                  <div class="tank-details">
-                    <div class="tank-left">
-                      {% if tank.image %}
-                        <img src="{{ url_for('static', filename='uploads/' ~ tank.image) }}" class="tank-image" alt="Tank Image" />
-                      {% else %}
-                        <img src="{{ url_for('static', filename='img/default_tank.jpg') }}" class="tank-image" alt="Tank Image" />
-                      {% endif %}
+            {% if tanks %} {% for tank in tanks %}
+            <div
+              class="slide {% if loop.index0 == 0 %}active{% endif %}"
+              data-tank-id="{{ tank.id }}"
+            >
+              <div class="tank-card">
+                <h2 class="tank-name-title text-center">{{ tank.name }}</h2>
+                <div class="tank-details">
+                  <div class="tank-left">
+                    {% if tank.image %}
+                    <img
+                      src="{{ url_for('static', filename='uploads/' ~ tank.image) }}"
+                      class="tank-image"
+                      alt="Tank Image"
+                    />
+                    {% else %}
+                    <img
+                      src="{{ url_for('static', filename='img/default_tank.jpg') }}"
+                      class="tank-image"
+                      alt="Tank Image"
+                    />
+                    {% endif %}
 
-                      <div class="tank-params">
-                        <p><strong>Volume (L):</strong> {{ tank.volume }}</p>
-                        <p><strong>pH:</strong> {{ tank.ph or "?" }}</p>
-                        <p><strong>KH:</strong> {{ tank.kh or "?" }}</p>
-                        <p><strong>Temp (°C):</strong> {{ tank.temperature or "?" }}</p>
-                        <p><strong>GH:</strong> {{ tank.gh or "?" }}</p>
-                        <p class="tank-description"><strong>Description:</strong> {{ tank.description or "No description." }}</p>
-                      </div>
-                    </div>
-
-                    <div class="tank-stocking">
-                      <h4>Tank Stocking</h4>
-                      <div class="fish-list">
-                        {% if tank.fish %}
-                          {% for fish in tank.fish %}
-                            <div class="fish-item">
-                              {% if fish.image %}
-                                <img src="{{ url_for('static', filename='img/fish_icons/' ~ fish.image) }}" alt="{{ fish.name }}" />
-                              {% else %}
-                                <img src="{{ url_for('static', filename='img/fish_icons/default_fish.jpg') }}" alt="Default Fish" />
-                              {% endif %}
-                              {{ fish.name }} (x{{ fish.count }})
-                            </div>
-                          {% endfor %}
-                        {% else %}
-                          <div class="fish-item">No fish yet</div>
-                        {% endif %}
-                      </div>
+                    <div class="tank-params">
+                      <p><strong>Volume (L):</strong> {{ tank.volume }}</p>
+                      <p><strong>pH:</strong> {{ tank.ph or "?" }}</p>
+                      <p><strong>KH:</strong> {{ tank.kh or "?" }}</p>
+                      <p>
+                        <strong>Temp (°C):</strong> {{ tank.temperature or "?"
+                        }}
+                      </p>
+                      <p><strong>GH:</strong> {{ tank.gh or "?" }}</p>
+                      <p class="tank-description">
+                        <strong>Description:</strong> {{ tank.description or "No
+                        description." }}
+                      </p>
                     </div>
                   </div>
 
-                  <div class="tank-actions">
-                    <button>Edit Tank</button>
-                    <button>Manage Stock</button>
-                    <button class="delete-btn">Delete Tank</button>
-                    <button class="add-tank-btn">Add New Tank</button>
+                  <div class="tank-stocking">
+                    <h4>Tank Stocking</h4>
+                    <div class="fish-list">
+                      {% if tank.fish %} {% for fish in tank.fish %}
+                      <div class="fish-item">
+                        {% if fish.image %}
+                        <img
+                          src="{{ url_for('static', filename='img/fish_icons/' ~ fish.image) }}"
+                          alt="{{ fish.name }}"
+                        />
+                        {% else %}
+                        <img
+                          src="{{ url_for('static', filename='img/fish_icons/default_fish.jpg') }}"
+                          alt="Default Fish"
+                        />
+                        {% endif %} {{ fish.name }} (x{{ fish.count }})
+                      </div>
+                      {% endfor %} {% else %}
+                      <div class="fish-item">No fish yet</div>
+                      {% endif %}
+                    </div>
                   </div>
                 </div>
+
+                <div class="tank-actions">
+                  <button>Edit Tank</button>
+                  <button class="manage-stock-btn">Manage Stock</button>
+                  <button class="delete-btn">Delete Tank</button>
+                  <button class="add-tank-btn">Add New Tank</button>
+                </div>
               </div>
-              {% endfor %}
-            {% else %}
-              <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                  document.getElementById("emptyState").style.display = "block";
-                  document.querySelector(".slider-wrapper").style.display = "none";
-                });
-              </script>
+            </div>
+            {% endfor %} {% else %}
+            <script>
+              document.addEventListener("DOMContentLoaded", function () {
+                document.getElementById("emptyState").style.display = "block";
+                document.querySelector(".slider-wrapper").style.display =
+                  "none";
+              });
+            </script>
             {% endif %}
           </div>
 
@@ -139,22 +195,69 @@
           </div>
         </div>
 
-
-
         <!-- Modals -->
         <!-- Add Tank -->
         <div id="addTankModal" class="modal">
           <div class="modal-content">
             <span class="close-btn" onclick="closeTankModal()">&times;</span>
             <h2>Add New Tank</h2>
-            <form id="addTankForm" method="POST" action="{{ url_for('tanks.add_tank') }}" enctype="multipart/form-data">
-              <input type="text" id="tankName" name="name" placeholder="Tank name" required />
-              <input type="number" id="volume" name="volume" placeholder="Volume (L)" required />
-              <input type="number" step="0.1" id="temperature" name="temperature" placeholder="Temperature (°C)" required />
-              <input type="number" step="0.1" id="ph" name="ph" placeholder="pH" required />
-              <input type="number" step="1" id="kh" name="kh" placeholder="KH" required />
-              <input type="number" step="1" id="gh" name="gh" placeholder="GH" required />
-              <textarea id="description" name="description" placeholder="Description"></textarea>
+            <form
+              id="addTankForm"
+              method="POST"
+              action="{{ url_for('tanks.add_tank') }}"
+              enctype="multipart/form-data"
+            >
+              <input
+                type="text"
+                id="tankName"
+                name="name"
+                placeholder="Tank name"
+                required
+              />
+              <input
+                type="number"
+                id="volume"
+                name="volume"
+                placeholder="Volume (L)"
+                required
+              />
+              <input
+                type="number"
+                step="0.1"
+                id="temperature"
+                name="temperature"
+                placeholder="Temperature (°C)"
+                required
+              />
+              <input
+                type="number"
+                step="0.1"
+                id="ph"
+                name="ph"
+                placeholder="pH"
+                required
+              />
+              <input
+                type="number"
+                step="1"
+                id="kh"
+                name="kh"
+                placeholder="KH"
+                required
+              />
+              <input
+                type="number"
+                step="1"
+                id="gh"
+                name="gh"
+                placeholder="GH"
+                required
+              />
+              <textarea
+                id="description"
+                name="description"
+                placeholder="Description"
+              ></textarea>
               <input type="file" id="tankImage" name="image" accept="image/*" />
               <div class="modal-buttons">
                 <button type="submit">Save</button>
@@ -169,13 +272,19 @@
           <div class="modal-content">
             <span class="close-btn" onclick="closeDeleteModal()">&times;</span>
             <h2>Delete Tank</h2>
-            <form id="deleteTankForm" method="POST" action="{{ url_for('tanks.delete_tank') }}">
+            <form
+              id="deleteTankForm"
+              method="POST"
+              action="{{ url_for('tanks.delete_tank') }}"
+            >
               <label for="tankSelect">Select tank to delete:</label>
               <select id="tankSelect" name="tank_id" required></select>
               <p>Are you sure you want to delete this tank?</p>
               <div class="modal-buttons">
                 <button type="submit">Yes, delete</button>
-                <button type="button" onclick="closeDeleteModal()">Cancel</button>
+                <button type="button" onclick="closeDeleteModal()">
+                  Cancel
+                </button>
               </div>
             </form>
           </div>
@@ -184,23 +293,46 @@
         <!-- Edit Tank -->
         <div id="editTankModal" class="modal">
           <div class="modal-content">
-            <span class="close" onclick="document.getElementById('editTankModal').style.display='none'">&times;</span>
+            <span
+              class="close"
+              onclick="document.getElementById('editTankModal').style.display='none'"
+              >&times;</span
+            >
             <h2>Edit Tank</h2>
-            <form id="editTankForm" action="{{ url_for('tanks.edit_tank') }}" method="POST" enctype="multipart/form-data">
+            <form
+              id="editTankForm"
+              action="{{ url_for('tanks.edit_tank') }}"
+              method="POST"
+              enctype="multipart/form-data"
+            >
               <!-- Poprawka: name="tank_id" -->
               <input type="hidden" id="editTankId" name="tank_id" />
 
               <label for="editTankSelect">Select Tank:</label>
-              <select id="editTankSelect" name="editTankSelect" required></select>
+              <select
+                id="editTankSelect"
+                name="editTankSelect"
+                required
+              ></select>
 
               <label for="editTankName">Tank Name:</label>
-              <input type="text" id="editTankName" name="editTankName" required />
+              <input
+                type="text"
+                id="editTankName"
+                name="editTankName"
+                required
+              />
 
               <label for="editVolume">Volume (L):</label>
               <input type="number" id="editVolume" name="editVolume" required />
 
               <label for="editTemperature">Temperature (°C):</label>
-              <input type="number" id="editTemperature" name="editTemperature" step="0.1" />
+              <input
+                type="number"
+                id="editTemperature"
+                name="editTemperature"
+                step="0.1"
+              />
 
               <label for="editPh">pH:</label>
               <input type="number" id="editPh" name="editPh" step="0.1" />
@@ -215,42 +347,50 @@
               <textarea id="editDescription" name="editDescription"></textarea>
 
               <label for="editImage">Change Image (optional):</label>
-              <input type="file" id="editImage" name="editImage" accept="image/*" />
+              <input
+                type="file"
+                id="editImage"
+                name="editImage"
+                accept="image/*"
+              />
 
               <button type="submit">Save Changes</button>
             </form>
           </div>
         </div>
-        
+
         <!-- Manage Stock -->
         <div id="manageStockModal" class="modal">
           <div class="modal-content">
-            <span class="close-btn" onclick="closeManageStockModal()">&times;</span>
+            <span class="close-btn" onclick="closeManageStockModal()"
+              >&times;</span
+            >
             <h2>Manage Stock</h2>
+            <form method="POST" action="{{ url_for('tanks.add_fish') }}">
+              <input type="hidden" id="modalTankId" name="tank_id" />
 
-            <form id="manageStockForm" method="POST" action="{{ url_for('tanks.add_fish') }}" enctype="multipart/form-data">
-              <label for="tank_id">Select tank:</label>
-              <select id="tank_id" name="tank_id" required>
-                {% for tank in tanks %}
-                  <option value="{{ tank.id }}">{{ tank.name }}</option>
+              <label for="species_id">Select Fish Species:</label>
+              <select id="species_id" name="species_id" required>
+                {% for species in species_list %}
+                <option value="{{ species.id }}">{{ species.name }}</option>
                 {% endfor %}
               </select>
 
-              <label for="name">Fish name:</label>
-              <input type="text" id="name" name="name" placeholder="e.g. Neon" required />
+              <label for="quantity">Quantity:</label>
+              <input
+                type="number"
+                id="quantity"
+                name="quantity"
+                min="1"
+                value="1"
+                required
+              />
 
-              <label for="species">Species (optional):</label>
-              <input type="text" id="species" name="species" placeholder="e.g. Paracheirodon innesi" />
-
-              <label for="count">How many?</label>
-              <input type="number" id="count" name="count" placeholder="Count" min="1" required />
-
-              <label for="image">Fish image:</label>
-              <input type="file" id="image" name="image" accept="image/*" />
-
-              <div class="modal-buttons" style="margin-top: 20px;">
+              <div class="modal-buttons" style="margin-top: 20px">
                 <button type="submit">Add Fish</button>
-                <button type="button" onclick="closeManageStockModal()">Cancel</button>
+                <button type="button" onclick="closeManageStockModal()">
+                  Cancel
+                </button>
               </div>
             </form>
           </div>

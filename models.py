@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
+
 # 🧍 Model użytkownika
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -12,10 +13,10 @@ class User(db.Model):
     password = db.Column(db.String(200), nullable=False)
 
     # Relacje
-    tasks = db.relationship('Task', backref='user', lazy=True)
-    tanks = db.relationship('Tank', backref='owner', lazy=True)
-    photos = db.relationship('Photo', backref='user', lazy=True)  # 🆕
-    notes = db.relationship('Note', backref='user', lazy=True)    # 🆕
+    tasks = db.relationship("Task", backref="user", lazy=True)
+    tanks = db.relationship("Tank", backref="owner", lazy=True)
+    photos = db.relationship("Photo", backref="user", lazy=True)  # 🆕
+    notes = db.relationship("Note", backref="user", lazy=True)  # 🆕
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
@@ -37,7 +38,7 @@ class Task(db.Model):
     recurring = db.Column(db.Boolean, default=False)
     repeat_every = db.Column(db.Integer, nullable=True)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
@@ -56,27 +57,50 @@ class Tank(db.Model):
     description = db.Column(db.Text, nullable=True)
     image = db.Column(db.String(100), nullable=True)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
         return f"<Tank {self.name} ({self.volume}L)>"
-    
+
 
 # Model ryby
-class Fish(db.Model):
+class FishSpecies(db.Model):
+    __tablename__ = "fish_species"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)         # np. "Neon Innesa"
-    species = db.Column(db.String(100), nullable=True)       # opcjonalna nazwa gatunkowa
-    count = db.Column(db.Integer, default=1, nullable=False) # liczba sztuk
-    image = db.Column(db.String(100), nullable=True)         # obrazek ryby
+    name = db.Column(db.String(100), nullable=False)  # np. "Neon Innesa"
+    image = db.Column(db.String(100), nullable=True)  # obrazek ryby
+    adult_length = db.Column(db.Float, nullable=False)
 
-    tank_id = db.Column(db.Integer, db.ForeignKey('tank.id'), nullable=False)
-    tank = db.relationship("Tank", backref=db.backref("fish", lazy=True))
+    min_temp = db.Column(db.Float)
+    max_temp = db.Column(db.Float)
+    min_ph = db.Column(db.Float)
+    max_ph = db.Column(db.Float)
+    min_kh = db.Column(db.Integer)
+    max_kh = db.Column(db.Integer)
+    min_gh = db.Column(db.Integer)
+    max_gh = db.Column(db.Integer)
+
+    description = db.Column(db.Text)
 
     def __repr__(self):
-        return f"<Fish {self.name} (x{self.count})>"
+        return f"<Species {self.name}>"
 
+
+# Rybki użytkownika w konkretnym akwarium
+class FishInstance(db.Model):
+    __tablename__ = "fish_instance"
+    id = db.Column(db.Integer, primary_key=True)
+    quantity = db.Column(db.Integer, nullable=False, default=1)
+
+    tank_id = db.Column(db.Integer, db.ForeignKey("tank.id"), nullable=False)
+    species_id = db.Column(db.Integer, db.ForeignKey("fish_species.id"), nullable=False)
+
+    tank = db.relationship("Tank", backref=db.backref("fish_instances", lazy=True))
+    species = db.relationship("FishSpecies", backref=db.backref("instances", lazy=True))
+
+    def __repr__(self):
+        return f"<{self.quantity} x {self.species.name} in Tank {self.tank_id}>"
 
 
 # 📷 Model zdjęcia w galerii
@@ -84,7 +108,7 @@ class Photo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(100), nullable=False)
     title = db.Column(db.String(100), nullable=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
@@ -98,7 +122,7 @@ class Note(db.Model):
     content = db.Column(db.Text, nullable=False)
     # date = db.Column(db.String(10), nullable=False)  # Format: YYYY-MM-DD
     date = db.Column(db.Date, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):

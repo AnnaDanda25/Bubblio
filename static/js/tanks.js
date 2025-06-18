@@ -21,6 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const editDescription = document.getElementById("editDescription");
   const editImage = document.getElementById("editImage");
 
+  const manageStockModal = document.getElementById("manageStockModal");
+  const modalTankId = document.getElementById("modalTankId");
+
   let currentSlide = 0;
   let currentEditIndex = null;
 
@@ -58,15 +61,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (editBtn) editBtn.addEventListener("click", openEditModal);
     if (deleteBtn) deleteBtn.addEventListener("click", openDeleteModal);
-    if (addBtn) addBtn.addEventListener("click", () => {
-      addTankModal.style.display = "block";
-    });
+    if (addBtn)
+      addBtn.addEventListener("click", () => {
+        addTankModal.style.display = "block";
+      });
+
+    if (manageBtn) {
+      manageBtn.addEventListener("click", () => {
+        const tankId = card.closest(".slide").dataset.tankId;
+        document.getElementById("modalTankId").value = tankId;
+        openManageStockModal();
+      });
+    }
   }
 
   function openDeleteModal() {
     tankSelect.innerHTML = "";
     getSlides().forEach((slide, index) => {
-      const name = slide.querySelector(".tank-name-title").textContent || `Tank ${index + 1}`;
+      const name =
+        slide.querySelector(".tank-name-title").textContent ||
+        `Tank ${index + 1}`;
       const option = document.createElement("option");
       option.value = index;
       option.textContent = name;
@@ -79,10 +93,20 @@ document.addEventListener("DOMContentLoaded", () => {
     deleteModal.style.display = "none";
   }
 
+  function openManageStockModal() {
+    manageStockModal.style.display = "block";
+  }
+
+  function closeManageStockModal() {
+    document.getElementById("manageStockModal").style.display = "none";
+  }
+
   function openEditModal() {
     editSelect.innerHTML = "";
     getSlides().forEach((slide, index) => {
-      const name = slide.querySelector(".tank-name-title").textContent || `Tank ${index + 1}`;
+      const name =
+        slide.querySelector(".tank-name-title").textContent ||
+        `Tank ${index + 1}`;
       const option = document.createElement("option");
       option.value = index;
       option.textContent = name;
@@ -110,7 +134,10 @@ document.addEventListener("DOMContentLoaded", () => {
     editKh.value = params[2].textContent.split(":")[1].trim();
     editTemperature.value = params[3].textContent.split(":")[1].trim();
     editGh.value = params[4].textContent.split(":")[1].trim();
-    editDescription.value = slide.querySelector(".tank-description").textContent.replace("Description:", "").trim();
+    editDescription.value = slide
+      .querySelector(".tank-description")
+      .textContent.replace("Description:", "")
+      .trim();
 
     document.getElementById("editTankId").value = slide.dataset.tankId;
   }
@@ -127,6 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target === addTankModal) closeTankModal();
     if (e.target === deleteModal) closeDeleteModal();
     if (e.target === editModal) closeEditModal();
+    if (e.target == manageStockModal) closeManageStockModal();
   });
 
   function closeTankModal() {
