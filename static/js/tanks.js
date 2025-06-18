@@ -122,7 +122,8 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const res = await fetch(`/tanks/tank_stock/${tankId}`);
 
-      const stock = await res.json();
+      const data = await res.json();
+      const stock = data.stock;
 
       if (stock.length === 0) {
         existingList.innerHTML += "<p>No fish added yet.</p>";
@@ -138,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         existingList.appendChild(ul);
 
-        // Dodaj listener do przycisków usuwania
+        // przyciski do usuwania
         existingList.querySelectorAll(".delete-fish-btn").forEach((btn) => {
           btn.addEventListener("click", async () => {
             const stockId = btn.dataset.stockId;
@@ -150,55 +151,48 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       console.error("Error loading tank stock:", err);
     }
+    await updateTankStockDisplay(tankId);
   }
 
   document
-  .getElementById("manageStockForm")
-  .addEventListener("submit", async function (e) {
-    e.preventDefault();
+    .getElementById("manageStockForm")
+    .addEventListener("submit", async function (e) {
+      e.preventDefault();
 
-    const tankId = document.getElementById("modalTankId").value;
-    const fishId = document.getElementById("newFishSelect").value;
-    const count = document.getElementById("newFishCount").value;
+      const tankId = document.getElementById("modalTankId").value;
+      const fishId = document.getElementById("newFishSelect").value;
+      const count = document.getElementById("newFishCount").value;
 
-    try {
-      const res = await fetch("/tanks/add_fish_to_tank", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tank_id: tankId,
-          fish_id: fishId,
-          count: count,
-        }),
-      });
+      try {
+        const res = await fetch("/tanks/add_fish_to_tank", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tank_id: tankId,
+            fish_id: fishId,
+            count: count,
+          }),
+        });
 
-      const data = await res.json();
+        const data = await res.json();
 
-      if (res.status === 400 && data.error === "Overstocking") {
-        alert("❗ Tank overstocked!\n" + data.message);
-        return;
-      }
-
-      if (res.status === 200) {
-        if (data.mismatches && data.mismatches.length > 0) {
-          alert(
-            "⚠️ Warning: Tank parameters may not be ideal for this fish:\n" +
-              data.mismatches.join(", ")
-          );
+        if (res.ok) {
+          // ✔️ Nie pokazujemy alertów – info pod rybą
+          await openManageStockModal();
+          await updateTankStockDisplay(tankId);
+        } else {
+          console.warn("Fish added with warnings:", data);
+          await updateTankStockDisplay(tankId);
         }
-        await openManageStockModal(); // odśwież stock
-      } else {
+      } catch (err) {
+        console.error("Error sending fish:", err);
         alert("Error adding fish");
       }
-    } catch (err) {
-      console.error("Error sending fish:", err);
-      alert("Error adding fish");
-    }
-  });
-
+    });
 
   function closeManageStockModal() {
     document.getElementById("manageStockModal").style.display = "none";
+    document.getElementById("fishCompatibility").innerHTML = "";
   }
 
   function openEditModal() {
@@ -296,19 +290,83 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const container = document.getElementById("fishCompatibility");
         container.innerHTML = `
-        <div style="display:flex; align-items:center; gap:15px;">
-          <img src="/static/img/fishspecies/${data.image}" alt="${data.name}" style="width: 100px; border-radius: 10px;" />
-          <div>
-            <strong>${data.name}</strong><br>
-            Temp: ${data.min_temperature}–${data.max_temperature}°C<br>
-            pH: ${data.min_ph}–${data.max_ph}<br>
-            KH: ${data.min_kh}–${data.max_kh}<br>
-            GH: ${data.min_gh}–${data.max_gh}
+          <div style="display:flex; align-items:center; gap:15px;">
+            <img src="/static/img/fishspecies/${data.image}" alt="${data.name}" style="width: 100px; border-radius: 10px;" />
+            <div>
+              <strong>${data.name}</strong><br>
+              Temp: ${data.min_temperature}–${data.max_temperature}°C<br>
+              pH: ${data.min_ph}–${data.max_ph}<br>
+              KH: ${data.min_kh}–${data.max_kh}<br>
+              GH: ${data.min_gh}–${data.max_gh}
+            </div>
           </div>
-        </div>
-      `;
+        `;
+
+        const tankId = document.getElementById("modalTankId").value;
+        await updateTankStockDisplay(tankId); // <== DODANE
       } catch (err) {
         console.error("Error loading fish data:", err);
       }
     });
+
+  async function updateTankStockDisplay(tankId) {
+    try {
+      const tankId = document.getElementById("modalTankId").value;
+      const fishId = document.getElementById("newFishSelect").value;
+
+      const res = await fetch(`/tanks/tank_stock/${tankId}?fish_id=${fishId}`);
+
+      const data = await res.json();
+
+      const percent = (data.total_cm / data.tank_volume) * 100;
+
+      // 🐟 Zaktualizuj total_cm (cm ryb w zbiorniku)
+      document.querySelectorAll(".slide").forEach((slide) => {
+        if (slide.dataset.tankId === tankId) {
+          const percentSpan = slide.querySelector(`#stock-percent-${tankId}`);
+          if (percentSpan) {
+            percentSpan.textContent = `${percent.toFixed(0)}%`;
+          }
+        }
+      });
+
+      // 📢 Wyświetl informacje o zarybieniu i zgodności pod rybą
+      const compatContainer = document.getElementById("fishCompatibility");
+      if (!compatContainer) return;
+
+      // Usuń stare info
+      document.getElementById("compatibility-detail")?.remove();
+      document.getElementById("stocking-detail")?.remove();
+
+      // 💧 Zarybienie
+      const stockingPercent = (data.total_cm / data.tank_volume) * 100;
+      const stockingDiv = document.createElement("div");
+      stockingDiv.id = "stocking-detail";
+      stockingDiv.style.marginTop = "10px";
+      stockingDiv.style.fontWeight = "500";
+      stockingDiv.style.color = stockingPercent > 100 ? "#cc0000" : "#2e7d32";
+      stockingDiv.innerHTML =
+        stockingPercent > 100
+          ? `❗ Overstocked: ${stockingPercent.toFixed(0)}% of tank volume`
+          : `💧 Stocking: ${stockingPercent.toFixed(0)}% of tank volume`;
+      compatContainer.appendChild(stockingDiv);
+
+      // ⚠️ Kompatybilność
+      if (data.mismatches) {
+        const compatDiv = document.createElement("div");
+        compatDiv.id = "compatibility-detail";
+        compatDiv.style.marginTop = "5px";
+        compatDiv.style.fontWeight = "500";
+        compatDiv.style.color =
+          data.mismatches.length === 0 ? "#2e7d32" : "#cc0000";
+        compatDiv.innerHTML =
+          data.mismatches.length === 0
+            ? "✅ Suitable for this tank"
+            : `⚠️ Not ideal for: ${data.mismatches.join(", ")}`;
+        compatContainer.appendChild(compatDiv);
+      }
+    } catch (err) {
+      console.error("Failed to update tank stock display:", err);
+    }
+  }
 });

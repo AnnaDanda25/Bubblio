@@ -6,6 +6,27 @@ from werkzeug.utils import secure_filename
 import os
 
 
+def get_compatibility_mismatches(tank):
+    # Przyjmujemy, że ostatnio wybrana ryba to ta ostatnia dodana
+    last = (
+        FishStock.query.filter_by(tank_id=tank.id).order_by(FishStock.id.desc()).first()
+    )
+    if not last:
+        return []
+
+    fish = last.fish
+    mismatches = []
+    if not (fish.min_temp <= tank.temperature <= fish.max_temp):
+        mismatches.append("temperature")
+    if not (fish.min_ph <= tank.ph <= fish.max_ph):
+        mismatches.append("pH")
+    if not (fish.min_kh <= tank.kh <= fish.max_kh):
+        mismatches.append("KH")
+    if not (fish.min_gh <= tank.gh <= fish.max_gh):
+        mismatches.append("GH")
+    return mismatches
+
+
 # 🔍 Widok zbiorników danego użytkownika
 @tanks.route("/")
 def view_tanks():
@@ -103,6 +124,7 @@ def add_fish_to_tank():
 
     # ✅ Kompatybilność
     mismatches = []
+
     if not (fish.min_temp <= tank.temperature <= fish.max_temp):
         mismatches.append("temperature")
     if not (fish.min_ph <= tank.ph <= fish.max_ph):
@@ -112,14 +134,13 @@ def add_fish_to_tank():
     if not (fish.min_gh <= tank.gh <= fish.max_gh):
         mismatches.append("GH")
 
-    # ✅ Zarybienie
-    current_cm = sum(fs.count * fs.fish.adult_length for fs in FishStock.query.filter_by(tank_id=tank.id).all())
+    # ✅ Zarybienie – tylko informacyjne, NIE blokujemy
+    current_cm = sum(
+        fs.count * fs.fish.adult_length
+        for fs in FishStock.query.filter_by(tank_id=tank.id).all()
+    )
     added_cm = count * fish.adult_length
-    if current_cm + added_cm > tank.volume:
-        return jsonify({
-            "error": "Overstocking",
-            "message": f"Adding these fish exceeds the tank volume: {current_cm + added_cm} cm > {tank.volume} L"
-        }), 400
+    total_cm = current_cm + added_cm
 
     # ✅ Dodanie do stocku
     existing = FishStock.query.filter_by(tank_id=tank_id, fish_id=fish_id).first()
@@ -131,11 +152,17 @@ def add_fish_to_tank():
 
     db.session.commit()
 
-    return jsonify({
-        "message": "Fish added",
-        "mismatches": mismatches  # możesz to obsłużyć w JS do komunikatu
-    }), 200
-
+    return (
+        jsonify(
+            {
+                "message": "Fish added",
+                "mismatches": mismatches,
+                "total_cm": total_cm,
+                "tank_volume": tank.volume,
+            }
+        ),
+        200,
+    )
 
 
 # 🗑️ Obsługa usuwania zbiornika
@@ -235,11 +262,41 @@ def fish_info(fish_id):
 
 @tanks.route("/tank_stock/<int:tank_id>")
 def tank_stock(tank_id):
+    fish_id = request.args.get("fish_id", type=int)
+    tank = Tank.query.get(tank_id)
     stock = FishStock.query.filter_by(tank_id=tank_id).all()
-    result = []
-    for s in stock:
-        result.append({"id": s.id, "name": s.fish.name, "count": s.count})
-    return jsonify(result)
+    total_cm = sum(s.count * s.fish.adult_length for s in stock)
+
+    mismatches = []
+    if fish_id:
+        fish = FishSpecies.query.get(fish_id)
+        if fish:
+            if not (fish.min_temp <= tank.temperature <= fish.max_temp):
+                mismatches.append("temperature")
+            if not (fish.min_ph <= tank.ph <= fish.max_ph):
+                mismatches.append("pH")
+            if not (fish.min_kh <= tank.kh <= fish.max_kh):
+                mismatches.append("KH")
+            if not (fish.min_gh <= tank.gh <= fish.max_gh):
+                mismatches.append("GH")
+
+    result = [
+        {
+            "id": s.id,
+            "name": s.fish.name,
+            "count": s.count,
+            "length": s.fish.adult_length,
+        }
+        for s in stock
+    ]
+    return jsonify(
+        {
+            "stock": result,
+            "total_cm": total_cm,
+            "tank_volume": tank.volume,
+            "mismatches": mismatches,
+        }
+    )
 
 
 @tanks.route("/delete_fish/<int:stock_id>", methods=["POST"])

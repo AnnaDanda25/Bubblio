@@ -146,6 +146,11 @@
 
                   <div class="tank-stocking">
                     <h4>Tank Stocking</h4>
+                    <p>
+                      <strong>Total stock:</strong>
+                      <span id="stock-percent-{{ tank.id }}">Loading...</span>
+                    </p>
+
                     <div class="fish-list">
                       {% if tank.fish_stock %} {% for fs in tank.fish_stock %}
                       <div class="fish-item">
