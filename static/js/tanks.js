@@ -21,6 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const editDescription = document.getElementById("editDescription");
   const editImage = document.getElementById("editImage");
 
+  const manageStockModal = document.getElementById("manageStockModal");
+  const modalTankId = document.getElementById("modalTankId");
+
   let currentSlide = 0;
   let currentEditIndex = null;
 
@@ -58,15 +61,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (editBtn) editBtn.addEventListener("click", openEditModal);
     if (deleteBtn) deleteBtn.addEventListener("click", openDeleteModal);
-    if (addBtn) addBtn.addEventListener("click", () => {
-      addTankModal.style.display = "block";
-    });
+    if (addBtn)
+      addBtn.addEventListener("click", () => {
+        addTankModal.style.display = "block";
+      });
+
+    if (manageBtn) {
+      manageBtn.addEventListener("click", () => {
+        const tankId = card.closest(".slide").dataset.tankId;
+        document.getElementById("modalTankId").value = tankId;
+        openManageStockModal();
+      });
+    }
   }
 
   function openDeleteModal() {
     tankSelect.innerHTML = "";
     getSlides().forEach((slide, index) => {
-      const name = slide.querySelector(".tank-name-title").textContent || `Tank ${index + 1}`;
+      const name =
+        slide.querySelector(".tank-name-title").textContent ||
+        `Tank ${index + 1}`;
       const option = document.createElement("option");
       option.value = index;
       option.textContent = name;
@@ -79,10 +93,114 @@ document.addEventListener("DOMContentLoaded", () => {
     deleteModal.style.display = "none";
   }
 
+  async function openManageStockModal() {
+    const modal = document.getElementById("manageStockModal");
+    modal.style.display = "block";
+
+    const tankId = document.getElementById("modalTankId").value;
+
+    // 1. Pobierz i wyświetl listę dostępnych gatunków ryb
+    const select = document.getElementById("newFishSelect");
+    select.innerHTML = "";
+    try {
+      const res = await fetch("/tanks/fish_species");
+      const speciesList = await res.json();
+      speciesList.forEach((species) => {
+        const option = document.createElement("option");
+        option.value = species.id;
+        option.textContent = species.name;
+        select.appendChild(option);
+      });
+    } catch (err) {
+      console.error("Error loading fish species:", err);
+    }
+
+    // 2. Pobierz i wyświetl aktualny stock ryb w zbiorniku
+    const existingList = document.getElementById("existingFishList");
+    existingList.innerHTML = "<h4>Current Stock</h4>";
+
+    try {
+      const res = await fetch(`/tanks/tank_stock/${tankId}`);
+
+      const data = await res.json();
+      const stock = data.stock;
+
+      if (stock.length === 0) {
+        existingList.innerHTML += "<p>No fish added yet.</p>";
+      } else {
+        const ul = document.createElement("ul");
+        stock.forEach((item) => {
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <strong>${item.name}</strong> (x${item.count})
+            <button data-stock-id="${item.id}" class="delete-fish-btn">🗑</button>
+          `;
+          ul.appendChild(li);
+        });
+        existingList.appendChild(ul);
+
+        // przyciski do usuwania
+        existingList.querySelectorAll(".delete-fish-btn").forEach((btn) => {
+          btn.addEventListener("click", async () => {
+            const stockId = btn.dataset.stockId;
+            await fetch(`/tanks/delete_fish/${stockId}`, { method: "POST" });
+            openManageStockModal(); // przeładuj stock
+          });
+        });
+      }
+    } catch (err) {
+      console.error("Error loading tank stock:", err);
+    }
+    await updateTankStockDisplay(tankId);
+  }
+
+  document
+    .getElementById("manageStockForm")
+    .addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const tankId = document.getElementById("modalTankId").value;
+      const fishId = document.getElementById("newFishSelect").value;
+      const count = document.getElementById("newFishCount").value;
+
+      try {
+        const res = await fetch("/tanks/add_fish_to_tank", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tank_id: tankId,
+            fish_id: fishId,
+            count: count,
+          }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          // ✔️ Nie pokazujemy alertów – info pod rybą
+          await openManageStockModal();
+          await updateTankStockDisplay(tankId);
+        } else {
+          console.warn("Fish added with warnings:", data);
+          await updateTankStockDisplay(tankId);
+        }
+      } catch (err) {
+        console.error("Error sending fish:", err);
+        alert("Error adding fish");
+      }
+    });
+
+  function closeManageStockModal() {
+    document.getElementById("manageStockModal").style.display = "none";
+    document.getElementById("fishCompatibility").innerHTML = "";
+  }
+
   function openEditModal() {
     editSelect.innerHTML = "";
     getSlides().forEach((slide, index) => {
-      const name = slide.querySelector(".tank-name-title").textContent || `Tank ${index + 1}`;
+      const name =
+        slide.querySelector(".tank-name-title").textContent ||
+        `Tank ${index + 1}`;
       const option = document.createElement("option");
       option.value = index;
       option.textContent = name;
@@ -110,7 +228,10 @@ document.addEventListener("DOMContentLoaded", () => {
     editKh.value = params[2].textContent.split(":")[1].trim();
     editTemperature.value = params[3].textContent.split(":")[1].trim();
     editGh.value = params[4].textContent.split(":")[1].trim();
-    editDescription.value = slide.querySelector(".tank-description").textContent.replace("Description:", "").trim();
+    editDescription.value = slide
+      .querySelector(".tank-description")
+      .textContent.replace("Description:", "")
+      .trim();
 
     document.getElementById("editTankId").value = slide.dataset.tankId;
   }
@@ -127,6 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target === addTankModal) closeTankModal();
     if (e.target === deleteModal) closeDeleteModal();
     if (e.target === editModal) closeEditModal();
+    if (e.target == manageStockModal) closeManageStockModal();
   });
 
   function closeTankModal() {
@@ -156,55 +278,159 @@ document.addEventListener("DOMContentLoaded", () => {
     showSlide(newIndex);
   });
 
-    // 🧠 Obsługa Settings Modal
-  const settingsForm = document.getElementById('dailyChecksForm');
-  const tankIdInput = document.getElementById('settingsTankId');
+  document
+    .getElementById("newFishSelect")
+    .addEventListener("change", async function () {
+      const speciesId = this.value;
+      if (!speciesId) return;
+
+      try {
+        const response = await fetch(`/tanks/fish_info/${speciesId}`);
+        const data = await response.json();
+
+        const container = document.getElementById("fishCompatibility");
+        container.innerHTML = `
+          <div style="display:flex; align-items:center; gap:15px;">
+            <img src="/static/img/fishspecies/${data.image}" alt="${data.name}" style="width: 100px; border-radius: 10px;" />
+            <div>
+              <strong>${data.name}</strong><br>
+              Temp: ${data.min_temperature}–${data.max_temperature}°C<br>
+              pH: ${data.min_ph}–${data.max_ph}<br>
+              KH: ${data.min_kh}–${data.max_kh}<br>
+              GH: ${data.min_gh}–${data.max_gh}
+            </div>
+          </div>
+        `;
+
+        const tankId = document.getElementById("modalTankId").value;
+        await updateTankStockDisplay(tankId); // <== DODANE
+      } catch (err) {
+        console.error("Error loading fish data:", err);
+      }
+    });
+
+  async function updateTankStockDisplay(tankId) {
+    try {
+      const tankId = document.getElementById("modalTankId").value;
+      const fishId = document.getElementById("newFishSelect").value;
+
+      const res = await fetch(`/tanks/tank_stock/${tankId}?fish_id=${fishId}`);
+
+      const data = await res.json();
+
+      const percent = (data.total_cm / data.tank_volume) * 100;
+
+      // 🐟 Zaktualizuj total_cm (cm ryb w zbiorniku)
+      document.querySelectorAll(".slide").forEach((slide) => {
+        if (slide.dataset.tankId === tankId) {
+          const percentSpan = slide.querySelector(`#stock-percent-${tankId}`);
+          if (percentSpan) {
+            percentSpan.textContent = `${percent.toFixed(0)}%`;
+          }
+        }
+      });
+
+      // 📢 Wyświetl informacje o zarybieniu i zgodności pod rybą
+      const compatContainer = document.getElementById("fishCompatibility");
+      if (!compatContainer) return;
+
+      // Usuń stare info
+      document.getElementById("compatibility-detail")?.remove();
+      document.getElementById("stocking-detail")?.remove();
+
+      // 💧 Zarybienie
+      const stockingPercent = (data.total_cm / data.tank_volume) * 100;
+      const stockingDiv = document.createElement("div");
+      stockingDiv.id = "stocking-detail";
+      stockingDiv.style.marginTop = "10px";
+      stockingDiv.style.fontWeight = "500";
+      stockingDiv.style.color = stockingPercent > 100 ? "#cc0000" : "#2e7d32";
+      stockingDiv.innerHTML =
+        stockingPercent > 100
+          ? `❗ Overstocked: ${stockingPercent.toFixed(0)}% of tank volume`
+          : `💧 Stocking: ${stockingPercent.toFixed(0)}% of tank volume`;
+      compatContainer.appendChild(stockingDiv);
+
+      // ⚠️ Kompatybilność
+      if (data.mismatches) {
+        const compatDiv = document.createElement("div");
+        compatDiv.id = "compatibility-detail";
+        compatDiv.style.marginTop = "5px";
+        compatDiv.style.fontWeight = "500";
+        compatDiv.style.color =
+          data.mismatches.length === 0 ? "#2e7d32" : "#cc0000";
+        compatDiv.innerHTML =
+          data.mismatches.length === 0
+            ? "✅ Suitable for this tank"
+            : `⚠️ Not ideal for: ${data.mismatches.join(", ")}`;
+        compatContainer.appendChild(compatDiv);
+      }
+    } catch (err) {
+      console.error("Failed to update tank stock display:", err);
+    }
+  }
+
+  // 🧠 Obsługa Settings Modal
+  const settingsForm = document.getElementById("dailyChecksForm");
+  const tankIdInput = document.getElementById("settingsTankId");
   const checkboxes = settingsForm?.querySelectorAll('input[name="checks"]');
 
   function openSettingsModal(tankId) {
-    document.getElementById('settingsModal').style.display = 'block';
+    document.getElementById("settingsModal").style.display = "block";
 
     // Ustaw tank_id w ukrytym polu formularza
     tankIdInput.value = tankId;
 
     // Pobierz zapisane dane z atrybutu data-checks
-    const slide = [...getSlides()].find(slide => slide.dataset.tankId === tankId);
-    const checks = slide?.dataset.checks ? JSON.parse(slide.dataset.checks) : [];
+    const slide = [...getSlides()].find(
+      (slide) => slide.dataset.tankId === tankId
+    );
+    const checks = slide?.dataset.checks
+      ? JSON.parse(slide.dataset.checks)
+      : [];
 
     // Odznacz wszystkie
-    checkboxes.forEach(cb => cb.checked = false);
+    checkboxes.forEach((cb) => (cb.checked = false));
 
     // Zaznacz wybrane
-    checks.forEach(val => {
+    checks.forEach((val) => {
       const checkbox = settingsForm.querySelector(`input[value="${val}"]`);
       if (checkbox) checkbox.checked = true;
     });
 
-    openSettingsTab('dailyTab');  // domyślna zakładka
+    openSettingsTab("dailyTab"); // domyślna zakładka
   }
   // 📌 Dodajemy eventy do przycisków "Settings"
-  document.querySelectorAll('.settings-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const slide = btn.closest('.slide');
+  document.querySelectorAll(".settings-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const slide = btn.closest(".slide");
       const tankId = slide.dataset.tankId;
       importantTankId.value = tankId;
 
-      resetImportantTasks();  // czyści wszystko
+      resetImportantTasks(); // czyści wszystko
 
       const tasksDataAttr = slide.dataset.importantTasks;
       if (tasksDataAttr) {
         try {
-          const savedTasks = JSON.parse(tasksDataAttr);  // np. [{task_type: 'waterchange', start_date: '2024-01-01', interval_days: 7}, ...]
-          savedTasks.forEach(task => {
-            const checkbox = importantForm.querySelector(`input.task-toggle[value="${task.task_type}"]`);
-            const optionsWrapper = checkbox?.closest('.important-task-item');
+          const savedTasks = JSON.parse(tasksDataAttr); // np. [{task_type: 'waterchange', start_date: '2024-01-01', interval_days: 7}, ...]
+          savedTasks.forEach((task) => {
+            const checkbox = importantForm.querySelector(
+              `input.task-toggle[value="${task.task_type}"]`
+            );
+            const optionsWrapper = checkbox?.closest(".important-task-item");
             if (checkbox && optionsWrapper) {
               checkbox.checked = true;
-              optionsWrapper.querySelector('.task-options')?.classList.remove('d-none');
+              optionsWrapper
+                .querySelector(".task-options")
+                ?.classList.remove("d-none");
 
               // Ustaw datę i interwał
-              optionsWrapper.querySelector(`input[name="${task.task_type}_start"]`).value = task.start_date;
-              optionsWrapper.querySelector(`input[name="${task.task_type}_interval"]`).value = task.interval_days;
+              optionsWrapper.querySelector(
+                `input[name="${task.task_type}_start"]`
+              ).value = task.start_date;
+              optionsWrapper.querySelector(
+                `input[name="${task.task_type}_interval"]`
+              ).value = task.interval_days;
             }
           });
         } catch (err) {
@@ -214,71 +440,69 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-
-
-    // === Important Tasks – pokaż opcje przy zaznaczeniu ===
-  const importantForm = document.getElementById('importantTasksForm');
+  // === Important Tasks – pokaż opcje przy zaznaczeniu ===
+  const importantForm = document.getElementById("importantTasksForm");
 
   if (importantForm) {
-    const taskCheckboxes = importantForm.querySelectorAll('.task-toggle');
+    const taskCheckboxes = importantForm.querySelectorAll(".task-toggle");
 
-    taskCheckboxes.forEach(checkbox => {
-      checkbox.addEventListener('change', () => {
-        const wrapper = checkbox.closest('.important-task-item');
-        const options = wrapper.querySelector('.task-options');
+    taskCheckboxes.forEach((checkbox) => {
+      checkbox.addEventListener("change", () => {
+        const wrapper = checkbox.closest(".important-task-item");
+        const options = wrapper.querySelector(".task-options");
         if (options) {
-          options.classList.toggle('d-none', !checkbox.checked);
+          options.classList.toggle("d-none", !checkbox.checked);
         }
       });
     });
 
-    const importantTankId = document.getElementById('importantTasksTankId');
+    const importantTankId = document.getElementById("importantTasksTankId");
     function resetImportantTasks() {
       // Ukryj wszystkie pola opcji i odznacz checkboxy
-      const allTaskItems = importantForm.querySelectorAll('.important-task-item');
-      allTaskItems.forEach(item => {
-        const checkbox = item.querySelector('.task-toggle');
-        const options = item.querySelector('.task-options');
+      const allTaskItems = importantForm.querySelectorAll(
+        ".important-task-item"
+      );
+      allTaskItems.forEach((item) => {
+        const checkbox = item.querySelector(".task-toggle");
+        const options = item.querySelector(".task-options");
         if (checkbox) checkbox.checked = false;
-        if (options) options.classList.add('d-none');
+        if (options) options.classList.add("d-none");
       });
     }
 
-    document.querySelectorAll('.settings-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const slide = btn.closest('.slide');
+    document.querySelectorAll(".settings-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const slide = btn.closest(".slide");
         const tankId = slide.dataset.tankId;
         importantTankId.value = tankId;
-        resetImportantTasks();  // domyślnie czyści wszystkie checkboxy i pola
+        resetImportantTasks(); // domyślnie czyści wszystkie checkboxy i pola
       });
     });
   }
 
   // === Przełączanie zakładek w Settings Modal ===
-  const tabButtons = document.querySelectorAll('#settingsTabNav .nav-link');
-  const checksTab = document.getElementById('checksTab');
-  const tasksTab = document.getElementById('tasksTab');
+  const tabButtons = document.querySelectorAll("#settingsTabNav .nav-link");
+  const checksTab = document.getElementById("checksTab");
+  const tasksTab = document.getElementById("tasksTab");
 
-  tabButtons.forEach(button => {
-    button.addEventListener('click', () => {
+  tabButtons.forEach((button) => {
+    button.addEventListener("click", () => {
       // Dezaktywuj wszystkie
-      tabButtons.forEach(btn => btn.classList.remove('active'));
+      tabButtons.forEach((btn) => btn.classList.remove("active"));
 
       // Ukryj wszystkie taby
-      if (checksTab) checksTab.style.display = 'none';
-      if (tasksTab) tasksTab.style.display = 'none';
+      if (checksTab) checksTab.style.display = "none";
+      if (tasksTab) tasksTab.style.display = "none";
 
       // Aktywuj kliknięty
-      button.classList.add('active');
+      button.classList.add("active");
 
       // Pokaż odpowiedni tab
-      const targetId = button.getAttribute('data-bs-target');
+      const targetId = button.getAttribute("data-bs-target");
       const targetTab = document.querySelector(targetId);
       if (targetTab) {
-        targetTab.style.display = 'block';
+        targetTab.style.display = "block";
       }
     });
   });
-
-
 });
