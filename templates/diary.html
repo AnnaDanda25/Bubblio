@@ -232,19 +232,17 @@
       <p id="lightboxCaption"></p>
     </div>
   </div>
-
+  <!-- Note Lightbox Modal -->
+  <div id="noteLightboxOverlay" class="lightbox-overlay d-none">
+    <div class="lightbox-content note-lightbox">
+      <span id="noteLightboxClose" class="lightbox-close">&times;</span>
+      <h5 id="viewNoteTitle" class="mb-2 fw-bold text-accent"></h5>
+      <p id="viewNoteDate" class="text-muted small"></p>
+      <p id="viewNoteContent" class="mt-3"></p>
+    </div>
+  </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="{{ url_for('static', filename='js/script.js') }}"></script>
   <script src="{{ url_for('static', filename='js/diary.js') }}"></script>
-  <script>
-    // Ustaw dzisiejszą datę w ukrytym polu w formularzu notatki
-    document.addEventListener('DOMContentLoaded', () => {
-      const noteDateInput = document.getElementById('noteDate');
-      if (noteDateInput) {
-        const today = new Date().toISOString().split('T')[0];
-        noteDateInput.value = today;
-      }
-    });
-  </script>
 </body>
 </html>
