@@ -147,19 +147,19 @@
                   <div class="tank-stocking">
                     <h4>Tank Stocking</h4>
                     <div class="fish-list">
-                      {% if tank.fish %} {% for fish in tank.fish %}
+                      {% if tank.fish_stock %} {% for fs in tank.fish_stock %}
                       <div class="fish-item">
-                        {% if fish.image %}
+                        {% if fs.fish.image %}
                         <img
-                          src="{{ url_for('static', filename='img/fish_icons/' ~ fish.image) }}"
-                          alt="{{ fish.name }}"
+                          src="{{ url_for('static', filename='img/fishspecies/' ~ fs.fish.image) }}"
+                          alt="{{ fs.fish.name }}"
                         />
                         {% else %}
                         <img
-                          src="{{ url_for('static', filename='img/fish_icons/default_fish.jpg') }}"
+                          src="{{ url_for('static', filename='img/fishspecies/default_fish.jpg') }}"
                           alt="Default Fish"
                         />
-                        {% endif %} {{ fish.name }} (x{{ fish.count }})
+                        {% endif %} {{ fs.fish.name }} (x{{ fs.count }})
                       </div>
                       {% endfor %} {% else %}
                       <div class="fish-item">No fish yet</div>
@@ -366,25 +366,38 @@
               >&times;</span
             >
             <h2>Manage Stock</h2>
-            <form method="POST" action="{{ url_for('tanks.add_fish') }}">
-              <input type="hidden" id="modalTankId" name="tank_id" />
 
-              <label for="species_id">Select Fish Species:</label>
-              <select id="species_id" name="species_id" required>
-                {% for species in species_list %}
-                <option value="{{ species.id }}">{{ species.name }}</option>
-                {% endfor %}
-              </select>
+            <!-- Ukryte pole z ID zbiornika -->
+            <input type="hidden" name="tank_id" id="modalTankId" />
 
-              <label for="quantity">Quantity:</label>
+            <!-- Lista aktualnych ryb w zbiorniku -->
+            <div id="existingFishList" style="margin: 20px 0">
+              <h4>Current Stock</h4>
+              <!-- zostanie uzupełnione z JS -->
+            </div>
+
+            <hr />
+
+            <!-- Dodawanie nowej ryby -->
+            <h4>Add New Fish</h4>
+            <form id="manageStockForm" method="POST">
+              <label for="newFishSelect">Select fish species:</label>
+              <select id="newFishSelect" name="fish_id" required></select>
+
+              <label for="newFishCount">How many?</label>
               <input
                 type="number"
-                id="quantity"
-                name="quantity"
-                min="1"
-                value="1"
+                id="newFishCount"
+                name="count"
+                placeholder="Count"
                 required
+                min="1"
               />
+
+              <!-- Podgląd ryby + kompatybilność -->
+              <div id="fishCompatibility" style="margin-top: 15px">
+                <!-- Wypełnia JS -->
+              </div>
 
               <div class="modal-buttons" style="margin-top: 20px">
                 <button type="submit">Add Fish</button>

@@ -103,6 +103,17 @@ class FishInstance(db.Model):
         return f"<{self.quantity} x {self.species.name} in Tank {self.tank_id}>"
 
 
+class FishStock(db.Model):
+    __tablename__ = "fish_stock"
+    id = db.Column(db.Integer, primary_key=True)
+    tank_id = db.Column(db.Integer, db.ForeignKey("tank.id"))
+    fish_id = db.Column(db.Integer, db.ForeignKey("fish_species.id"))
+    count = db.Column(db.Integer)
+
+    tank = db.relationship("Tank", backref="fish_stock")
+    fish = db.relationship("FishSpecies")
+
+
 # 📷 Model zdjęcia w galerii
 class Photo(db.Model):
     id = db.Column(db.Integer, primary_key=True)

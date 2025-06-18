@@ -1,54 +1,48 @@
-from app import app
 from models import db, FishSpecies
+from app import app  # upewnij się, że masz dostęp do app context
+
+fish_data = [
+    {
+        "name": "Neon Tetra",
+        "min_temp": 20,
+        "max_temp": 26,
+        "min_ph": 5.0,
+        "max_ph": 7.0,
+        "min_kh": 1,
+        "max_kh": 5,
+        "min_gh": 2,
+        "max_gh": 10,
+        "adult_length": 3.5,
+        "image": "neon.jpg",
+    },
+    {
+        "name": "Guppy",
+        "min_temp": 22,
+        "max_temp": 28,
+        "min_ph": 6.5,
+        "max_ph": 8.0,
+        "min_kh": 4,
+        "max_kh": 8,
+        "min_gh": 6,
+        "max_gh": 12,
+        "adult_length": 4.0,
+        "image": "guppy.jpg",
+    },
+    # Dodaj więcej gatunków...
+]
 
 with app.app_context():
-    if FishSpecies.query.count() == 0:
-        fish_list = [
-            FishSpecies(
-                name="Neon Tetra",
-                image="neon.png",
-                adult_length=3.5,
-                min_temp=20,
-                max_temp=26,
-                min_ph=5.0,
-                max_ph=7.0,
-                min_kh=1,
-                max_kh=5,
-                min_gh=2,
-                max_gh=10,
-                description="Peaceful schooling fish, great for community tanks.",
-            ),
-            FishSpecies(
-                name="Guppy",
-                image="guppy.png",
-                adult_length=5,
-                min_temp=22,
-                max_temp=28,
-                min_ph=6.8,
-                max_ph=7.8,
-                min_kh=4,
-                max_kh=8,
-                min_gh=8,
-                max_gh=12,
-                description="Colorful, active and easy to keep.",
-            ),
-            FishSpecies(
-                name="Platy",
-                image="platy.png",
-                adult_length=6,
-                min_temp=22,
-                max_temp=26,
-                min_ph=7.0,
-                max_ph=8.2,
-                min_kh=4,
-                max_kh=10,
-                min_gh=10,
-                max_gh=28,
-                description="Great beginner fish, peaceful and hardy.",
-            ),
-        ]
-        db.session.add_all(fish_list)
-        db.session.commit()
-        print("Fish species added to the database.")
-    else:
-        print("Fish species already exist.")
+    for fish in fish_data:
+        existing = FishSpecies.query.filter_by(name=fish["name"]).first()
+        if existing:
+            # 🔁 Aktualizuj dane
+            for key, value in fish.items():
+                setattr(existing, key, value)
+            print(f"Updated {fish['name']}")
+        else:
+            # ➕ Dodaj nowy wpis
+            new_fish = FishSpecies(**fish)
+            db.session.add(new_fish)
+            print(f"Added {fish['name']}")
+    db.session.commit()
+    print("✅ Fish database updated.")
