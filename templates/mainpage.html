@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bubblio - Main Page</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bubbliocore.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/mainpage.css') }}" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="app-container d-flex">
+    <!-- Hamburger (mobile only) -->
+    <button class="hamburger mobile-hamburger" id="menuToggle" aria-label="Toggle menu">☰</button>
+
+    <!-- Sidebar -->
+    <nav class="sidebar collapsed" id="sidebar" aria-label="Main menu">
+      <ul class="nav flex-column mt-4">
+        <li class="nav-item">
+          <a href="{{ url_for('mainpage.home') }}" class="nav-link active">
+            <img src="{{ url_for('static', filename='img/mainpage_menu_icon.png') }}" alt="Go to home page" />
+            <span>Home</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url_for('tanks.view_tanks') }}" class="nav-link">
+            <img src="{{ url_for('static', filename='img/tank_menu_icon.png') }}" alt="Go to tanks page" />
+            <span>Tanks</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url_for('diary.view_diary') }}" class="nav-link">
+            <img src="{{ url_for('static', filename='img/diary_menu_icon.png') }}" alt="Go to diary page" />
+            <span>Diary</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ url_for('profile.view_profile') }}" class="nav-link">
+            <img src="{{ url_for('static', filename='img/profile_menu_icon.png') }}" alt="Go to profile page" />
+            <span>Profile</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+
+    <!-- Main Content -->
+    <main class="main-content flex-grow-1">
+      <!-- FLASH MESSAGES -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="container mt-3">
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <!-- Topbar -->
+      <header class="d-flex justify-content-between align-items-center topbar mb-4">
+        <div class="d-flex align-items-center gap-2">
+          <img src="{{ url_for('static', filename='img/bubblio_logo_no_text.png') }}" alt="Bubblio Logo" class="logo-img" />
+          <h1 class="hello-text m-0 fw-semibold">Hello {{ session['user_name'] }}!</h1>
+        </div>
+        <div class="bubble-counter d-flex align-items-center gap-2">
+          <span class="bubble-label">Your Bubbles:</span>
+          <img src="{{ url_for('static', filename='img/bubblio_bubble.png') }}" alt="Bubble icon" class="bubble-icon" />
+          <span class="bubble-number">21</span>
+        </div>
+      </header>
+
+      <!-- Tanks + Calendar -->
+      <section class="row gx-4 mb-4 align-items-stretch">
+        <!-- Tanks -->
+        <div class="col-md-6 d-flex flex-column">
+          <div class="section-with-title h-100">
+            <h2 class="section-title">Your Tanks</h2>
+            <div class="card p-3 h-100">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="tab-scroll-container d-flex overflow-auto" style="scroll-behavior: smooth;">
+                  <ul class="nav nav-tabs flex-nowrap" id="tankTabs" role="tablist">
+                    {% for tank in tanks %}
+                      <li class="nav-item">
+                        <button class="nav-link {% if loop.first %}active{% endif %}" data-bs-toggle="tab"
+                                data-bs-target="#tank{{ loop.index }}" role="tab">
+                          {{ tank.name }}
+                        </button>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+                <div class="d-flex ms-2">
+                  <button class="calendar-arrow tab-scroll-left" aria-label="Scroll left">⟨</button>
+                  <button class="calendar-arrow tab-scroll-right" aria-label="Scroll right">⟩</button>
+                </div>
+              </div>
+
+              <div class="tab-content">
+                {% for tank in tanks %}
+                  <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="tank{{ tank.id }}" role="tabpanel">
+                    <h5 class="subsection-title">Daily checks</h5>
+                    <ul class="list-unstyled mb-0">
+                      {% set check_labels = {
+                        'temp': 'Check water temperature',
+                        'behavior': 'Observe fish behavior',
+                        'food': 'Check leftover food',
+                        'clarity': 'Check water clarity',
+                        'count': 'Count fish/invertebrates',
+                        'equipment': 'Check filter and equipment',
+                        'disease': 'Look for signs of disease',
+                        'waterlevel': 'Check water level',
+                        'co2': 'Check CO₂ system (if used)',
+                        'plants': 'Inspect plants and algae'
+                      } %}
+
+                      {% set checks = tank.daily_checks or [] %}
+                      {% for check in checks %}
+                        <li><input type="checkbox" /> {{ check_labels[check] }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calendar -->
+        <div class="col-md-6 d-flex flex-column">
+          <div class="section-with-title h-100">
+            <h2 class="section-title">Calendar</h2>
+            <div class="calendar card p-3 h-100">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 id="calendarMonthYear" class="fs-5 mb-0"></h4>
+                <div>
+                  <button id="prevMonth" class="calendar-arrow" aria-label="Previous month">⟨</button>
+                  <button id="nextMonth" class="calendar-arrow" aria-label="Next month">⟩</button>
+                </div>
+              </div>
+              <div id="calendarGrid" class="calendar-grid"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Upcoming Tasks -->
+      <section class="section-with-title">
+        <h2 class="section-title">Upcoming Tasks</h2>
+        <div class="card p-3 position-relative">
+          <ul id="task-list" class="list-unstyled mb-0">
+            {% set has_any_tasks = false %}
+
+            <!-- Zadania z bazy danych -->
+            {% for task in tasks %}
+              {% set has_any_tasks = true %}
+              <li><input type="checkbox" {% if task.is_done %}checked{% endif %} /> {{ task.date }} – {{ task.title }}</li>
+            {% endfor %}
+
+            <!-- Zadania important_tasks wygenerowane dynamicznie -->
+            {% for task in virtual_tasks %}
+              {% set has_any_tasks = true %}
+              <li><input type="checkbox" disabled /> {{ task.date }} – {{ task.title }} <span class="text-muted">(from important tasks)</span></li>
+            {% endfor %}
+
+
+            {% if not has_any_tasks %}
+              <li class="text-muted">No tasks yet.</li>
+            {% endif %}
+          </ul>
+          <button class="btn-add-task" data-bs-toggle="modal" data-bs-target="#addTaskModal">+</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form class="modal-content" id="addTaskForm" method="POST" action="{{ url_for('mainpage.add_task') }}">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addTaskModalLabel">Add New Task</h5>
+          <button class="btn-close" type="button" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="date" class="form-control mb-3" name="taskDate" required />
+          <input type="text" class="form-control mb-3" name="taskDescription" placeholder="Task description" required />
+          
+          <label for="recurringType" class="form-label mt-2">Repeat:</label>
+          <select class="form-select mb-3" name="recurringType" id="recurringType">
+            <option value="once" selected>One-time</option>
+            <option value="recurring">Recurring</option>
+          </select>
+
+          <div id="recurringFields" style="display: none;">
+            <input type="number" class="form-control mb-2" name="recurringInterval" placeholder="Every how many days?" min="1" />
+            <input type="number" class="form-control mb-2" name="recurringCount" placeholder="How many times?" min="1" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary w-100" type="submit">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

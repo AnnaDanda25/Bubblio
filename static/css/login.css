@@ -1,0 +1,143 @@
+:root {
+  --primary: #0077b6;
+  --accent: #003a58;
+  --light: #a8d0e3;
+  --text-dark: #212529;
+  --white: #ffffff;
+  --gray: #828282;
+  --bg-light-blue: #caf0f8;
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--white);
+  color: var(--text-dark);
+}
+
+
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 24px 16px;
+  background-color: var(--white);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  background-color: var(--white);
+  padding: 24px 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+
+.logo-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.logo-wrapper img.logo {
+  width: clamp(140px, 45vw, 200px);
+  height: auto;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
+
+h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+
+form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input.form-control {
+  font-size: 14px;
+  padding: 10px;
+}
+
+
+button.btn {
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.btn-dark {
+  background-color: var(--text-dark);
+  color: var(--white);
+}
+
+.btn-dark:hover {
+  background-color: #000;
+}
+
+.btn-info {
+  background-color: var(--bg-light-blue);
+  color: var(--text-dark);
+}
+
+.btn-info:hover {
+  background-color: #9ed9ea;
+}
+
+
+hr {
+  border: none;
+  height: 1px;
+  background-color: #ddd;
+}
+
+.text-secondary {
+  color: var(--gray);
+}
+
+
+p.small {
+  font-size: 12px;
+  color: var(--gray);
+  margin-top: 16px;
+  line-height: 1.4;
+  padding: 0 8px;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+
+

@@ -1,0 +1,99 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    width: 375px;
+    height: 812px;
+    background-color: #FFFFFF;
+    text-align: center;
+    padding: 24px;
+    position: relative;
+}
+
+.logo {
+    width: 121px;
+    height: 121px;
+    background-image: url('bubblio_logo_no_text.png');
+    background-size: cover;
+    background-position: center;
+    margin: 0 auto;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-top: 24px;
+    margin-bottom: 24px;
+}
+
+form input {
+    width: 327px;
+    height: 40px;
+    margin: 8px 0;
+    padding: 8px 16px;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+}
+
+form button {
+    width: 327px;
+    height: 40px;
+    background-color: #212529;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+    margin-top: 16px;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 16px 0;
+}
+
+.divider span {
+    color: #828282;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    width: 148.5px;
+    height: 1px;
+    background-color: #E6E6E6;
+}
+
+.signup {
+    background-color: #CAF0F8;
+    border: none;
+    width: 327px;
+    height: 40px;
+    border-radius: 8px;
+    margin-top: 16px;
+}
+
+p {
+    font-size: 12px;
+    line-height: 150%;
+    color: #828282;
+    margin-top: 12px;
+}
+
+a {
+    color: #212529;
+    text-decoration: none;
+}

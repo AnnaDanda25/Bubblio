@@ -1,0 +1,134 @@
+/* === TANKS (Tabs) === */
+.nav-tabs {
+  border-bottom: none;
+}
+
+
+.nav-tabs .nav-link {
+  background-color: transparent;
+  color: #013853;
+  font-weight: 700;
+  font-size: 22px;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 24px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  white-space: nowrap; /* ⬅️ To dodaj */
+}
+
+
+.nav-tabs .nav-link:hover {
+  background-color: rgba(0, 119, 182, 0.1);
+  color: var(--accent);
+}
+
+.nav-tabs .nav-link.active {
+  background-color: var(--primary);
+  color: rgb(19, 42, 61);
+  box-shadow: 0 0 8px rgba(81, 142, 174, 0.4);
+  font-weight: 700;
+}
+
+.subsection-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: var(--accent);
+}
+
+/* === CHECKBOX STYLE (Your Tanks & Upcoming Tasks) === */
+li {
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+/* === CALENDAR === */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  text-align: center;
+}
+
+.calendar-grid div {
+  padding: 10px 0;
+  font-weight: 600;
+  background: var(--light);
+  border-radius: 5px;
+  color: var(--text-dark);
+}
+
+.calendar-grid .selected {
+  background-color: var(--calendar-today);
+  color: white;
+}
+
+.weekday-tile {
+  background-color: transparent;
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  font-weight: 700;
+  border-radius: 10px;
+}
+
+.empty-tile {
+  visibility: hidden;
+  height: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.calendar-arrow {
+  background: transparent;
+  border: none;
+  font-size: 26px;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 5px 12px;
+  border-radius: 8px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.calendar-arrow:hover {
+  background: var(--bubble-bg);
+  color: var(--accent);
+}
+
+/* === CALENDAR ANIMATIONS === */
+.calendar-grid.fade-out {
+  animation: fadeOutCalendar 0.2s forwards;
+}
+
+.calendar-grid.fade-in {
+  animation: fadeInCalendar 0.2s forwards;
+}
+
+@keyframes fadeOutCalendar {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(10px); }
+}
+
+@keyframes fadeInCalendar {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.tank-tab-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.tab-scroll-container {
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  flex-grow: 1;
+}
+
+#tankTabs {
+  display: flex;
+  flex-wrap: nowrap;
+  margin-bottom: 0;
+}
