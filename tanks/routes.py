@@ -27,10 +27,12 @@ def get_compatibility_mismatches(tank):
         mismatches.append("GH")
     return mismatches
 
+
 def safe_isoformat(value):
     if isinstance(value, date):
         return value.isoformat()
     return ""
+
 
 # 🌊 Widok zbiorników użytkownika
 @tanks.route("/")
@@ -45,7 +47,9 @@ def view_tanks():
     for tank in user_tanks:
         tank.fish_stock = FishStock.query.filter_by(tank_id=tank.id).all()
         try:
-            tank.daily_checks_list = json.loads(tank.daily_checks) if tank.daily_checks else []
+            tank.daily_checks_list = (
+                json.loads(tank.daily_checks) if tank.daily_checks else []
+            )
         except Exception:
             tank.daily_checks_list = []
 
@@ -57,7 +61,9 @@ def view_tanks():
         tank.fish_stock = FishStock.query.filter_by(tank_id=tank.id).all()
 
         try:
-            tank.daily_checks_list = json.loads(tank.daily_checks) if tank.daily_checks else []
+            tank.daily_checks_list = (
+                json.loads(tank.daily_checks) if tank.daily_checks else []
+            )
         except Exception:
             tank.daily_checks_list = []
 
@@ -359,7 +365,6 @@ def update_checks():
         flash("Tank not found or access denied.", "danger")
 
     return redirect(url_for("tanks.view_tanks"))
-
 
 
 # ✅ Zapis ustawień important tasks

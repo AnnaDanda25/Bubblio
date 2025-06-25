@@ -109,9 +109,8 @@
             <div
               class="slide {% if loop.index0 == 0 %}active{% endif %}"
               data-tank-id="{{ tank.id }}"
-              data-checks='{{ tank.daily_checks | tojson }}'
-              data-important-tasks='{{ tank.important_tasks_serialized | tojson | safe }}'
-
+              data-checks="{{ tank.daily_checks | tojson }}"
+              data-important-tasks="{{ tank.important_tasks_serialized | tojson | safe }}"
             >
               <div class="tank-card">
                 <h2 class="tank-name-title text-center">{{ tank.name }}</h2>
@@ -149,10 +148,6 @@
 
                   <div class="tank-stocking">
                     <h4>Tank Stocking</h4>
-                    <p>
-                      <strong>Total stock:</strong>
-                      <span id="stock-percent-{{ tank.id }}">Loading...</span>
-                    </p>
 
                     <div class="fish-list">
                       {% if tank.fish_stock %} {% for fs in tank.fish_stock %}
@@ -187,7 +182,6 @@
                   >
                     Settings
                   </button>
-
                 </div>
               </div>
             </div>
@@ -214,7 +208,7 @@
         <!-- Add Tank -->
         <div id="addTankModal" class="modal">
           <div class="modal-content">
-            <span class="close-btn" onclick="closeTankModal()">&times;</span>
+            <span class="close-btn close-modal">&times;</span>
             <h2>Add New Tank</h2>
             <form
               id="addTankForm"
@@ -276,7 +270,7 @@
               <input type="file" id="tankImage" name="image" accept="image/*" />
               <div class="modal-buttons">
                 <button type="submit">Save</button>
-                <button type="button" onclick="closeTankModal()">Cancel</button>
+                <button type="button" class="close-modal">Cancel</button>
               </div>
             </form>
           </div>
@@ -285,7 +279,7 @@
         <!-- Delete Tank -->
         <div id="deleteTankModal" class="modal">
           <div class="modal-content">
-            <span class="close-btn" onclick="closeDeleteModal()">&times;</span>
+            <span class="close-btn close-modal">&times;</span>
             <h2>Delete Tank</h2>
             <form
               id="deleteTankForm"
@@ -297,9 +291,7 @@
               <p>Are you sure you want to delete this tank?</p>
               <div class="modal-buttons">
                 <button type="submit">Yes, delete</button>
-                <button type="button" onclick="closeDeleteModal()">
-                  Cancel
-                </button>
+                <button type="button" class="close-modal">Cancel</button>
               </div>
             </form>
           </div>
@@ -308,11 +300,7 @@
         <!-- Edit Tank -->
         <div id="editTankModal" class="modal">
           <div class="modal-content">
-            <span
-              class="close"
-              onclick="document.getElementById('editTankModal').style.display='none'"
-              >&times;</span
-            >
+            <span class="close-btn close-modal">&times;</span>
             <h2>Edit Tank</h2>
             <form
               id="editTankForm"
@@ -377,9 +365,7 @@
         <!-- Manage Stock -->
         <div id="manageStockModal" class="modal">
           <div class="modal-content">
-            <span class="close-btn" onclick="closeManageStockModal()"
-              >&times;</span
-            >
+            <span class="close-btn close-modal">&times;</span>
             <h2>Manage Stock</h2>
 
             <!-- Ukryte pole z ID zbiornika -->
@@ -416,9 +402,7 @@
 
               <div class="modal-buttons" style="margin-top: 20px">
                 <button type="submit">Add Fish</button>
-                <button type="button" onclick="closeManageStockModal()">
-                  Cancel
-                </button>
+                <button type="button" class="close-modal">Cancel</button>
               </div>
             </form>
           </div>
@@ -427,11 +411,7 @@
         <!-- Settings Modal -->
         <div id="settingsModal" class="modal">
           <div class="modal-content wide-modal">
-            <span
-              class="close"
-              onclick="document.getElementById('settingsModal').style.display='none'"
-              >&times;</span
-            >
+            <span class="close-btn close-modal">&times;</span>
             <h2>Tank Settings</h2>
 
             <!-- Zakładki -->
@@ -478,27 +458,20 @@
                 <input type="hidden" name="tank_id" id="settingsTankId" />
 
                 <div class="daily-checks-list">
-                  {% set checks_definitions = [
-                    ('temp', 'Check water temperature'),
-                    ('behavior', 'Observe fish behavior'),
-                    ('food', 'Check leftover food'),
-                    ('clarity', 'Check water clarity'),
-                    ('count', 'Count fish/invertebrates'),
-                    ('equipment', 'Check filter and equipment'),
-                    ('disease', 'Look for signs of disease'),
-                    ('waterlevel', 'Check water level'),
-                    ('co2', 'Check CO₂ system (if used)'),
-                    ('plants', 'Inspect plants and algae')
-                  ] %}
-
-                  {% for value, label in checks_definitions %}
-                    <label class="daily-check-item">
-                      <input type="checkbox" name="checks" value="{{ value }}" />
-                      <span>{{ label }}</span>
-                    </label>
+                  {% set checks_definitions = [ ('temp', 'Check water
+                  temperature'), ('behavior', 'Observe fish behavior'), ('food',
+                  'Check leftover food'), ('clarity', 'Check water clarity'),
+                  ('count', 'Count fish/invertebrates'), ('equipment', 'Check
+                  filter and equipment'), ('disease', 'Look for signs of
+                  disease'), ('waterlevel', 'Check water level'), ('co2', 'Check
+                  CO₂ system (if used)'), ('plants', 'Inspect plants and algae')
+                  ] %} {% for value, label in checks_definitions %}
+                  <label class="daily-check-item">
+                    <input type="checkbox" name="checks" value="{{ value }}" />
+                    <span>{{ label }}</span>
+                  </label>
                   {% endfor %}
                 </div>
-
 
                 <div class="modal-buttons mt-3">
                   <button type="submit" class="btn btn-primary w-100">
@@ -519,60 +492,60 @@
                 <input type="hidden" name="tank_id" id="importantTasksTankId" />
 
                 <div class="important-tasks-list">
-                  {% set task_definitions = [
-                    ('waterchange', 'Water Change'),
-                    ('vacuum', 'Gravel vacuuming / substrate cleaning'),
-                    ('filter', 'Clean filter media'),
-                    ('trim', 'Trim plants'),
-                    ('glass', 'Clean aquarium glass'),
-                    ('topoff', 'Top off evaporated water'),
-                    ('equipment', 'Clean equipment'),
-                    ('fertilizer', 'Replenish fertilizers or CO₂ supplies')
-                  ] %}
-                  {% for value, label in task_definitions %}
-                    {% set existing_task = None %}
-                    {% for t in selected_tank.important_tasks if t.task_type == value %}
-                      {% set existing_task = t %}
-                    {% endfor %}
+                  {% set task_definitions = [ ('waterchange', 'Water Change'),
+                  ('vacuum', 'Gravel vacuuming / substrate cleaning'),
+                  ('filter', 'Clean filter media'), ('trim', 'Trim plants'),
+                  ('glass', 'Clean aquarium glass'), ('topoff', 'Top off
+                  evaporated water'), ('equipment', 'Clean equipment'),
+                  ('fertilizer', 'Replenish fertilizers or CO₂ supplies') ] %}
+                  {% for value, label in task_definitions %} {% set
+                  existing_task = None %} {% for t in
+                  selected_tank.important_tasks if t.task_type == value %} {%
+                  set existing_task = t %} {% endfor %}
 
-                    <div class="important-task-item mb-3">
-                      <div class="form-check">
-                        <input
-                          class="form-check-input task-toggle"
-                          type="checkbox"
-                          value="{{ value }}"
-                          name="important_tasks_{{ value }}"
-                          id="task_{{ value }}"
-                          data-task-type="{{ value }}"
-                          {% if existing_task %}checked{% endif %}
-                        />
-                        <label
-                          class="form-check-label ms-2"
-                          for="task_{{ value }}"
-                        >
-                          {{ label }}
-                        </label>
-                      </div>
-                      <div
-                        class="task-options mt-2 ms-4 {% if not existing_task %}d-none{% endif %}"
+                  <div class="important-task-item mb-3">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input task-toggle"
+                        type="checkbox"
+                        value="{{ value }}"
+                        name="important_tasks_{{ value }}"
+                        id="task_{{ value }}"
+                        data-task-type="{{ value }}"
+                        {%
+                        if
+                        existing_task
+                        %}checked{%
+                        endif
+                        %}
+                      />
+                      <label
+                        class="form-check-label ms-2"
+                        for="task_{{ value }}"
                       >
-                        <label class="form-label">Start Date:</label>
-                        <input
-                          type="date"
-                          class="form-control mb-2"
-                          name="{{ value }}_start"
-                          value="{{ existing_task.start_date.isoformat() if existing_task else '' }}"
-                        />
-                        <label class="form-label">Repeat every (days):</label>
-                        <input
-                          type="number"
-                          class="form-control"
-                          name="{{ value }}_interval"
-                          min="1"
-                          value="{{ existing_task.interval_days if existing_task else '' }}"
-                        />
-                      </div>
+                        {{ label }}
+                      </label>
                     </div>
+                    <div
+                      class="task-options mt-2 ms-4 {% if not existing_task %}d-none{% endif %}"
+                    >
+                      <label class="form-label">Start Date:</label>
+                      <input
+                        type="date"
+                        class="form-control mb-2"
+                        name="{{ value }}_start"
+                        value="{{ existing_task.start_date.isoformat() if existing_task else '' }}"
+                      />
+                      <label class="form-label">Repeat every (days):</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        name="{{ value }}_interval"
+                        min="1"
+                        value="{{ existing_task.interval_days if existing_task else '' }}"
+                      />
+                    </div>
+                  </div>
                   {% endfor %}
                 </div>
 
@@ -583,7 +556,6 @@
                 </div>
               </form>
             </div>
-
           </div>
         </div>
       </main>
