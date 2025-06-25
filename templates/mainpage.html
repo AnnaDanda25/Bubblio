@@ -156,13 +156,20 @@
             {% if combined_tasks %}
               {% for task in combined_tasks %}
                 <li>
-                  {% if task.get('is_done') is not none %}
-                    <input type="checkbox" {% if task.is_done %}checked{% endif %} data-task-id="{{ task.id }}" />
-                  {% else %}
-                    <input type="checkbox" disabled />
-                  {% endif %}
+                  <input type="checkbox"
+                    {% if task.get('is_done') is not none %}
+                      {% if task.is_done %}checked{% endif %}
+                      data-task-id="{{ task.id }}"
+                    {% elif task.get('task_type') %}
+                      data-task-type="{{ task.task_type }}"
+                      data-tank-id="{{ task.tank_id }}"
+                      data-task-date="{{ task.date }}"
+                    {% else %}
+                      disabled
+                    {% endif %}
+                  />
                   {{ task.date }} – {{ task.title }}
-                  {% if '(from important tasks)' in task.title %}
+                  {% if task.get('task_type') %}
                     <span class="text-muted">(from important tasks)</span>
                   {% endif %}
                 </li>
@@ -175,6 +182,7 @@
           <button class="btn-add-task" data-bs-toggle="modal" data-bs-target="#addTaskModal">+</button>
         </div>
       </section>
+
 
     </main>
   </div>

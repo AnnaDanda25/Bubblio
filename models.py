@@ -15,12 +15,8 @@ class User(db.Model):
     # Relacje
     tasks = db.relationship("Task", backref="user", lazy=True)
     tanks = db.relationship("Tank", backref="owner", lazy=True)
-    photos = db.relationship("Photo", backref="user", lazy=True)  # 🆕
-    notes = db.relationship("Note", backref="user", lazy=True)  # 🆕
-    tasks = db.relationship("Task", backref="user", lazy=True)
-    tanks = db.relationship("Tank", backref="owner", lazy=True)
     photos = db.relationship("Photo", backref="user", lazy=True)
-    notes = db.relationship("Note", backref="user", lazy=True)
+    notes = db.relationship("Note", backref="user", lazy=True) 
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
@@ -162,3 +158,10 @@ class ImportantTask(db.Model):
 
     def __repr__(self):
         return f"<ImportantTask {self.task_type} for tank {self.tank_id}>"
+
+class CompletedImportantTask(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
+    tank_id = db.Column(db.Integer, db.ForeignKey('tank.id'), nullable=False)
+    task_type = db.Column(db.String(50), nullable=False)
+    completed_date = db.Column(db.String(10), nullable=False)  # YYYY-MM-DD

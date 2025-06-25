@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, url_for, session, flash, jsonify
 from mainpage import mainpage
-from models import db, Task, Tank, ImportantTask
+from models import db, Task, Tank, ImportantTask, CompletedImportantTask
 from datetime import date, datetime, timedelta
 from sqlalchemy.orm import joinedload
 import json
@@ -41,11 +41,13 @@ def home():
                 check_date = today + timedelta(days=day_offset)
                 delta_days = (check_date - start_date).days
                 if delta_days >= 0 and delta_days % interval_days == 0:
-                    task_title = f"{title} ({tank.name})"
                     virtual_tasks.append({
-                        'title': task_title + ' (from important tasks)',
-                        'date': check_date.strftime('%Y-%m-%d')
+                        'title': f"{title} ({tank.name})",
+                        'date': check_date.strftime('%Y-%m-%d'),
+                        'task_type': task.task_type,
+                        'tank_id': tank.id
                     })
+
 
     # 🔀 Połącz i posortuj wszystkie zadania po dacie
     combined_tasks = [
@@ -124,3 +126,36 @@ def upcoming_tasks_data():
     # Sortowanie rosnąco wg daty
     upcoming.sort(key=lambda x: x["date"])
     return jsonify(upcoming)
+
+@mainpage.route('/complete_important_task', methods=['POST'])
+def complete_important_task():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    data = request.get_json()
+    user_id = session['user_id']
+    task_type = data.get('task_type')
+    tank_id = data.get('tank_id')
+    date = data.get('date')
+
+    # 🛡️ Walidacja
+    if not all([task_type, tank_id, date]):
+        return jsonify({'error': 'Missing data'}), 400
+
+    # ✔️ Zapisz wykonanie
+    done = CompletedImportantTask(
+        user_id=user_id,
+        tank_id=tank_id,
+        task_type=task_type,
+        completed_date=date
+    )
+    db.session.add(done)
+
+    # ➕ Dodaj bąbelki użytkownikowi
+    from models import User
+    user = User.query.get(user_id)
+    if user:
+        user.bubbles = (getattr(user, 'bubbles', 0) or 0) + 3
+
+    db.session.commit()
+    return jsonify({'status': 'success'})

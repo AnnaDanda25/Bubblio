@@ -123,4 +123,37 @@ document.addEventListener('DOMContentLoaded', function () {
       scrollContainer.scrollBy({ left: 150, behavior: 'smooth' });
     });
   }
+
+  // === Obsługa wykonywania zadań z ImportantTasks ===
+  document.querySelectorAll('#task-list input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', function () {
+      const li = cb.closest('li');
+      li.classList.toggle('text-decoration-line-through', cb.checked);
+
+      // Jeśli to zadanie z Task
+      if (cb.dataset.taskId) {
+        fetch('/update_task', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: cb.dataset.taskId,
+            is_done: cb.checked
+          })
+        });
+      }
+
+      // Jeśli to zadanie z ImportantTask
+      if (cb.dataset.taskType && cb.dataset.tankId && cb.dataset.taskDate) {
+        fetch('/complete_important_task', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            task_type: cb.dataset.taskType,
+            tank_id: cb.dataset.tankId,
+            date: cb.dataset.taskDate
+          })
+        });
+      }
+    });
+  });
 });
