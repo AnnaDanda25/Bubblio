@@ -256,6 +256,67 @@ document.addEventListener("DOMContentLoaded", () => {
     addTankForm.reset();
   }
 
+  function openSettingsModal(tankId) {
+    const modal = document.getElementById("settingsModal");
+    modal.style.display = "block";
+
+    // Ustaw ID zbiornika w obu formularzach
+    document.getElementById("settingsTankId").value = tankId;
+    document.getElementById("importantTasksTankId").value = tankId;
+
+    // Znajdź aktywny slajd (zbiornik) na podstawie ID
+    const activeSlide = document.querySelector(`.slide[data-tank-id="${tankId}"]`);
+    if (!activeSlide) return;
+
+    // === DAILY CHECKS ===
+    const dailyChecksForm = document.getElementById("dailyChecksForm");
+    const dailyChecksData = JSON.parse(activeSlide.dataset.checks || "[]");
+
+    // Odznacz wszystko na starcie
+    const checkboxes = dailyChecksForm.querySelectorAll("input[type='checkbox']");
+    checkboxes.forEach((checkbox) => {
+      checkbox.checked = dailyChecksData.includes(checkbox.value);
+    });
+
+    // === IMPORTANT TASKS ===
+    const importantForm = document.getElementById("importantTasksForm");
+    const savedTasks = JSON.parse(activeSlide.dataset.importantTasks || "[]");
+
+    // Resetuj wszystkie checkboxy i ukryj opcje
+    const allTaskToggles = importantForm.querySelectorAll(".task-toggle");
+    allTaskToggles.forEach((toggle) => {
+      toggle.checked = false;
+      const container = toggle.closest(".important-task-item");
+      if (container) {
+        container.querySelector(".task-options").classList.add("d-none");
+        container.querySelector(`input[name="${toggle.value}_start"]`).value = "";
+        container.querySelector(`input[name="${toggle.value}_interval"]`).value = "";
+      }
+    });
+
+    // Przywróć zaznaczenia i dane z zapisanych zadań
+    savedTasks.forEach((task) => {
+      const toggle = importantForm.querySelector(`input[data-task-type="${task.task_type}"]`);
+      if (toggle) {
+        toggle.checked = true;
+        const container = toggle.closest(".important-task-item");
+        if (container) {
+          const options = container.querySelector(".task-options");
+          options.classList.remove("d-none");
+
+          const startInput = container.querySelector(`input[name="${task.task_type}_start"]`);
+          const intervalInput = container.querySelector(`input[name="${task.task_type}_interval"]`);
+
+          if (startInput) startInput.value = task.start_date || "";
+          if (intervalInput) intervalInput.value = task.interval_days || "";
+        }
+      }
+    });
+
+  }
+
+
+
   document.getElementById("menuToggle")?.addEventListener("click", () => {
     document.getElementById("sidebar")?.classList.toggle("collapsed");
   });
@@ -374,24 +435,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const settingsForm = document.getElementById("dailyChecksForm");
   const tankIdInput = document.getElementById("settingsTankId");
 
-  function openSettingsModal(tankId) {
-    document.getElementById("settingsModal").style.display = "block";
-    tankIdInput.value = tankId;
-
-    // 💡 Pobierz dane checks z odpowiedniego slajdu
-    const slide = [...document.querySelectorAll(".slide")].find(
-      (slide) => slide.dataset.tankId === tankId
-    );
-
-    const checks = slide?.dataset.checks ? JSON.parse(slide.dataset.checks) : [];
-
-    // 💡 Zresetuj checkboxy w formularzu (odznacz wszystkie)
-    const allCheckboxes = document.querySelectorAll('#dailyChecksForm input[name="checks"]');
-    allCheckboxes.forEach(cb => {
-      cb.checked = checks.includes(cb.value);
-    });
-  }
-
 
   settingsForm?.addEventListener("submit", async function (e) {
     e.preventDefault();
@@ -493,15 +536,14 @@ document.addEventListener("DOMContentLoaded", () => {
   if (importantForm) {
     const taskCheckboxes = importantForm.querySelectorAll(".task-toggle");
 
-    taskCheckboxes.forEach((checkbox) => {
+    document.querySelectorAll(".task-toggle").forEach((checkbox) => {
       checkbox.addEventListener("change", () => {
-        const wrapper = checkbox.closest(".important-task-item");
-        const options = wrapper.querySelector(".task-options");
-        if (options) {
-          options.classList.toggle("d-none", !checkbox.checked);
-        }
+        const container = checkbox.closest(".important-task-item");
+        const options = container.querySelector(".task-options");
+        options.classList.toggle("d-none", !checkbox.checked);
       });
     });
+
 
     const importantTankId = document.getElementById("importantTasksTankId");
     function resetImportantTasks() {

@@ -109,8 +109,9 @@
             <div
               class="slide {% if loop.index0 == 0 %}active{% endif %}"
               data-tank-id="{{ tank.id }}"
-              data-checks="{{ tank.daily_checks | tojson | safe }}"
-              data-important-tasks="{{ (tank.important_tasks_serialized or {}) | tojson | safe }}"
+              data-checks='{{ tank.daily_checks | tojson }}'
+              data-important-tasks='{{ tank.important_tasks_serialized | tojson | safe }}'
+
             >
               <div class="tank-card">
                 <h2 class="tank-name-title text-center">{{ tank.name }}</h2>
@@ -542,6 +543,7 @@
                           value="{{ value }}"
                           name="important_tasks_{{ value }}"
                           id="task_{{ value }}"
+                          data-task-type="{{ value }}"
                           {% if existing_task %}checked{% endif %}
                         />
                         <label

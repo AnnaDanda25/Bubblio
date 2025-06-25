@@ -54,6 +54,14 @@ def view_tanks():
 
     # ✅ Important tasks – serializacja odporna na błędy
     for tank in user_tanks:
+        tank.fish_stock = FishStock.query.filter_by(tank_id=tank.id).all()
+
+        try:
+            tank.daily_checks_list = json.loads(tank.daily_checks) if tank.daily_checks else []
+        except Exception:
+            tank.daily_checks_list = []
+
+        # ✅ Important tasks – serializacja odporna na błędy
         tank.important_tasks_list = []
         tasks = ImportantTask.query.filter_by(tank_id=tank.id).all()
         for t in tasks:
@@ -63,6 +71,8 @@ def view_tanks():
                 "interval_days": t.interval_days if t.interval_days is not None else "",
             }
             tank.important_tasks_list.append(task_dict)
+
+        tank.important_tasks_serialized = tank.important_tasks_list
 
     return render_template(
         "tanks.html",

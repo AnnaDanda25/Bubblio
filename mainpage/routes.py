@@ -43,11 +43,24 @@ def home():
                 if delta_days >= 0 and delta_days % interval_days == 0:
                     task_title = f"{title} ({tank.name})"
                     virtual_tasks.append({
-                        'title': task_title,
+                        'title': task_title + ' (from important tasks)',
                         'date': check_date.strftime('%Y-%m-%d')
                     })
 
-    return render_template('mainpage.html', tasks=tasks, virtual_tasks=virtual_tasks, tanks=tanks)
+    # 🔀 Połącz i posortuj wszystkie zadania po dacie
+    combined_tasks = [
+        {
+            'id': t.id,
+            'title': t.title,
+            'date': t.date.strftime('%Y-%m-%d') if isinstance(t.date, (datetime, date)) else t.date,
+            'is_done': t.is_done
+        } for t in tasks
+    ] + virtual_tasks
+
+
+    combined_tasks.sort(key=lambda t: t['date'])
+
+    return render_template('mainpage.html', combined_tasks=combined_tasks, tanks=tanks)
 
 
 @mainpage.route('/add_task', methods=['POST'])
@@ -88,6 +101,7 @@ def add_task():
 
     db.session.commit()
     return redirect(url_for('mainpage.home'))
+
 
 @mainpage.route('/upcoming_tasks_data')
 def upcoming_tasks_data():
