@@ -246,7 +246,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener("click", function (e) {
     if (e.target === addTankModal) closeTankModal();
-    if (e.target === deleteModal) closeDeleteModal();
     if (e.target === editModal) closeEditModal();
     if (e.target == manageStockModal) closeManageStockModal();
   });
@@ -265,7 +264,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("importantTasksTankId").value = tankId;
 
     // Znajdź aktywny slajd (zbiornik) na podstawie ID
-    const activeSlide = document.querySelector(`.slide[data-tank-id="${tankId}"]`);
+    const activeSlide = document.querySelector(
+      `.slide[data-tank-id="${tankId}"]`
+    );
     if (!activeSlide) return;
 
     // === DAILY CHECKS ===
@@ -273,7 +274,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const dailyChecksData = JSON.parse(activeSlide.dataset.checks || "[]");
 
     // Odznacz wszystko na starcie
-    const checkboxes = dailyChecksForm.querySelectorAll("input[type='checkbox']");
+    const checkboxes = dailyChecksForm.querySelectorAll(
+      "input[type='checkbox']"
+    );
     checkboxes.forEach((checkbox) => {
       checkbox.checked = dailyChecksData.includes(checkbox.value);
     });
@@ -289,14 +292,19 @@ document.addEventListener("DOMContentLoaded", () => {
       const container = toggle.closest(".important-task-item");
       if (container) {
         container.querySelector(".task-options").classList.add("d-none");
-        container.querySelector(`input[name="${toggle.value}_start"]`).value = "";
-        container.querySelector(`input[name="${toggle.value}_interval"]`).value = "";
+        container.querySelector(`input[name="${toggle.value}_start"]`).value =
+          "";
+        container.querySelector(
+          `input[name="${toggle.value}_interval"]`
+        ).value = "";
       }
     });
 
     // Przywróć zaznaczenia i dane z zapisanych zadań
     savedTasks.forEach((task) => {
-      const toggle = importantForm.querySelector(`input[data-task-type="${task.task_type}"]`);
+      const toggle = importantForm.querySelector(
+        `input[data-task-type="${task.task_type}"]`
+      );
       if (toggle) {
         toggle.checked = true;
         const container = toggle.closest(".important-task-item");
@@ -304,18 +312,19 @@ document.addEventListener("DOMContentLoaded", () => {
           const options = container.querySelector(".task-options");
           options.classList.remove("d-none");
 
-          const startInput = container.querySelector(`input[name="${task.task_type}_start"]`);
-          const intervalInput = container.querySelector(`input[name="${task.task_type}_interval"]`);
+          const startInput = container.querySelector(
+            `input[name="${task.task_type}_start"]`
+          );
+          const intervalInput = container.querySelector(
+            `input[name="${task.task_type}_interval"]`
+          );
 
           if (startInput) startInput.value = task.start_date || "";
           if (intervalInput) intervalInput.value = task.interval_days || "";
         }
       }
     });
-
   }
-
-
 
   document.getElementById("menuToggle")?.addEventListener("click", () => {
     document.getElementById("sidebar")?.classList.toggle("collapsed");
@@ -435,7 +444,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const settingsForm = document.getElementById("dailyChecksForm");
   const tankIdInput = document.getElementById("settingsTankId");
 
-
   settingsForm?.addEventListener("submit", async function (e) {
     e.preventDefault();
 
@@ -443,7 +451,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const selected = Array.from(
       settingsForm.querySelectorAll('input[name="checks"]:checked')
     ).map((cb) => cb.value);
-
 
     const formData = new FormData();
     formData.append("tank_id", tankId);
@@ -476,7 +483,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-
   // 📌 Dodajemy eventy do przycisków "Settings"
   document.querySelectorAll(".settings-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -485,7 +491,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // 🛠 Ustaw slajd jako aktywny (by nie pobierać złych danych)
       const slides = getSlides();
-      const index = slides.findIndex(s => s.dataset.tankId === tankId);
+      const index = slides.findIndex((s) => s.dataset.tankId === tankId);
       if (index !== -1) {
         showSlide(index);
       }
@@ -521,14 +527,12 @@ document.addEventListener("DOMContentLoaded", () => {
               ).value = task.interval_days;
             }
           }
-
         } catch (err) {
           console.error("Could not parse important tasks:", err);
         }
       }
     });
   });
-
 
   // === Important Tasks – pokaż opcje przy zaznaczeniu ===
   const importantForm = document.getElementById("importantTasksForm");
@@ -543,7 +547,6 @@ document.addEventListener("DOMContentLoaded", () => {
         options.classList.toggle("d-none", !checkbox.checked);
       });
     });
-
 
     const importantTankId = document.getElementById("importantTasksTankId");
     function resetImportantTasks() {
@@ -596,9 +599,27 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function populateDailyChecks(tankChecks) {
-    const checkboxes = document.querySelectorAll('#dailyChecksForm input[type="checkbox"]');
-    checkboxes.forEach(cb => {
+    const checkboxes = document.querySelectorAll(
+      '#dailyChecksForm input[type="checkbox"]'
+    );
+    checkboxes.forEach((cb) => {
       cb.checked = tankChecks.includes(cb.value);
     });
   }
+});
+
+// 🔁 Zamknij wszystkie modale po kliknięciu w .close-modal lub klik poza oknem
+document.querySelectorAll(".close-modal").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const modal = btn.closest(".modal");
+    if (modal) modal.style.display = "none";
+  });
+});
+
+window.addEventListener("click", function (e) {
+  document.querySelectorAll(".modal").forEach((modal) => {
+    if (e.target === modal) {
+      modal.style.display = "none";
+    }
+  });
 });

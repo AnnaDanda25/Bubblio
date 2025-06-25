@@ -523,3 +523,17 @@
   font-size: 14px;
   margin-top: 8px;
 }
+
+.stock-display {
+  margin-top: 10px;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  color: #025f85;
+}
+
+.stock-icon {
+  font-size: 1.3rem;
+}
