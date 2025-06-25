@@ -14,21 +14,26 @@ def home():
     user_id = session['user_id']
     today = datetime.today().date()
 
-    # Pobierz zadania i zbiorniki (z relacją do important_tasks!)
     tasks = Task.query.filter_by(user_id=user_id).order_by(Task.date.asc()).all()
     tanks = Tank.query.options(joinedload(Tank.important_tasks)).filter_by(user_id=user_id).all()
+
+    # 🔍 Zbiór wykonanych ważnych zadań
+    completed_set = set()
+    completed_entries = CompletedImportantTask.query.filter_by(user_id=user_id).all()
+    for c in completed_entries:
+        completed_set.add((c.task_type, c.tank_id, c.completed_date))
 
     virtual_tasks = []
 
     for tank in tanks:
-        # 🐠 Daily checks – konwersja do JSON jeśli trzeba
+        # 🐠 Daily checks – konwersja do listy jeśli potrzeba
         if isinstance(tank.daily_checks, str):
             try:
                 tank.daily_checks = json.loads(tank.daily_checks)
             except json.JSONDecodeError:
                 tank.daily_checks = []
 
-        # 🔁 Important Tasks – generowanie na najbliższe 14 dni
+        # 🔁 Important Tasks – generowanie na 14 dni
         for task in tank.important_tasks:
             title = task.task_type.replace('_', ' ').title()
             start_date = task.start_date
@@ -37,32 +42,53 @@ def home():
             if not (title and start_date and interval_days):
                 continue
 
-            for day_offset in range(15):  # Dziś + 14 dni
+            for day_offset in range(15):
                 check_date = today + timedelta(days=day_offset)
                 delta_days = (check_date - start_date).days
                 if delta_days >= 0 and delta_days % interval_days == 0:
+                    is_done = (task.task_type, tank.id, check_date) in completed_set
+
+                    # ❌ Pomijamy wykonane zadania w przeszłości
+                    if is_done and check_date < today:
+                        continue
+
+                    is_overdue = check_date < today and not is_done
+
                     virtual_tasks.append({
                         'title': f"{title} ({tank.name})",
                         'date': check_date.strftime('%Y-%m-%d'),
                         'task_type': task.task_type,
-                        'tank_id': tank.id
+                        'tank_id': tank.id,
+                        'is_done': is_done,
+                        'overdue': is_overdue
                     })
 
+    combined_tasks = []
 
-    # 🔀 Połącz i posortuj wszystkie zadania po dacie
-    combined_tasks = [
-        {
+    for t in tasks:
+        task_date = t.date
+        if isinstance(task_date, str):
+            task_date = datetime.strptime(task_date, '%Y-%m-%d').date()
+
+        # ❌ Pomijamy wykonane w przeszłości
+        if t.is_done and task_date < today:
+            continue
+
+        is_overdue = task_date < today and not t.is_done
+
+        combined_tasks.append({
             'id': t.id,
             'title': t.title,
             'date': t.date.strftime('%Y-%m-%d') if isinstance(t.date, (datetime, date)) else t.date,
-            'is_done': t.is_done
-        } for t in tasks
-    ] + virtual_tasks
+            'is_done': t.is_done,
+            'overdue': is_overdue
+        })
 
-
+    combined_tasks += virtual_tasks
     combined_tasks.sort(key=lambda t: t['date'])
 
-    return render_template('mainpage.html', combined_tasks=combined_tasks, tanks=tanks)
+    return render_template('mainpage.html', combined_tasks=combined_tasks, tanks=tanks, current_date=date.today().strftime('%Y-%m-%d'))
+
 
 
 @mainpage.route('/add_task', methods=['POST'])
@@ -121,11 +147,11 @@ def upcoming_tasks_data():
                     "task_type": task.task_type,
                     "tank_name": task.tank.name if task.tank else "Unknown Tank"
                 })
-            task_date += timedelta(days=task.interval_days or 7)  # domyślnie co 7 dni
+            task_date += timedelta(days=task.interval_days or 7)
 
-    # Sortowanie rosnąco wg daty
     upcoming.sort(key=lambda x: x["date"])
     return jsonify(upcoming)
+
 
 @mainpage.route('/complete_important_task', methods=['POST'])
 def complete_important_task():
@@ -138,11 +164,9 @@ def complete_important_task():
     tank_id = data.get('tank_id')
     date = data.get('date')
 
-    # 🛡️ Walidacja
     if not all([task_type, tank_id, date]):
         return jsonify({'error': 'Missing data'}), 400
 
-    # ✔️ Zapisz wykonanie
     done = CompletedImportantTask(
         user_id=user_id,
         tank_id=tank_id,
@@ -151,7 +175,6 @@ def complete_important_task():
     )
     db.session.add(done)
 
-    # ➕ Dodaj bąbelki użytkownikowi
     from models import User
     user = User.query.get(user_id)
     if user:

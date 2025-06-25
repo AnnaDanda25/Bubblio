@@ -155,29 +155,34 @@
           <ul id="task-list" class="list-unstyled mb-0">
             {% if combined_tasks %}
               {% for task in combined_tasks %}
-                <li>
-                  <input type="checkbox"
-                    {% if task.get('is_done') is not none %}
-                      {% if task.is_done %}checked{% endif %}
-                      data-task-id="{{ task.id }}"
-                    {% elif task.get('task_type') %}
-                      data-task-type="{{ task.task_type }}"
-                      data-tank-id="{{ task.tank_id }}"
-                      data-task-date="{{ task.date }}"
-                    {% else %}
-                      disabled
+                {% set is_past = task.date < current_date %}
+                {% set is_done = task.get('is_done') %}
+                {% if not (is_done and is_past) %}
+                  <li class="{% if is_past and not is_done %}text-danger{% endif %}">
+                    <input type="checkbox"
+                      {% if task.get('is_done') is not none %}
+                        {% if is_done %}checked{% endif %}
+                        data-task-id="{{ task.id }}"
+                      {% elif task.get('task_type') %}
+                        data-task-type="{{ task.task_type }}"
+                        data-tank-id="{{ task.tank_id }}"
+                        data-task-date="{{ task.date }}"
+                      {% else %}
+                        disabled
+                      {% endif %}
+                    />
+                    {{ task.date }} – {{ task.title }}
+                    {% if task.get('task_type') %}
+                      <span class="text-muted">(from important tasks)</span>
                     {% endif %}
-                  />
-                  {{ task.date }} – {{ task.title }}
-                  {% if task.get('task_type') %}
-                    <span class="text-muted">(from important tasks)</span>
-                  {% endif %}
-                </li>
+                  </li>
+                {% endif %}
               {% endfor %}
             {% else %}
               <li class="text-muted">No tasks yet.</li>
             {% endif %}
           </ul>
+
 
           <button class="btn-add-task" data-bs-toggle="modal" data-bs-target="#addTaskModal">+</button>
         </div>

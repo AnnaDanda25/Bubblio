@@ -132,3 +132,8 @@ li {
   flex-wrap: nowrap;
   margin-bottom: 0;
 }
+
+.overdue {
+  color: #dc3545; /* czerwony */
+  font-weight: 600;
+}

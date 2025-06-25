@@ -77,12 +77,19 @@ document.addEventListener('DOMContentLoaded', function () {
   function updateCheckboxStrikethroughs() {
     document.querySelectorAll('#task-list input[type="checkbox"], .tab-pane input[type="checkbox"]').forEach(cb => {
       const li = cb.closest('li');
-      if (li) {
+      if (li && !cb.disabled) {
         if (cb.checked) {
           li.classList.add('text-decoration-line-through');
         }
         cb.addEventListener('change', function () {
           li.classList.toggle('text-decoration-line-through', cb.checked);
+
+          
+          const todayDate = new Date().toISOString().split('T')[0];
+          const taskDate = cb.dataset.taskDate || li.textContent.trim().split('–')[0].trim();
+          if (cb.checked && taskDate < todayDate) {
+            li.remove();
+          }
         });
       }
     });
