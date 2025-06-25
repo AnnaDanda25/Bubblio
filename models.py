@@ -11,6 +11,7 @@ class User(db.Model):
     name = db.Column(db.String(50), nullable=False)
     login = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
+    bubbles = db.Column(db.Integer, default=0)
 
     # Relacje
     tasks = db.relationship("Task", backref="user", lazy=True)

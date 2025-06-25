@@ -19,7 +19,15 @@ def view_diary():
     photos = Photo.query.filter_by(user_id=user_id).order_by(Photo.created_at.desc()).all()
     notes = Note.query.filter_by(user_id=user_id).order_by(Note.date.desc()).all()
 
-    return render_template('diary.html', user=user, photos=photos, notes=notes)
+    return render_template(
+        'diary.html',
+        user=user,
+        photos=photos,
+        notes=notes,
+        bubbles=user.bubbles if user else 0,
+        username=user.name if user else "User"
+    )
+
 
 # 🖼️ Dodawanie zdjęcia do galerii
 @diary.route('/add_photo', methods=['POST'])

@@ -84,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function () {
         cb.addEventListener('change', function () {
           li.classList.toggle('text-decoration-line-through', cb.checked);
 
-          
           const todayDate = new Date().toISOString().split('T')[0];
           const taskDate = cb.dataset.taskDate || li.textContent.trim().split('–')[0].trim();
           if (cb.checked && taskDate < todayDate) {
@@ -131,13 +130,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // === Obsługa wykonywania zadań z ImportantTasks ===
+  // === Obsługa wykonywania zadań z Tasków i ImportantTasków ===
+  const bubblesSpan = document.querySelector('.bubble-number');
+
   document.querySelectorAll('#task-list input[type="checkbox"]').forEach(cb => {
     cb.addEventListener('change', function () {
       const li = cb.closest('li');
       li.classList.toggle('text-decoration-line-through', cb.checked);
 
-      // Jeśli to zadanie z Task
+      // === Task (zwykły) ===
       if (cb.dataset.taskId) {
         fetch('/update_task', {
           method: 'POST',
@@ -146,10 +147,23 @@ document.addEventListener('DOMContentLoaded', function () {
             id: cb.dataset.taskId,
             is_done: cb.checked
           })
-        });
+        })
+          .then(response => response.text())
+          .then(text => {
+            console.log('Raw response:', text);
+            try {
+              const data = JSON.parse(text);
+              if (data.success && bubblesSpan) {
+                let current = parseInt(bubblesSpan.textContent) || 0;
+                bubblesSpan.textContent = current + 10;
+              }
+            } catch (e) {
+              console.error('Failed to parse JSON:', e);
+            }
+          });
       }
 
-      // Jeśli to zadanie z ImportantTask
+      // === ImportantTask ===
       if (cb.dataset.taskType && cb.dataset.tankId && cb.dataset.taskDate) {
         fetch('/complete_important_task', {
           method: 'POST',
@@ -159,8 +173,24 @@ document.addEventListener('DOMContentLoaded', function () {
             tank_id: cb.dataset.tankId,
             date: cb.dataset.taskDate
           })
-        });
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success && bubblesSpan) {
+              let current = parseInt(bubblesSpan.textContent) || 0;
+              bubblesSpan.textContent = current + 10;
+            }
+          });
       }
     });
   });
+
+  // === Dynamiczne pobieranie liczby bąbelków przy załadowaniu ===
+  fetch('/get_bubbles')
+    .then(response => response.json())
+    .then(data => {
+      if (data.bubbles !== undefined && bubblesSpan) {
+        bubblesSpan.textContent = data.bubbles;
+      }
+    });
 });

@@ -2,12 +2,9 @@ from flask import render_template, session, redirect, url_for, flash, request
 from werkzeug.security import generate_password_hash, check_password_hash
 from profile import profile
 from models import db, User, Task
-from flask import Blueprint
-
-
+from flask import Blueprint, jsonify
 
 auth = Blueprint('auth', __name__)
-
 
 @profile.route('/')
 def view_profile():

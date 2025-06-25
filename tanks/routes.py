@@ -78,10 +78,10 @@ def view_tanks():
         "tanks.html",
         tanks=user_tanks,
         user=user,
+        bubbles=user.bubbles if user else 0,
         species_list=species_list,
         selected_tank=selected_tank,
     )
-
 
 
 # ➕ Dodawanie zbiornika
